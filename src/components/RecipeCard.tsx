@@ -5,6 +5,7 @@ import type { RecipeResult } from "../types";
 interface RecipeCardProps {
   recipe: RecipeResult;
   defaultOpen?: boolean;
+  rotate?: number;
 }
 
 const DIFFICULTY_LABEL: Record<RecipeResult["difficulty"], string> = {
@@ -13,19 +14,23 @@ const DIFFICULTY_LABEL: Record<RecipeResult["difficulty"], string> = {
   hard: "Hard",
 };
 
-export function RecipeCard({ recipe, defaultOpen = false }: RecipeCardProps) {
+export function RecipeCard({ recipe, defaultOpen = false, rotate = 0 }: RecipeCardProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+    <div
+      className="recipe-card overflow-hidden pt-2"
+      style={{ transform: `rotate(${rotate}deg)` }}
+    >
+      <div className="recipe-pin" />
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full flex-col items-start gap-3 px-5 py-5 text-left"
+        className="flex w-full flex-col items-start gap-3 px-5 py-4 text-left"
       >
         <div className="flex w-full items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold leading-snug text-text">{recipe.title}</h3>
+          <h3 className="font-hand text-2xl font-bold leading-snug text-text">{recipe.title}</h3>
           <motion.svg
             animate={{ rotate: open ? 180 : 0 }}
             transition={{ duration: 0.15 }}
@@ -36,7 +41,7 @@ export function RecipeCard({ recipe, defaultOpen = false }: RecipeCardProps) {
             <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </motion.svg>
         </div>
-        <p className="text-sm text-text-muted">{recipe.hook}</p>
+        <p className="font-note text-base text-text-muted">{recipe.hook}</p>
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-text-muted">
           <span className="inline-flex items-center gap-1 rounded-full bg-bg px-2.5 py-1">
             <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">

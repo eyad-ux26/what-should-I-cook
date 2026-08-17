@@ -3,9 +3,16 @@
 @import "@fontsource/plus-jakarta-sans/500.css";
 @import "@fontsource/plus-jakarta-sans/600.css";
 @import "@fontsource/plus-jakarta-sans/700.css";
+@import "@fontsource/caveat/500.css";
+@import "@fontsource/caveat/600.css";
+@import "@fontsource/caveat/700.css";
+@import "@fontsource/kalam/400.css";
+@import "@fontsource/kalam/700.css";
 
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", "Kalam", cursive;
+  --font-note: "Kalam", "Caveat", cursive;
 
   --color-bg: #fbf7f2;
   --color-surface: #ffffff;
@@ -19,6 +26,12 @@
 
   --color-success: #3f8f5f;
   --color-success-soft: #e3f2e8;
+
+  --color-paper: #fdf6e3;
+  --color-paper-dark: #f4e8c9;
+  --color-card: #fffdf5;
+  --color-wood: #4a2f22;
+  --color-wood-light: #6b4530;
 }
 
 body {
@@ -30,4 +43,184 @@ body {
 
 ::selection {
   background: var(--color-accent-soft);
+}
+
+/* ---------- Kitchen backdrop ---------- */
+
+.kitchen-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(255, 214, 150, 0.55), transparent 60%),
+    linear-gradient(180deg, #fff6e4 0%, #fbead0 22%, #f3d9ad 55%, #dba86a 100%);
+}
+
+.kitchen-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.35) 0px,
+    rgba(255, 255, 255, 0.35) 1px,
+    transparent 1px,
+    transparent 64px
+  );
+}
+
+.kitchen-counter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.06) 0px,
+      rgba(0, 0, 0, 0.06) 2px,
+      transparent 2px,
+      transparent 46px
+    ),
+    linear-gradient(180deg, #b9793f 0%, #96602f 45%, #7a4c26 100%);
+  box-shadow: 0 -6px 24px rgba(74, 47, 34, 0.25) inset;
+}
+
+.kitchen-counter::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
+}
+
+.kitchen-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 70% at 50% 30%, transparent 55%, rgba(43, 25, 12, 0.22) 100%);
+}
+
+/* string lights */
+.string-lights {
+  position: absolute;
+  top: -18px;
+  left: -2%;
+  width: 104%;
+  height: 110px;
+}
+
+.string-bulb {
+  position: absolute;
+  top: 78px;
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #fff6cf, #ffd257 55%, #f4a63d 100%);
+  box-shadow: 0 0 10px 3px rgba(255, 200, 90, 0.75), 0 0 22px 8px rgba(255, 170, 60, 0.35);
+  animation: bulb-glow 2.6s ease-in-out infinite;
+}
+
+@keyframes bulb-glow {
+  0%, 100% { opacity: 0.75; transform: scale(0.94); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* floating kitchen doodles */
+.kitchen-doodle {
+  position: absolute;
+  color: var(--color-wood);
+  opacity: 0.16;
+}
+
+@keyframes doodle-float {
+  0%, 100% { transform: translateY(0) rotate(var(--doodle-rot, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--doodle-rot, 0deg)); }
+}
+
+.kitchen-doodle {
+  animation: doodle-float 6s ease-in-out infinite;
+}
+
+/* ---------- Paper note (ingredient input) ---------- */
+
+.paper-note {
+  position: relative;
+  background:
+    linear-gradient(rgba(122, 107, 95, 0.09) 1px, transparent 1px);
+  background-size: 100% 28px;
+  background-color: var(--color-paper);
+  border-radius: 4px 14px 8px 16px / 12px 6px 16px 8px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 30px -14px rgba(74, 47, 34, 0.45),
+    0 2px 4px rgba(74, 47, 34, 0.12);
+  transform: rotate(-0.6deg);
+}
+
+.paper-note::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(224, 89, 42, 0.18);
+}
+
+.washi-tape {
+  position: absolute;
+  height: 26px;
+  width: 68px;
+  opacity: 0.85;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Recipe index cards ---------- */
+
+.recipe-card {
+  position: relative;
+  background: var(--color-card);
+  background-image: linear-gradient(rgba(122, 107, 95, 0.07) 1px, transparent 1px);
+  background-size: 100% 26px;
+  border-radius: 3px 12px 3px 12px / 10px 4px 10px 4px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 16px 28px -16px rgba(74, 47, 34, 0.5),
+    0 3px 6px rgba(74, 47, 34, 0.14);
+}
+
+.recipe-pin {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #ff8a75, var(--color-accent) 70%, var(--color-accent-hover) 100%);
+  box-shadow: 0 3px 5px rgba(74, 47, 34, 0.4);
+}
+
+.recipe-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  transform: translate(-65%, -65%);
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+}
+
+.font-note {
+  font-family: var(--font-note);
 }

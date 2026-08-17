@@ -36,11 +36,19 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
   };
 
   return (
-    <div>
-      <label htmlFor="ingredient-input" className="mb-2 block text-sm font-medium text-text">
+    <div className="paper-note px-4 pb-4 pt-6 sm:px-6">
+      <span
+        className="washi-tape -top-3 left-6 -rotate-6 bg-[repeating-linear-gradient(135deg,#f6a19a,#f6a19a_8px,#f2897f_8px,#f2897f_16px)]"
+        aria-hidden="true"
+      />
+      <span
+        className="washi-tape -right-2 top-2 rotate-12 bg-[repeating-linear-gradient(135deg,#9fd0a8,#9fd0a8_8px,#89c295_8px,#89c295_16px)] hidden sm:block"
+        aria-hidden="true"
+      />
+      <label htmlFor="ingredient-input" className="font-hand mb-1 block text-2xl font-semibold text-text">
         What's in your kitchen?
       </label>
-      <div className="flex min-h-14 flex-wrap items-center gap-2 rounded-2xl border border-border bg-surface px-3 py-2.5 shadow-sm transition-colors focus-within:border-accent focus-within:ring-4 focus-within:ring-accent-soft">
+      <div className="flex min-h-14 flex-wrap items-center gap-2 rounded-xl border border-transparent bg-transparent px-1 py-2 transition-colors focus-within:border-accent/40">
         <AnimatePresence initial={false}>
           {ingredients.map((ingredient, index) => (
             <motion.span
@@ -49,7 +57,7 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center gap-1 rounded-full bg-accent-soft py-1.5 pl-3 pr-2 text-sm font-medium text-accent-hover"
+              className="font-note flex items-center gap-1 rounded-full bg-accent-soft py-1.5 pl-3 pr-2 text-base font-medium text-accent-hover"
             >
               {ingredient}
               <button
@@ -79,10 +87,10 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
           onKeyDown={handleKeyDown}
           onBlur={() => addIngredient(draft)}
           placeholder={ingredients.length === 0 ? `e.g. ${EXAMPLES[0]}` : "Add another..."}
-          className="min-w-24 flex-1 bg-transparent py-1.5 text-base text-text outline-none placeholder:text-text-muted"
+          className="font-note min-w-24 flex-1 bg-transparent py-1.5 text-lg text-text outline-none placeholder:text-text-muted"
         />
       </div>
-      <p className="mt-2 text-xs text-text-muted">
+      <p className="font-note mt-1 text-sm text-text-muted">
         Press Enter or comma to add each ingredient.
       </p>
     </div>
