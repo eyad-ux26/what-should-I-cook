@@ -6,14 +6,13 @@ import { PrimaryButton } from "./components/PrimaryButton";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
-import { AmbientBackdrop } from "./components/AmbientBackdrop";
 import { generateRecipes } from "./mock/generateRecipes";
 import type { AppStage, CookPreferences, DietTag, RecipeResult, TimeBudget } from "./types";
 
 function LogoMark() {
   return (
-    <div className="icon-badge h-10 w-10 bg-accent text-white shadow-sm">
-      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+    <div className="icon-badge badge-sunset h-9 w-9 text-white shadow-sm">
+      <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]">
         <path
           d="M6 3v6.5A2.5 2.5 0 0 0 8.5 12v9M6 3v4M9 3v4"
           stroke="currentColor"
@@ -32,6 +31,44 @@ function LogoMark() {
     </div>
   );
 }
+
+const STEPS: { label: string; desc: string; badge: string; icon: React.ReactNode }[] = [
+  {
+    label: "Add ingredients",
+    desc: "Whatever's in the fridge",
+    badge: "badge-sunset",
+    icon: (
+      <path d="M5 5l14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    ),
+  },
+  {
+    label: "Set preferences",
+    desc: "Time, diet, cravings",
+    badge: "badge-violet",
+    icon: (
+      <path
+        d="M4 6h16M4 12h10M4 18h6"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    ),
+  },
+  {
+    label: "Get recipes",
+    desc: "Matched to your pantry",
+    badge: "badge-teal",
+    icon: (
+      <path
+        d="M12 3v18M4 8l8-5 8 5M4 8v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ),
+  },
+];
 
 function App() {
   const [stage, setStage] = useState<AppStage>("input");
@@ -69,46 +106,66 @@ function App() {
   };
 
   return (
-    <div className="relative min-h-screen">
-      <AmbientBackdrop />
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-xl flex-col px-4 pb-10 pt-10 sm:px-6 sm:pt-14">
-        <header className="mb-8">
-          <div className="mb-5 flex items-center gap-3">
+    <div className="min-h-screen bg-bg">
+      <section className="hero-band px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-10">
+        <div className="hero-glow h-72 w-72 bg-orange-400/30" style={{ top: "-40px", left: "-60px" }} />
+        <div className="hero-glow h-80 w-80 bg-pink-500/20" style={{ top: "-60px", right: "-80px" }} />
+        <div className="relative mx-auto w-full max-w-xl">
+          <div className="mb-6 flex items-center gap-2.5">
             <LogoMark />
-            <span className="text-sm font-semibold uppercase tracking-[0.14em] text-text-muted">
+            <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
               What Should I Cook
             </span>
           </div>
-          <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-tight text-text sm:text-[42px]">
-            Turn what's in your kitchen
-            <br />
-            into <span className="font-display text-accent">something worth eating</span>
+          <h1 className="text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[46px]">
+            Turn what's in your kitchen into{" "}
+            <span className="font-display gradient-text">something worth eating</span>
           </h1>
-          <p className="mt-3 max-w-md text-[15px] leading-relaxed text-text-muted">
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
             List your ingredients, tell us your constraints, and get recipe ideas built
             around what you already have.
           </p>
-        </header>
+        </div>
+      </section>
 
+      <div className="relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 pb-10 sm:-mt-24 sm:px-6">
         <AnimatePresence mode="wait">
           {stage === "input" && (
             <motion.div
               key="input"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="panel flex flex-col gap-5 p-5 pb-28 sm:p-6"
+              transition={{ duration: 0.2 }}
+              className="flex flex-col gap-6"
             >
-              <IngredientInput ingredients={ingredients} onChange={setIngredients} />
-              <RefinePanel
-                timeBudget={timeBudget}
-                onTimeBudgetChange={setTimeBudget}
-                diet={diet}
-                onDietChange={setDiet}
-                craving={craving}
-                onCravingChange={setCraving}
-              />
+              <div className="console-card flex flex-col gap-5 p-5 pb-28 sm:p-6">
+                <IngredientInput ingredients={ingredients} onChange={setIngredients} />
+                <RefinePanel
+                  timeBudget={timeBudget}
+                  onTimeBudgetChange={setTimeBudget}
+                  diet={diet}
+                  onDietChange={setDiet}
+                  craving={craving}
+                  onCravingChange={setCraving}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {STEPS.map((step) => (
+                  <div key={step.label} className="panel flex flex-col gap-2.5 p-4">
+                    <div className={`icon-badge ${step.badge} h-8 w-8 text-white`}>
+                      <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                        {step.icon}
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-text">{step.label}</p>
+                      <p className="mt-0.5 text-xs leading-snug text-text-muted">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           )}
 
@@ -133,11 +190,13 @@ function App() {
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-3"
             >
-              <p className="text-sm font-medium text-text-muted">
-                {results.length} idea{results.length !== 1 ? "s" : ""} based on what you've got
-              </p>
+              <div className="console-card flex items-center justify-between gap-3 px-5 py-4">
+                <p className="text-sm font-semibold text-text">
+                  {results.length} idea{results.length !== 1 ? "s" : ""} based on what you've got
+                </p>
+              </div>
               {results.map((recipe, i) => (
-                <RecipeCard key={recipe.id} recipe={recipe} defaultOpen={i === 0} />
+                <RecipeCard key={recipe.id} recipe={recipe} defaultOpen={i === 0} accentIndex={i} />
               ))}
               <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                 <button
@@ -161,7 +220,7 @@ function App() {
       </div>
 
       {stage === "input" && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(32,26,21,0.08)] backdrop-blur sm:px-6">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6">
           <div className="mx-auto w-full max-w-xl">
             <PrimaryButton onClick={handleSubmit} disabled={!canSubmit} className="w-full">
               {ingredients.length === 0 ? "Add an ingredient to start" : "Find something to cook"}

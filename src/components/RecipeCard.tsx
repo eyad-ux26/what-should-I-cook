@@ -5,6 +5,7 @@ import type { RecipeResult } from "../types";
 interface RecipeCardProps {
   recipe: RecipeResult;
   defaultOpen?: boolean;
+  accentIndex?: number;
 }
 
 const DIFFICULTY_LABEL: Record<RecipeResult["difficulty"], string> = {
@@ -12,6 +13,13 @@ const DIFFICULTY_LABEL: Record<RecipeResult["difficulty"], string> = {
   medium: "Medium",
   hard: "Hard",
 };
+
+const ACCENTS = [
+  { bar: "linear-gradient(90deg, #ffb27a, #ff6a3d)", badge: "badge-sunset" },
+  { bar: "linear-gradient(90deg, #b39dff, #7c5cff)", badge: "badge-violet" },
+  { bar: "linear-gradient(90deg, #6ee7d8, #14b8a6)", badge: "badge-teal" },
+  { bar: "linear-gradient(90deg, #ff8fa8, #e84393)", badge: "badge-berry" },
+];
 
 function ChefHatIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -27,11 +35,12 @@ function ChefHatIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function RecipeCard({ recipe, defaultOpen = false }: RecipeCardProps) {
+export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: RecipeCardProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const accent = ACCENTS[accentIndex % ACCENTS.length];
 
   return (
-    <div className="recipe-card overflow-hidden">
+    <div className="recipe-card overflow-hidden" style={{ ["--card-accent" as string]: accent.bar }}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -40,7 +49,7 @@ export function RecipeCard({ recipe, defaultOpen = false }: RecipeCardProps) {
       >
         <div className="flex w-full items-start justify-between gap-3">
           <div className="flex items-start gap-3">
-            <div className="icon-badge mt-0.5 h-9 w-9 bg-accent-soft text-accent-hover">
+            <div className={`icon-badge ${accent.badge} mt-0.5 h-9 w-9 text-white`}>
               <ChefHatIcon className="h-[18px] w-[18px]" />
             </div>
             <h3 className="pt-1 text-lg font-semibold leading-snug text-text">{recipe.title}</h3>

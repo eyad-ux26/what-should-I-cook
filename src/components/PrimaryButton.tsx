@@ -6,7 +6,7 @@ export function PrimaryButton({ className = "", children, ...props }: PrimaryBut
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-all active:scale-[0.98] hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted disabled:shadow-none disabled:active:scale-100 ${className}`}
+      className={`btn-gradient inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-semibold text-white transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:text-text-muted disabled:active:scale-100 ${className}`}
       {...props}
     >
       {children}
