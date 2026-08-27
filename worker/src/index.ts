@@ -74,8 +74,8 @@ Respond with ONLY a JSON object of this exact shape, no markdown, no commentary:
       "hook": "string, one enticing sentence about the dish",
       "timeMinutes": number,
       "difficulty": "easy" | "medium" | "hard",
-      "matchedIngredients": ["ingredients from the provided list actually used"],
-      "extraIngredients": ["any additional ingredients needed beyond the provided list and common staples"],
+      "matchedIngredients": ["ingredients from the provided list actually used, one per array item"],
+      "extraIngredients": ["any additional ingredients needed beyond the provided list and common staples, one per array item — never combine several into one string"],
       "steps": ["step 1", "step 2", "..."]
     }
   ]
@@ -95,14 +95,24 @@ function normalizeRecipe(raw: unknown, index: number): RecipeResult | null {
   const toStringArray = (v: unknown): string[] =>
     Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 
+  // Models sometimes bundle multiple ingredients into one comma-separated
+  // string instead of separate array items (e.g. "salt, pepper, oil") —
+  // split those back out so counts/badges in the UI stay accurate. Only
+  // applied to ingredient lists: step text legitimately contains commas.
+  const toIngredientArray = (v: unknown): string[] =>
+    toStringArray(v)
+      .flatMap((s) => s.split(","))
+      .map((s) => s.trim())
+      .filter(Boolean);
+
   return {
     id: `${index}-${Date.now()}`,
     title: r.title,
     hook: r.hook,
     timeMinutes: typeof r.timeMinutes === "number" ? r.timeMinutes : 30,
     difficulty,
-    matchedIngredients: toStringArray(r.matchedIngredients),
-    extraIngredients: toStringArray(r.extraIngredients),
+    matchedIngredients: toIngredientArray(r.matchedIngredients),
+    extraIngredients: toIngredientArray(r.extraIngredients),
     steps: toStringArray(r.steps),
   };
 }
@@ -115,7 +125,7 @@ async function generateRecipes(prefs: CookPreferences, apiKey: string): Promise<
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "ministral-3b-2512",
+      model: "mistral-small-latest",
       temperature: 0.7,
       response_format: { type: "json_object" },
       messages: [{ role: "user", content: buildPrompt(prefs) }],
