@@ -11,24 +11,13 @@ import type { AppStage, CookPreferences, DietTag, RecipeResult, TimeBudget } fro
 
 function LogoMark() {
   return (
-    <div className="icon-badge badge-sunset h-9 w-9 text-white shadow-sm">
-      <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]">
-        <path
-          d="M6 3v6.5A2.5 2.5 0 0 0 8.5 12v9M6 3v4M9 3v4"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M17 3c-2.2 1-3.5 3.4-3.5 6 0 2.1 1.1 3.6 2.5 4v8"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
+    <img
+      src={`${import.meta.env.BASE_URL}logo-256.png`}
+      alt="What Should I Cook"
+      className="h-9 w-9 rounded-[10px] shadow-sm"
+      width={36}
+      height={36}
+    />
   );
 }
 
