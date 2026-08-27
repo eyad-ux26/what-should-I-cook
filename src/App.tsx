@@ -38,7 +38,20 @@ const STEPS: { label: string; desc: string; badge: string; icon: React.ReactNode
     desc: "Whatever's in the fridge",
     badge: "badge-sunset",
     icon: (
-      <path d="M5 5l14 14M19 5 5 19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <>
+        <path
+          d="M5 10h14l-1.4 8.4a2 2 0 0 1-2 1.6H8.4a2 2 0 0 1-2-1.6L5 10Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M3.5 10h17M9 10 8 6M15 10l1-4M10.2 13.5v4M13.8 13.5v4"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
+      </>
     ),
   },
   {
@@ -128,7 +141,11 @@ function App() {
         </div>
       </section>
 
-      <div className="relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 pb-10 sm:-mt-24 sm:px-6">
+      <div
+        className={`relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 sm:-mt-24 sm:px-6 ${
+          stage === "input" ? "pb-32 sm:pb-36" : "pb-10"
+        }`}
+      >
         <AnimatePresence mode="wait">
           {stage === "input" && (
             <motion.div
@@ -139,7 +156,7 @@ function App() {
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-6"
             >
-              <div className="console-card flex flex-col gap-5 p-5 pb-28 sm:p-6">
+              <div className="console-card flex flex-col gap-5 p-5 sm:p-6">
                 <IngredientInput ingredients={ingredients} onChange={setIngredients} />
                 <RefinePanel
                   timeBudget={timeBudget}
