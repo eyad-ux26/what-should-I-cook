@@ -6,7 +6,7 @@ import { PrimaryButton } from "./components/PrimaryButton";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
-import { generateRecipes } from "./mock/generateRecipes";
+import { generateRecipes } from "./api/generateRecipes";
 import type { AppStage, CookPreferences, DietTag, RecipeResult, TimeBudget } from "./types";
 
 function LogoMark() {
