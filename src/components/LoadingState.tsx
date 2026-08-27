@@ -21,21 +21,19 @@ export function LoadingState() {
     <div
       role="status"
       aria-live="polite"
-      className="recipe-card flex flex-col items-center justify-center gap-5 px-6 py-14 text-center"
+      className="panel flex flex-col items-center justify-center gap-5 px-6 py-16 text-center"
     >
       <motion.div
-        animate={{ rotate: [0, -18, 18, -10, 0] }}
-        transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
-        className="text-4xl"
-      >
-        🥄
-      </motion.div>
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="h-9 w-9 rounded-full border-[3px] border-accent-soft border-t-accent"
+      />
       <motion.p
         key={messageIndex}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="font-note text-base font-medium text-text-muted"
+        className="text-sm font-medium text-text-muted"
       >
         {MESSAGES[messageIndex]}
       </motion.p>

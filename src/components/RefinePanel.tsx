@@ -67,16 +67,13 @@ export function RefinePanel({
   const activeCount = (timeBudget !== "any" ? 1 : 0) + diet.length + (craving.trim() ? 1 : 0);
 
   return (
-    <div
-      className="rounded-lg border border-amber-200/80 bg-[#fff3b0] shadow-[0_10px_18px_-10px_rgba(74,47,34,0.5)]"
-      style={{ transform: "rotate(0.8deg)" }}
-    >
+    <div className="rounded-2xl border border-border bg-bg">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between px-4 py-3.5 text-left"
       >
-        <span className="font-hand text-xl font-semibold text-text">
+        <span className="text-sm font-semibold text-text">
           Refine
           <span className="ml-1.5 font-normal text-text-muted">(optional)</span>
           {activeCount > 0 && (
@@ -106,7 +103,7 @@ export function RefinePanel({
           >
             <div className="space-y-5 px-4 pb-5 pt-1">
               <div>
-                <p className="font-note mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   Time available
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -123,7 +120,7 @@ export function RefinePanel({
               </div>
 
               <div>
-                <p className="font-note mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   Dietary needs
                 </p>
                 <div className="flex flex-wrap gap-2">
