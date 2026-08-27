@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLanguage } from "../i18n";
 import type { DietTag, TimeBudget } from "../types";
 
 interface RefinePanelProps {
@@ -10,20 +11,6 @@ interface RefinePanelProps {
   craving: string;
   onCravingChange: (value: string) => void;
 }
-
-const TIME_OPTIONS: { value: TimeBudget; label: string }[] = [
-  { value: "any", label: "Any time" },
-  { value: "15", label: "Under 15 min" },
-  { value: "30", label: "Under 30 min" },
-  { value: "60", label: "Under 1 hr" },
-];
-
-const DIET_OPTIONS: { value: DietTag; label: string }[] = [
-  { value: "vegetarian", label: "Vegetarian" },
-  { value: "vegan", label: "Vegan" },
-  { value: "gluten-free", label: "Gluten-free" },
-  { value: "dairy-free", label: "Dairy-free" },
-];
 
 function Pill({
   active,
@@ -58,6 +45,7 @@ export function RefinePanel({
   craving,
   onCravingChange,
 }: RefinePanelProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
 
   const toggleDiet = (value: DietTag) => {
@@ -71,13 +59,13 @@ export function RefinePanel({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-start"
       >
         <span className="text-sm font-semibold text-text">
-          Refine
-          <span className="ml-1.5 font-normal text-text-muted">(optional)</span>
+          {t.refineLabel}
+          <span className="ms-1.5 font-normal text-text-muted">{t.refineOptional}</span>
           {activeCount > 0 && (
-            <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-soft px-1.5 text-xs font-semibold text-accent-hover">
+            <span className="ms-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-soft px-1.5 text-xs font-semibold text-accent-hover">
               {activeCount}
             </span>
           )}
@@ -104,10 +92,10 @@ export function RefinePanel({
             <div className="space-y-5 px-4 pb-5 pt-1">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Time available
+                  {t.timeAvailable}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {TIME_OPTIONS.map((opt) => (
+                  {t.timeOptions.map((opt) => (
                     <Pill
                       key={opt.value}
                       active={timeBudget === opt.value}
@@ -121,10 +109,10 @@ export function RefinePanel({
 
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Dietary needs
+                  {t.dietaryNeeds}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {DIET_OPTIONS.map((opt) => (
+                  {t.dietOptions.map((opt) => (
                     <Pill key={opt.value} active={diet.includes(opt.value)} onClick={() => toggleDiet(opt.value)}>
                       {opt.label}
                     </Pill>
@@ -134,14 +122,14 @@ export function RefinePanel({
 
               <div>
                 <label htmlFor="craving" className="mb-2 block text-xs font-medium uppercase tracking-wide text-text-muted">
-                  In the mood for...
+                  {t.moodLabel}
                 </label>
                 <input
                   id="craving"
                   type="text"
                   value={craving}
                   onChange={(e) => onCravingChange(e.target.value)}
-                  placeholder="e.g. something spicy, comfort food, Italian cuisine"
+                  placeholder={t.moodPlaceholder}
                   className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                 />
               </div>

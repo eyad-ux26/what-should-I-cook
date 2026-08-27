@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IngredientInput } from "./components/IngredientInput";
 import { RefinePanel } from "./components/RefinePanel";
@@ -7,6 +7,7 @@ import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
 import { generateRecipes } from "./api/generateRecipes";
+import { useLanguage } from "./i18n";
 import type { AppStage, CookPreferences, DietTag, RecipeResult, TimeBudget } from "./types";
 
 function LogoMark() {
@@ -21,58 +22,49 @@ function LogoMark() {
   );
 }
 
-const STEPS: { label: string; desc: string; badge: string; icon: React.ReactNode }[] = [
-  {
-    label: "Add ingredients",
-    desc: "Whatever's in the fridge",
-    badge: "badge-sunset",
-    icon: (
-      <>
-        <path
-          d="M5 10h14l-1.4 8.4a2 2 0 0 1-2 1.6H8.4a2 2 0 0 1-2-1.6L5 10Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M3.5 10h17M9 10 8 6M15 10l1-4M10.2 13.5v4M13.8 13.5v4"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-      </>
-    ),
-  },
-  {
-    label: "Set preferences",
-    desc: "Time, diet, cravings",
-    badge: "badge-violet",
-    icon: (
-      <path
-        d="M4 6h16M4 12h10M4 18h6"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    ),
-  },
-  {
-    label: "Get recipes",
-    desc: "Matched to your pantry",
-    badge: "badge-teal",
-    icon: (
-      <path
-        d="M12 3v18M4 8l8-5 8 5M4 8v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-  },
+const STEP_BADGES = ["badge-sunset", "badge-violet", "badge-teal"];
+
+const STEP_ICONS: React.ReactNode[] = [
+  <Fragment key="ingredients">
+    <path
+      d="M5 10h14l-1.4 8.4a2 2 0 0 1-2 1.6H8.4a2 2 0 0 1-2-1.6L5 10Z"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.5 10h17M9 10 8 6M15 10l1-4M10.2 13.5v4M13.8 13.5v4"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+    />
+  </Fragment>,
+  <path key="prefs" d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />,
+  <path
+    key="recipes"
+    d="M12 3v18M4 8l8-5 8 5M4 8v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />,
 ];
 
+function LanguageToggle() {
+  const { t, toggleLang } = useLanguage();
+  return (
+    <button
+      type="button"
+      onClick={toggleLang}
+      className="rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur transition-colors hover:bg-white/20"
+    >
+      {t.languageToggle}
+    </button>
+  );
+}
+
 function App() {
+  const { t, lang } = useLanguage();
   const [stage, setStage] = useState<AppStage>("input");
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [timeBudget, setTimeBudget] = useState<TimeBudget>("any");
@@ -95,7 +87,7 @@ function App() {
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    void runGeneration({ ingredients, timeBudget, diet, craving });
+    void runGeneration({ ingredients, timeBudget, diet, craving, language: lang });
   };
 
   const handleStartOver = () => {
@@ -104,29 +96,31 @@ function App() {
   };
 
   const handleRetry = () => {
-    void runGeneration({ ingredients, timeBudget, diet, craving });
+    void runGeneration({ ingredients, timeBudget, diet, craving, language: lang });
   };
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-bg" style={{ fontFamily: t.fontFamily }}>
       <section className="hero-band px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-10">
-        <div className="hero-glow h-72 w-72 bg-orange-400/30" style={{ top: "-40px", left: "-60px" }} />
-        <div className="hero-glow h-80 w-80 bg-pink-500/20" style={{ top: "-60px", right: "-80px" }} />
+        <div className="hero-glow h-72 w-72 bg-orange-400/30" style={{ top: "-40px", insetInlineStart: "-60px" }} />
+        <div className="hero-glow h-80 w-80 bg-pink-500/20" style={{ top: "-60px", insetInlineEnd: "-80px" }} />
         <div className="relative mx-auto w-full max-w-xl">
-          <div className="mb-6 flex items-center gap-2.5">
-            <LogoMark />
-            <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
-              What Should I Cook
-            </span>
+          <div className="mb-6 flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5">
+              <LogoMark />
+              <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
+                {t.brand}
+              </span>
+            </div>
+            <LanguageToggle />
           </div>
           <h1 className="text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[46px]">
-            Turn what's in your kitchen into{" "}
-            <span className="font-display gradient-text">something worth eating</span>
+            {t.headlinePrefix}{" "}
+            <span className={`gradient-text ${lang === "en" ? "font-display" : ""}`}>
+              {t.headlineAccent}
+            </span>
           </h1>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
-            List your ingredients, tell us your constraints, and get recipe ideas built
-            around what you already have.
-          </p>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">{t.subtitle}</p>
         </div>
       </section>
 
@@ -158,11 +152,11 @@ function App() {
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                {STEPS.map((step) => (
+                {t.steps.map((step, i) => (
                   <div key={step.label} className="panel flex flex-col gap-2.5 p-4">
-                    <div className={`icon-badge ${step.badge} h-8 w-8 text-white`}>
+                    <div className={`icon-badge ${STEP_BADGES[i]} h-8 w-8 text-white`}>
                       <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-                        {step.icon}
+                        {STEP_ICONS[i]}
                       </svg>
                     </div>
                     <div>
@@ -197,9 +191,7 @@ function App() {
               className="flex flex-col gap-3"
             >
               <div className="console-card flex items-center justify-between gap-3 px-5 py-4">
-                <p className="text-sm font-semibold text-text">
-                  {results.length} idea{results.length !== 1 ? "s" : ""} based on what you've got
-                </p>
+                <p className="text-sm font-semibold text-text">{t.resultsCount(results.length)}</p>
               </div>
               {results.map((recipe, i) => (
                 <RecipeCard key={recipe.id} recipe={recipe} defaultOpen={i === 0} accentIndex={i} />
@@ -210,14 +202,14 @@ function App() {
                   onClick={handleRetry}
                   className="flex-1 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-text shadow-sm transition-colors hover:border-accent/40"
                 >
-                  Show different ideas
+                  {t.showDifferent}
                 </button>
                 <button
                   type="button"
                   onClick={handleStartOver}
                   className="flex-1 rounded-full px-5 py-3 text-sm font-semibold text-text-muted transition-colors hover:text-text"
                 >
-                  Start over
+                  {t.startOver}
                 </button>
               </div>
             </motion.div>
@@ -229,7 +221,7 @@ function App() {
         <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6">
           <div className="mx-auto w-full max-w-xl">
             <PrimaryButton onClick={handleSubmit} disabled={!canSubmit} className="w-full">
-              {ingredients.length === 0 ? "Add an ingredient to start" : "Find something to cook"}
+              {ingredients.length === 0 ? t.submitEmpty : t.submitReady}
             </PrimaryButton>
           </div>
         </div>

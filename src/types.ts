@@ -7,6 +7,7 @@ export interface CookPreferences {
   timeBudget: TimeBudget;
   diet: DietTag[];
   craving: string;
+  language: "en" | "ar";
 }
 
 export type Difficulty = "easy" | "medium" | "hard";

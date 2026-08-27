@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-
-const MESSAGES = [
-  "Thinking about what pairs well...",
-  "Checking a few flavor combos...",
-  "Almost got something good...",
-];
+import { useLanguage } from "../i18n";
 
 export function LoadingState() {
+  const { t } = useLanguage();
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setMessageIndex((i) => (i + 1) % MESSAGES.length);
+      setMessageIndex((i) => (i + 1) % t.loadingMessages.length);
     }, 1400);
     return () => clearInterval(id);
-  }, []);
+  }, [t.loadingMessages.length]);
 
   return (
     <div
@@ -35,7 +31,7 @@ export function LoadingState() {
         transition={{ duration: 0.25 }}
         className="text-sm font-medium text-text-muted"
       >
-        {MESSAGES[messageIndex]}
+        {t.loadingMessages[messageIndex]}
       </motion.p>
     </div>
   );

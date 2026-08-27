@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLanguage } from "../i18n";
 import type { RecipeResult } from "../types";
 
 interface RecipeCardProps {
@@ -7,12 +8,6 @@ interface RecipeCardProps {
   defaultOpen?: boolean;
   accentIndex?: number;
 }
-
-const DIFFICULTY_LABEL: Record<RecipeResult["difficulty"], string> = {
-  easy: "Easy",
-  medium: "Medium",
-  hard: "Hard",
-};
 
 const ACCENTS = [
   { bar: "linear-gradient(90deg, #ffb27a, #ff6a3d)", badge: "badge-sunset" },
@@ -36,6 +31,7 @@ function ChefHatIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: RecipeCardProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(defaultOpen);
   const accent = ACCENTS[accentIndex % ACCENTS.length];
 
@@ -45,7 +41,7 @@ export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: Rec
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full flex-col items-start gap-3 px-5 py-5 text-left"
+        className="flex w-full flex-col items-start gap-3 px-5 py-5 text-start"
       >
         <div className="flex w-full items-start justify-between gap-3">
           <div className="flex items-start gap-3">
@@ -64,27 +60,26 @@ export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: Rec
             <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </motion.svg>
         </div>
-        <p className="pl-12 text-sm text-text-muted">{recipe.hook}</p>
-        <div className="flex flex-wrap items-center gap-2 pl-12 text-xs font-medium text-text-muted">
+        <p className="ps-12 text-sm text-text-muted">{recipe.hook}</p>
+        <div className="flex flex-wrap items-center gap-2 ps-12 text-xs font-medium text-text-muted">
           <span className="inline-flex items-center gap-1 rounded-full bg-bg px-2.5 py-1">
             <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
               <circle cx="8" cy="8" r="6.2" stroke="currentColor" strokeWidth="1.4" />
               <path d="M8 4.5V8l2.5 1.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
             </svg>
-            {recipe.timeMinutes} min
+            {t.minUnit(recipe.timeMinutes)}
           </span>
           <span className="inline-flex items-center gap-1 rounded-full bg-bg px-2.5 py-1">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            {DIFFICULTY_LABEL[recipe.difficulty]}
+            {t.difficultyLabel[recipe.difficulty]}
           </span>
           {recipe.extraIngredients.length > 0 ? (
             <span className="rounded-full bg-bg px-2.5 py-1">
-              {recipe.extraIngredients.length} more ingredient
-              {recipe.extraIngredients.length > 1 ? "s" : ""} needed
+              {t.moreNeeded(recipe.extraIngredients.length)}
             </span>
           ) : (
             <span className="rounded-full bg-success-soft px-2.5 py-1 text-success">
-              You have everything
+              {t.haveEverything}
             </span>
           )}
         </div>
@@ -103,7 +98,7 @@ export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: Rec
               {recipe.extraIngredients.length > 0 && (
                 <div>
                   <p className="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
-                    You'll also need
+                    {t.youllAlsoNeed}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {recipe.extraIngredients.map((item) => (
@@ -119,7 +114,7 @@ export function RecipeCard({ recipe, defaultOpen = false, accentIndex = 0 }: Rec
               )}
               <div>
                 <p className="mb-2.5 text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Steps
+                  {t.stepsLabel}
                 </p>
                 <ol className="space-y-3">
                   {recipe.steps.map((step, index) => (

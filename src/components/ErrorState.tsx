@@ -1,10 +1,12 @@
 import { PrimaryButton } from "./PrimaryButton";
+import { useLanguage } from "../i18n";
 
 interface ErrorStateProps {
   onRetry: () => void;
 }
 
 export function ErrorState({ onRetry }: ErrorStateProps) {
+  const { t } = useLanguage();
   return (
     <div className="panel flex flex-col items-center gap-4 px-6 py-14 text-center">
       <div className="icon-badge h-12 w-12 bg-accent-soft">
@@ -19,12 +21,10 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
         </svg>
       </div>
       <div>
-        <p className="text-lg font-semibold text-text">Couldn't come up with anything</p>
-        <p className="mt-1 text-sm text-text-muted">
-          Something went wrong on our end. Give it another try.
-        </p>
+        <p className="text-lg font-semibold text-text">{t.errorTitle}</p>
+        <p className="mt-1 text-sm text-text-muted">{t.errorSubtitle}</p>
       </div>
-      <PrimaryButton onClick={onRetry}>Try again</PrimaryButton>
+      <PrimaryButton onClick={onRetry}>{t.tryAgain}</PrimaryButton>
     </div>
   );
 }

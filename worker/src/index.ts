@@ -5,12 +5,14 @@ export interface Env {
 type TimeBudget = "any" | "15" | "30" | "60";
 type DietTag = "vegetarian" | "vegan" | "gluten-free" | "dairy-free";
 type Difficulty = "easy" | "medium" | "hard";
+type Language = "en" | "ar";
 
 interface CookPreferences {
   ingredients: string[];
   timeBudget: TimeBudget;
   diet: DietTag[];
   craving: string;
+  language: Language;
 }
 
 interface RecipeResult {
@@ -62,9 +64,15 @@ function buildPrompt(prefs: CookPreferences): string {
   if (prefs.diet.length > 0) parts.push(`Dietary requirements: ${prefs.diet.join(", ")}.`);
   if (prefs.craving.trim()) parts.push(`Craving / mood: ${prefs.craving.trim()}.`);
 
+  const languageInstruction =
+    prefs.language === "ar"
+      ? `Write all text fields (title, hook, matchedIngredients, extraIngredients, steps) in Modern Standard Arabic. Keep the "difficulty" field value as exactly one of the untranslated English words: easy, medium, hard.`
+      : `Write all text fields in English.`;
+
   return `You are a helpful cooking assistant. Suggest exactly 3 distinct recipes using mainly the ingredients listed below. Prefer recipes that need few, if any, extra ingredients beyond common pantry staples (salt, pepper, oil, butter, garlic).
 
 ${parts.join("\n")}
+${languageInstruction}
 
 Respond with ONLY a JSON object of this exact shape, no markdown, no commentary:
 {
@@ -176,6 +184,7 @@ export default {
         timeBudget: (body.timeBudget as TimeBudget) ?? "any",
         diet: Array.isArray(body.diet) ? (body.diet as DietTag[]) : [],
         craving: typeof body.craving === "string" ? body.craving : "",
+        language: body.language === "ar" ? "ar" : "en",
       };
     } catch {
       return json({ error: "Invalid JSON body" }, 400, origin);
