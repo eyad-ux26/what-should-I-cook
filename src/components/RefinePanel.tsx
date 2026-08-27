@@ -141,7 +141,7 @@ export function RefinePanel({
                   type="text"
                   value={craving}
                   onChange={(e) => onCravingChange(e.target.value)}
-                  placeholder="e.g. something spicy, comfort food"
+                  placeholder="e.g. something spicy, comfort food, Italian cuisine"
                   className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
