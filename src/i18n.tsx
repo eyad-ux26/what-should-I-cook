@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { DietTag, Difficulty, TimeBudget } from "./types";
+import type { AllergyTag, CuisineTag, DietTag, Difficulty, TimeBudget } from "./types";
 
 export type Lang = "en" | "ar";
 
@@ -22,17 +22,25 @@ interface Strings {
   timeOptions: { value: TimeBudget; label: string }[];
   dietaryNeeds: string;
   dietOptions: { value: DietTag; label: string }[];
+  cuisineLabel: string;
+  cuisineOptions: { value: CuisineTag; label: string }[];
+  cuisineOtherPlaceholder: string;
+  allergiesLabel: string;
+  allergyOptions: { value: AllergyTag; label: string }[];
+  allergyOtherPlaceholder: string;
   moodLabel: string;
   moodPlaceholder: string;
   submitEmpty: string;
   submitReady: string;
   steps: { label: string; desc: string }[];
   loadingMessages: string[];
+  loadingHeadline: string;
   errorTitle: string;
   errorSubtitle: string;
   tryAgain: string;
   resultsCount: (n: number) => string;
-  showDifferent: string;
+  editIngredients: string;
+  generateMore: string;
   startOver: string;
   difficultyLabel: Record<Difficulty, string>;
   minUnit: (n: number) => string;
@@ -40,14 +48,20 @@ interface Strings {
   haveEverything: string;
   youllAlsoNeed: string;
   stepsLabel: string;
+  showDetails: string;
+  hideDetails: string;
+  copyTitle: string;
+  copyHook: string;
+  copied: string;
+  detailsError: string;
   languageToggle: string;
 }
 
 const en: Strings = {
   dir: "ltr",
   brand: "What Should I Cook",
-  headlinePrefix: "Turn what's in your kitchen into",
-  headlineAccent: "something worth eating",
+  headlinePrefix: "What's in your kitchen?",
+  headlineAccent: "Let's cook.",
   subtitle:
     "List your ingredients, tell us your constraints, and get recipe ideas built around what you already have.",
   ingredientsLabel: "What's in your kitchen?",
@@ -71,9 +85,29 @@ const en: Strings = {
     { value: "vegan", label: "Vegan" },
     { value: "gluten-free", label: "Gluten-free" },
     { value: "dairy-free", label: "Dairy-free" },
+    { value: "low-calorie", label: "Low calories" },
   ],
+  cuisineLabel: "Cuisine",
+  cuisineOptions: [
+    { value: "italian", label: "Italian 🇮🇹" },
+    { value: "asian", label: "Asian 🌏" },
+    { value: "mexican", label: "Mexican 🇲🇽" },
+    { value: "indian", label: "Indian 🇮🇳" },
+    { value: "middle-eastern", label: "Middle Eastern 🌿" },
+    { value: "other", label: "Other" },
+  ],
+  cuisineOtherPlaceholder: "What cuisine are you in the mood for?",
+  allergiesLabel: "Allergies",
+  allergyOptions: [
+    { value: "nuts", label: "Nuts" },
+    { value: "dairy", label: "Milk / Dairy" },
+    { value: "eggs", label: "Eggs" },
+    { value: "gluten", label: "Wheat / Gluten" },
+    { value: "other", label: "Other" },
+  ],
+  allergyOtherPlaceholder: "Other allergy...",
   moodLabel: "In the mood for...",
-  moodPlaceholder: "e.g. something spicy, comfort food, Italian cuisine",
+  moodPlaceholder: "e.g. something spicy, comfort food, something quick",
   submitEmpty: "Add an ingredient to start",
   submitReady: "Find something to cook",
   steps: [
@@ -86,11 +120,13 @@ const en: Strings = {
     "Checking a few flavor combos...",
     "Almost got something good...",
   ],
+  loadingHeadline: "Turning your ingredients into recipe ideas...",
   errorTitle: "Couldn't come up with anything",
   errorSubtitle: "Something went wrong on our end. Give it another try.",
   tryAgain: "Try again",
   resultsCount: (n) => `${n} idea${n !== 1 ? "s" : ""} based on what you've got`,
-  showDifferent: "Show different ideas",
+  editIngredients: "Edit ingredients",
+  generateMore: "Generate 3 more recipes",
   startOver: "Start over",
   difficultyLabel: { easy: "Easy", medium: "Medium", hard: "Hard" },
   minUnit: (n) => `${n} min`,
@@ -98,6 +134,12 @@ const en: Strings = {
   haveEverything: "You have everything",
   youllAlsoNeed: "You'll also need",
   stepsLabel: "Steps",
+  showDetails: "Show recipe details",
+  hideDetails: "Hide recipe details",
+  copyTitle: "Copy title",
+  copyHook: "Copy description",
+  copied: "Copied",
+  detailsError: "Couldn't load details. Try again.",
   languageToggle: "العربية",
 };
 
@@ -105,8 +147,8 @@ const ar: Strings = {
   dir: "rtl",
   fontFamily: "'Cairo', ui-sans-serif, system-ui, sans-serif",
   brand: "ماذا أطبخ",
-  headlinePrefix: "حوّل ما هو موجود في مطبخك إلى",
-  headlineAccent: "وجبة تستحق الأكل",
+  headlinePrefix: "عندك مكونات؟",
+  headlineAccent: "يلا نطبخ!",
   subtitle: "اذكر مكوناتك، وأخبرنا بقيودك، واحصل على أفكار وصفات مبنية على ما تملكه بالفعل.",
   ingredientsLabel: "ماذا يوجد في مطبخك؟",
   ingredientsPlaceholderFirst: "مثال: {example}",
@@ -129,9 +171,29 @@ const ar: Strings = {
     { value: "vegan", label: "نباتي صرف" },
     { value: "gluten-free", label: "خالٍ من الغلوتين" },
     { value: "dairy-free", label: "خالٍ من الألبان" },
+    { value: "low-calorie", label: "منخفض السعرات" },
   ],
+  cuisineLabel: "المطبخ",
+  cuisineOptions: [
+    { value: "italian", label: "إيطالي 🇮🇹" },
+    { value: "asian", label: "آسيوي 🌏" },
+    { value: "mexican", label: "مكسيكي 🇲🇽" },
+    { value: "indian", label: "هندي 🇮🇳" },
+    { value: "middle-eastern", label: "شرق أوسطي 🌿" },
+    { value: "other", label: "أخرى" },
+  ],
+  cuisineOtherPlaceholder: "ما نوع المطبخ الذي تفضله؟",
+  allergiesLabel: "الحساسية الغذائية",
+  allergyOptions: [
+    { value: "nuts", label: "المكسرات" },
+    { value: "dairy", label: "الحليب / الألبان" },
+    { value: "eggs", label: "البيض" },
+    { value: "gluten", label: "القمح / الغلوتين" },
+    { value: "other", label: "أخرى" },
+  ],
+  allergyOtherPlaceholder: "حساسية أخرى...",
   moodLabel: "ماذا تشتهي؟",
-  moodPlaceholder: "مثال: شيء حار، أكل مريح، مطبخ إيطالي",
+  moodPlaceholder: "مثال: شيء حار، أكل مريح، شيء سريع",
   submitEmpty: "أضف مكونًا للبدء",
   submitReady: "ابحث عن طبخة",
   steps: [
@@ -144,11 +206,13 @@ const ar: Strings = {
     "نتحقق من بعض التوليفات الشهية...",
     "أوشكنا على إيجاد شيء رائع...",
   ],
+  loadingHeadline: "نحوّل مكوناتك إلى أفكار وصفات...",
   errorTitle: "لم نتمكن من إيجاد شيء",
   errorSubtitle: "حدث خطأ من جانبنا. حاول مرة أخرى.",
   tryAgain: "حاول مرة أخرى",
   resultsCount: (n) => `${n} فكرة بناءً على ما لديك`,
-  showDifferent: "أظهر أفكارًا مختلفة",
+  editIngredients: "تعديل المكونات",
+  generateMore: "أعطني 3 وصفات جديدة",
   startOver: "البدء من جديد",
   difficultyLabel: { easy: "سهل", medium: "متوسط", hard: "صعب" },
   minUnit: (n) => `${n} دقيقة`,
@@ -156,6 +220,12 @@ const ar: Strings = {
   haveEverything: "لديك كل شيء",
   youllAlsoNeed: "ستحتاج أيضًا إلى",
   stepsLabel: "الخطوات",
+  showDetails: "عرض تفاصيل الوصفة",
+  hideDetails: "إخفاء تفاصيل الوصفة",
+  copyTitle: "نسخ العنوان",
+  copyHook: "نسخ الوصف",
+  copied: "تم النسخ",
+  detailsError: "تعذّر تحميل التفاصيل. حاول مرة أخرى.",
   languageToggle: "English",
 };
 

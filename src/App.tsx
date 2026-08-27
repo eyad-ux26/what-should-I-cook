@@ -6,9 +6,18 @@ import { PrimaryButton } from "./components/PrimaryButton";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
-import { generateRecipes } from "./api/generateRecipes";
+import { BackgroundIcons } from "./components/BackgroundIcons";
+import { generateRecipes, generateRecipeDetails } from "./api/generateRecipes";
 import { useLanguage } from "./i18n";
-import type { AppStage, CookPreferences, DietTag, RecipeResult, TimeBudget } from "./types";
+import type {
+  AllergyTag,
+  AppStage,
+  CookPreferences,
+  CuisineTag,
+  DietTag,
+  RecipeResult,
+  TimeBudget,
+} from "./types";
 
 function LogoMark() {
   return (
@@ -69,15 +78,31 @@ function App() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [timeBudget, setTimeBudget] = useState<TimeBudget>("any");
   const [diet, setDiet] = useState<DietTag[]>([]);
+  const [cuisine, setCuisine] = useState<CuisineTag | null>(null);
+  const [customCuisine, setCustomCuisine] = useState("");
+  const [allergies, setAllergies] = useState<AllergyTag[]>([]);
+  const [customAllergy, setCustomAllergy] = useState("");
   const [craving, setCraving] = useState("");
   const [results, setResults] = useState<RecipeResult[]>([]);
 
   const canSubmit = ingredients.length > 0 && stage !== "loading";
 
-  const runGeneration = async (prefs: CookPreferences) => {
+  const buildPrefs = (): CookPreferences => ({
+    ingredients,
+    timeBudget,
+    diet,
+    cuisine,
+    customCuisine,
+    allergies,
+    customAllergy,
+    craving,
+    language: lang,
+  });
+
+  const runGeneration = async () => {
     setStage("loading");
     try {
-      const recipes = await generateRecipes(prefs);
+      const recipes = await generateRecipes(buildPrefs());
       setResults(recipes);
       setStage("results");
     } catch {
@@ -87,21 +112,36 @@ function App() {
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    void runGeneration({ ingredients, timeBudget, diet, craving, language: lang });
+    void runGeneration();
+  };
+
+  const handleGenerateMore = () => {
+    void runGeneration();
+  };
+
+  const handleEditIngredients = () => {
+    setStage("input");
   };
 
   const handleStartOver = () => {
     setResults([]);
+    setIngredients([]);
+    setTimeBudget("any");
+    setDiet([]);
+    setCuisine(null);
+    setCustomCuisine("");
+    setAllergies([]);
+    setCustomAllergy("");
+    setCraving("");
     setStage("input");
   };
 
-  const handleRetry = () => {
-    void runGeneration({ ingredients, timeBudget, diet, craving, language: lang });
-  };
+  const handleFetchDetails = (recipe: RecipeResult) => generateRecipeDetails(buildPrefs(), recipe);
 
   return (
-    <div className="min-h-screen bg-bg" style={{ fontFamily: t.fontFamily }}>
-      <section className="hero-band px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-10">
+    <div className="relative min-h-screen bg-bg" style={{ fontFamily: t.fontFamily }}>
+      <BackgroundIcons />
+      <section className="hero-band relative z-10 px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-10">
         <div className="hero-glow h-72 w-72 bg-orange-400/30" style={{ top: "-40px", insetInlineStart: "-60px" }} />
         <div className="hero-glow h-80 w-80 bg-pink-500/20" style={{ top: "-60px", insetInlineEnd: "-80px" }} />
         <div className="relative mx-auto w-full max-w-xl">
@@ -114,9 +154,12 @@ function App() {
             </div>
             <LanguageToggle />
           </div>
-          <h1 className="text-[36px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[46px]">
+          <h1 className="text-[36px] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[46px]">
             {t.headlinePrefix}{" "}
-            <span className={`gradient-text ${lang === "en" ? "font-display" : ""}`}>
+            <span
+              className={`gradient-text ${lang === "en" ? "font-display" : "font-extrabold"}`}
+              style={{ fontSize: "1.12em" }}
+            >
               {t.headlineAccent}
             </span>
           </h1>
@@ -146,12 +189,20 @@ function App() {
                   onTimeBudgetChange={setTimeBudget}
                   diet={diet}
                   onDietChange={setDiet}
+                  cuisine={cuisine}
+                  onCuisineChange={setCuisine}
+                  customCuisine={customCuisine}
+                  onCustomCuisineChange={setCustomCuisine}
+                  allergies={allergies}
+                  onAllergiesChange={setAllergies}
+                  customAllergy={customAllergy}
+                  onCustomAllergyChange={setCustomAllergy}
                   craving={craving}
                   onCravingChange={setCraving}
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {t.steps.map((step, i) => (
                   <div key={step.label} className="panel flex flex-col gap-2.5 p-4">
                     <div className={`icon-badge ${STEP_BADGES[i]} h-8 w-8 text-white`}>
@@ -177,7 +228,7 @@ function App() {
 
           {stage === "error" && (
             <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <ErrorState onRetry={handleRetry} />
+              <ErrorState onRetry={handleGenerateMore} />
             </motion.div>
           )}
 
@@ -190,19 +241,38 @@ function App() {
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-3"
             >
-              <div className="console-card flex items-center justify-between gap-3 px-5 py-4">
-                <p className="text-sm font-semibold text-text">{t.resultsCount(results.length)}</p>
+              <div className="console-card flex flex-col gap-3 px-5 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-text">{t.resultsCount(results.length)}</p>
+                  <button
+                    type="button"
+                    onClick={handleEditIngredients}
+                    className="text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75"
+                  >
+                    {t.editIngredients}
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {ingredients.map((ingredient) => (
+                    <span
+                      key={ingredient}
+                      className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-hover"
+                    >
+                      {ingredient}
+                    </span>
+                  ))}
+                </div>
               </div>
               {results.map((recipe, i) => (
-                <RecipeCard key={recipe.id} recipe={recipe} defaultOpen={i === 0} accentIndex={i} />
+                <RecipeCard key={recipe.id} recipe={recipe} accentIndex={i} onFetchDetails={handleFetchDetails} />
               ))}
               <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                 <button
                   type="button"
-                  onClick={handleRetry}
+                  onClick={handleGenerateMore}
                   className="flex-1 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-text shadow-sm transition-colors hover:border-accent/40"
                 >
-                  {t.showDifferent}
+                  {t.generateMore}
                 </button>
                 <button
                   type="button"

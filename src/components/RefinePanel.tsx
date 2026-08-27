@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../i18n";
-import type { DietTag, TimeBudget } from "../types";
+import type { AllergyTag, CuisineTag, DietTag, TimeBudget } from "../types";
 
 interface RefinePanelProps {
   timeBudget: TimeBudget;
   onTimeBudgetChange: (value: TimeBudget) => void;
   diet: DietTag[];
   onDietChange: (value: DietTag[]) => void;
+  cuisine: CuisineTag | null;
+  onCuisineChange: (value: CuisineTag | null) => void;
+  customCuisine: string;
+  onCustomCuisineChange: (value: string) => void;
+  allergies: AllergyTag[];
+  onAllergiesChange: (value: AllergyTag[]) => void;
+  customAllergy: string;
+  onCustomAllergyChange: (value: string) => void;
   craving: string;
   onCravingChange: (value: string) => void;
 }
@@ -42,6 +50,14 @@ export function RefinePanel({
   onTimeBudgetChange,
   diet,
   onDietChange,
+  cuisine,
+  onCuisineChange,
+  customCuisine,
+  onCustomCuisineChange,
+  allergies,
+  onAllergiesChange,
+  customAllergy,
+  onCustomAllergyChange,
   craving,
   onCravingChange,
 }: RefinePanelProps) {
@@ -52,7 +68,31 @@ export function RefinePanel({
     onDietChange(diet.includes(value) ? diet.filter((d) => d !== value) : [...diet, value]);
   };
 
-  const activeCount = (timeBudget !== "any" ? 1 : 0) + diet.length + (craving.trim() ? 1 : 0);
+  const selectCuisine = (value: CuisineTag) => {
+    if (cuisine === value) {
+      onCuisineChange(null);
+      if (value === "other") onCustomCuisineChange("");
+    } else {
+      onCuisineChange(value);
+      if (value !== "other") onCustomCuisineChange("");
+    }
+  };
+
+  const toggleAllergy = (value: AllergyTag) => {
+    if (allergies.includes(value)) {
+      onAllergiesChange(allergies.filter((a) => a !== value));
+      if (value === "other") onCustomAllergyChange("");
+    } else {
+      onAllergiesChange([...allergies, value]);
+    }
+  };
+
+  const activeCount =
+    (timeBudget !== "any" ? 1 : 0) +
+    diet.length +
+    (cuisine ? 1 : 0) +
+    allergies.length +
+    (craving.trim() ? 1 : 0);
 
   return (
     <div className="rounded-2xl border border-border bg-bg">
@@ -118,6 +158,74 @@ export function RefinePanel({
                     </Pill>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  {t.cuisineLabel}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {t.cuisineOptions.map((opt) => (
+                    <Pill key={opt.value} active={cuisine === opt.value} onClick={() => selectCuisine(opt.value)}>
+                      {opt.label}
+                    </Pill>
+                  ))}
+                </div>
+                <AnimatePresence initial={false}>
+                  {cuisine === "other" && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="overflow-hidden"
+                    >
+                      <input
+                        type="text"
+                        value={customCuisine}
+                        onChange={(e) => onCustomCuisineChange(e.target.value)}
+                        placeholder={t.cuisineOtherPlaceholder}
+                        className="mt-2.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  {t.allergiesLabel}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {t.allergyOptions.map((opt) => (
+                    <Pill
+                      key={opt.value}
+                      active={allergies.includes(opt.value)}
+                      onClick={() => toggleAllergy(opt.value)}
+                    >
+                      {opt.label}
+                    </Pill>
+                  ))}
+                </div>
+                <AnimatePresence initial={false}>
+                  {allergies.includes("other") && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="overflow-hidden"
+                    >
+                      <input
+                        type="text"
+                        value={customAllergy}
+                        onChange={(e) => onCustomAllergyChange(e.target.value)}
+                        placeholder={t.allergyOtherPlaceholder}
+                        className="mt-2.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div>
