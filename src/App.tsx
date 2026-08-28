@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IngredientInput } from "./components/IngredientInput";
 import { RefinePanel } from "./components/RefinePanel";
@@ -137,6 +137,19 @@ function App() {
   };
 
   const handleFetchDetails = (recipe: RecipeResult) => generateRecipeDetails(buildPrefs(), recipe);
+
+  // The generated recipes are plain text in whatever language was active at
+  // request time. If the user switches language after results are already
+  // showing, regenerate so the content actually matches the new language.
+  const prevLangRef = useRef(lang);
+  useEffect(() => {
+    if (prevLangRef.current !== lang) {
+      prevLangRef.current = lang;
+      if (stage === "results") {
+        void runGeneration();
+      }
+    }
+  }, [lang]);
 
   return (
     <div className="relative min-h-screen bg-bg" style={{ fontFamily: t.fontFamily }}>
