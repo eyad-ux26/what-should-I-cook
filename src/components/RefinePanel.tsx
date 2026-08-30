@@ -185,6 +185,7 @@ export function RefinePanel({
                     >
                       <input
                         type="text"
+                        maxLength={80}
                         value={customCuisine}
                         onChange={(e) => onCustomCuisineChange(e.target.value)}
                         placeholder={t.cuisineOtherPlaceholder}
@@ -221,6 +222,7 @@ export function RefinePanel({
                     >
                       <input
                         type="text"
+                        maxLength={80}
                         value={customAllergy}
                         onChange={(e) => onCustomAllergyChange(e.target.value)}
                         placeholder={t.allergyOtherPlaceholder}
@@ -238,6 +240,7 @@ export function RefinePanel({
                 <input
                   id="craving"
                   type="text"
+                  maxLength={200}
                   value={craving}
                   onChange={(e) => onCravingChange(e.target.value)}
                   placeholder={t.moodPlaceholder}

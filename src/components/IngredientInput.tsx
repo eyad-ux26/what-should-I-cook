@@ -7,6 +7,7 @@ interface IngredientInputProps {
   onChange: (ingredients: string[]) => void;
 }
 
+const MAX_INGREDIENTS = 25;
 const TYPE_SPEED_MS = 55;
 const DELETE_SPEED_MS = 30;
 const HOLD_MS = 1300;
@@ -87,8 +88,8 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
   const animatedExample = useTypewriter(t.typingExamples, ingredients.length === 0 && draft === "");
 
   const addIngredient = (raw: string) => {
-    const value = raw.trim();
-    if (!value) return;
+    const value = raw.trim().slice(0, 60);
+    if (!value || ingredients.length >= MAX_INGREDIENTS) return;
     if (ingredients.some((i) => i.toLowerCase() === value.toLowerCase())) {
       setDraft("");
       return;
@@ -158,6 +159,7 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
           id="ingredient-input"
           type="text"
           inputMode="text"
+          maxLength={60}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
