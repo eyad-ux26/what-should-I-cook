@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../i18n";
 import type { AllergyTag, CuisineTag, DietTag, TimeBudget } from "../types";
 
 interface RefinePanelProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   timeBudget: TimeBudget;
   onTimeBudgetChange: (value: TimeBudget) => void;
   diet: DietTag[];
@@ -46,6 +47,8 @@ function Pill({
 }
 
 export function RefinePanel({
+  open,
+  onOpenChange,
   timeBudget,
   onTimeBudgetChange,
   diet,
@@ -62,7 +65,6 @@ export function RefinePanel({
   onCravingChange,
 }: RefinePanelProps) {
   const { t } = useLanguage();
-  const [open, setOpen] = useState(false);
 
   const toggleDiet = (value: DietTag) => {
     onDietChange(diet.includes(value) ? diet.filter((d) => d !== value) : [...diet, value]);
@@ -95,11 +97,12 @@ export function RefinePanel({
     (craving.trim() ? 1 : 0);
 
   return (
-    <div className="rounded-2xl border border-border bg-bg">
+    <div className="group rounded-2xl border border-border bg-bg transition-colors hover:border-accent/35">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-start"
+        onClick={() => onOpenChange(!open)}
+        aria-expanded={open}
+        className="flex w-full cursor-pointer items-center justify-between rounded-2xl px-4 py-3.5 text-start transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
       >
         <span className="text-sm font-semibold text-text">
           {t.refineLabel}
@@ -115,9 +118,9 @@ export function RefinePanel({
           transition={{ duration: 0.15 }}
           viewBox="0 0 16 16"
           fill="none"
-          className="h-4 w-4 text-text-muted"
+          className={`h-4 w-4 shrink-0 transition-colors ${open ? "text-accent-hover" : "text-text-muted"}`}
         >
-          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </motion.svg>
       </button>
       <AnimatePresence initial={false}>

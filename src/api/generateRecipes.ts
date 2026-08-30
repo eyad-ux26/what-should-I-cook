@@ -2,11 +2,20 @@ import type { CookPreferences, RecipeResult, RecipeStep, RecipeSummary } from ".
 
 const API_URL = "https://what-should-i-cook-api.what-should-i-cook-api.workers.dev";
 
-export async function generateRecipes(prefs: CookPreferences): Promise<RecipeResult[]> {
+export interface ExcludeEntry {
+  title: string;
+  hook: string;
+  matchedIngredients: string[];
+}
+
+export async function generateRecipes(
+  prefs: CookPreferences,
+  exclude: ExcludeEntry[] = [],
+): Promise<RecipeResult[]> {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(prefs),
+    body: JSON.stringify({ ...prefs, exclude }),
   });
 
   if (!response.ok) {

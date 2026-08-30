@@ -72,6 +72,9 @@ function LanguageToggle() {
   );
 }
 
+/** Bound how many previously-shown recipes we send back as exclusions, to keep prompt size in check. */
+const MAX_EXCLUDE_HISTORY = 9;
+
 function App() {
   const { t, lang } = useLanguage();
   const [stage, setStage] = useState<AppStage>("input");
@@ -84,6 +87,9 @@ function App() {
   const [customAllergy, setCustomAllergy] = useState("");
   const [craving, setCraving] = useState("");
   const [results, setResults] = useState<RecipeResult[]>([]);
+  const [shownRecipes, setShownRecipes] = useState<RecipeResult[]>([]);
+  const [refineOpen, setRefineOpen] = useState(false);
+  const refineSectionRef = useRef<HTMLDivElement>(null);
 
   const canSubmit = ingredients.length > 0 && stage !== "loading";
 
@@ -99,11 +105,13 @@ function App() {
     language: lang,
   });
 
-  const runGeneration = async () => {
+  const runGeneration = async (options: { resetHistory?: boolean } = {}) => {
     setStage("loading");
+    const history = options.resetHistory ? [] : shownRecipes.slice(-MAX_EXCLUDE_HISTORY);
     try {
-      const recipes = await generateRecipes(buildPrefs());
+      const recipes = await generateRecipes(buildPrefs(), history);
       setResults(recipes);
+      setShownRecipes([...history, ...recipes]);
       setStage("results");
     } catch {
       setStage("error");
@@ -112,7 +120,7 @@ function App() {
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    void runGeneration();
+    void runGeneration({ resetHistory: true });
   };
 
   const handleGenerateMore = () => {
@@ -125,6 +133,7 @@ function App() {
 
   const handleStartOver = () => {
     setResults([]);
+    setShownRecipes([]);
     setIngredients([]);
     setTimeBudget("any");
     setDiet([]);
@@ -133,10 +142,23 @@ function App() {
     setAllergies([]);
     setCustomAllergy("");
     setCraving("");
+    setRefineOpen(false);
     setStage("input");
   };
 
   const handleFetchDetails = (recipe: RecipeResult) => generateRecipeDetails(buildPrefs(), recipe);
+
+  const handleAddIngredientsCardClick = () => {
+    const input = document.getElementById("ingredient-input") as HTMLInputElement | null;
+    if (!input) return;
+    input.focus({ preventScroll: true });
+    input.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleSetPreferencesCardClick = () => {
+    setRefineOpen(true);
+    refineSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
   // The generated recipes are plain text in whatever language was active at
   // request time. If the user switches language after results are already
@@ -146,7 +168,7 @@ function App() {
     if (prevLangRef.current !== lang) {
       prevLangRef.current = lang;
       if (stage === "results") {
-        void runGeneration();
+        void runGeneration({ resetHistory: true });
       }
     }
   }, [lang]);
@@ -197,38 +219,58 @@ function App() {
             >
               <div className="console-card flex flex-col gap-5 p-5 sm:p-6">
                 <IngredientInput ingredients={ingredients} onChange={setIngredients} />
-                <RefinePanel
-                  timeBudget={timeBudget}
-                  onTimeBudgetChange={setTimeBudget}
-                  diet={diet}
-                  onDietChange={setDiet}
-                  cuisine={cuisine}
-                  onCuisineChange={setCuisine}
-                  customCuisine={customCuisine}
-                  onCustomCuisineChange={setCustomCuisine}
-                  allergies={allergies}
-                  onAllergiesChange={setAllergies}
-                  customAllergy={customAllergy}
-                  onCustomAllergyChange={setCustomAllergy}
-                  craving={craving}
-                  onCravingChange={setCraving}
-                />
+                <div ref={refineSectionRef}>
+                  <RefinePanel
+                    open={refineOpen}
+                    onOpenChange={setRefineOpen}
+                    timeBudget={timeBudget}
+                    onTimeBudgetChange={setTimeBudget}
+                    diet={diet}
+                    onDietChange={setDiet}
+                    cuisine={cuisine}
+                    onCuisineChange={setCuisine}
+                    customCuisine={customCuisine}
+                    onCustomCuisineChange={setCustomCuisine}
+                    allergies={allergies}
+                    onAllergiesChange={setAllergies}
+                    customAllergy={customAllergy}
+                    onCustomAllergyChange={setCustomAllergy}
+                    craving={craving}
+                    onCravingChange={setCraving}
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {t.steps.map((step, i) => (
-                  <div key={step.label} className="panel flex flex-col gap-2.5 p-4">
-                    <div className={`icon-badge ${STEP_BADGES[i]} h-8 w-8 text-white`}>
-                      <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-                        {STEP_ICONS[i]}
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-text">{step.label}</p>
-                      <p className="mt-0.5 text-xs leading-snug text-text-muted">{step.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                {t.steps.map((step, i) => {
+                  const onClick =
+                    i === 0
+                      ? handleAddIngredientsCardClick
+                      : i === 1
+                        ? handleSetPreferencesCardClick
+                        : undefined;
+                  return (
+                    <button
+                      key={step.label}
+                      type="button"
+                      onClick={onClick}
+                      disabled={!onClick}
+                      className={`panel flex flex-col gap-2.5 p-4 text-start transition-colors ${
+                        onClick ? "cursor-pointer hover:border-accent/35 hover:bg-surface" : "cursor-default"
+                      }`}
+                    >
+                      <div className={`icon-badge ${STEP_BADGES[i]} h-8 w-8 text-white`}>
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                          {STEP_ICONS[i]}
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text">{step.label}</p>
+                        <p className="mt-0.5 text-xs leading-snug text-text-muted">{step.desc}</p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           )}

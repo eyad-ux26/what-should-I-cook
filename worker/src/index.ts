@@ -47,6 +47,12 @@ interface RecipeSummary {
   extraIngredients: string[];
 }
 
+interface ExcludeEntry {
+  title: string;
+  hook: string;
+  matchedIngredients: string[];
+}
+
 const ALLOWED_ORIGINS = new Set([
   "https://eyad-ux26.github.io",
   "http://localhost:5199",
@@ -120,18 +126,35 @@ function buildConstraintLines(prefs: CookPreferences): string[] {
   return lines;
 }
 
-function buildListPrompt(prefs: CookPreferences): string {
+function buildExclusionBlock(exclude: ExcludeEntry[]): string {
+  if (exclude.length === 0) return "";
+  const list = exclude
+    .map((r, i) => `${i + 1}. "${r.title}" (key ingredients: ${r.matchedIngredients.slice(0, 4).join(", ") || "n/a"}) — ${r.hook}`)
+    .join("\n");
+  return `
+You are generating a NEW set of recipe suggestions. The user has already seen the recipes listed below earlier in this session.
+DO NOT return any of these recipes again.
+DO NOT return a renamed version of one of them.
+DO NOT return a recipe that is essentially the same dish with only minor ingredient swaps.
+Generate genuinely different recipe concepts — a different main technique, flavor profile, or dish type — while still respecting the user's ingredients and preferences below.
+
+Previously shown recipes:
+${list}
+`;
+}
+
+function buildListPrompt(prefs: CookPreferences, exclude: ExcludeEntry[], count: number): string {
   const parts = [
     `Ingredients available: ${prefs.ingredients.join(", ")}.`,
     `Time constraint: ${TIME_LABEL[prefs.timeBudget]}.`,
     ...buildConstraintLines(prefs),
   ];
 
-  return `You are a helpful cooking assistant. Suggest exactly 3 distinct recipes using mainly the ingredients listed below. Prefer recipes that need few, if any, extra ingredients beyond common pantry staples (salt, pepper, oil, butter, garlic). Do NOT write step-by-step cooking instructions yet — only the summary fields below.
+  return `You are a helpful cooking assistant. Suggest exactly ${count} distinct recipe${count === 1 ? "" : "s"} using mainly the ingredients listed below. Prefer recipes that need few, if any, extra ingredients beyond common pantry staples (salt, pepper, oil, butter, garlic). Do NOT write step-by-step cooking instructions yet — only the summary fields below.
 
 ${parts.join("\n")}
 ${languageInstruction(prefs.language, "title, hook, cuisine, matchedIngredients, extraIngredients")}
-
+${buildExclusionBlock(exclude)}
 Respond with ONLY a JSON object of this exact shape, no markdown, no commentary:
 {
   "recipes": [
@@ -146,6 +169,40 @@ Respond with ONLY a JSON object of this exact shape, no markdown, no commentary:
     }
   ]
 }`;
+}
+
+const TITLE_STOP_WORDS = new Set([
+  "with", "and", "the", "a", "an", "of", "in", "for", "style", "recipe", "recipes",
+  "easy", "quick", "simple", "delicious", "tasty", "classic", "homemade", "fresh",
+]);
+
+function tokenize(text: string): Set<string> {
+  return new Set(
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9؀-ۿ\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 2 && !TITLE_STOP_WORDS.has(w)),
+  );
+}
+
+function jaccard(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let intersection = 0;
+  for (const word of a) if (b.has(word)) intersection++;
+  return intersection / (a.size + b.size - intersection);
+}
+
+/** Heuristic check for "same dish again" — same title concept, or same title-ish plus near-identical ingredient set. */
+function isSimilarRecipe(a: ExcludeEntry, b: ExcludeEntry): boolean {
+  const titleSimilarity = jaccard(tokenize(a.title), tokenize(b.title));
+  if (titleSimilarity >= 0.5) return true;
+
+  const ingredientSimilarity = jaccard(
+    new Set(a.matchedIngredients.map((i) => i.toLowerCase())),
+    new Set(b.matchedIngredients.map((i) => i.toLowerCase())),
+  );
+  return titleSimilarity >= 0.25 && ingredientSimilarity >= 0.7;
 }
 
 function buildDetailPrompt(prefs: CookPreferences, recipe: RecipeSummary): string {
@@ -257,27 +314,72 @@ function parsePrefs(body: Partial<CookPreferences>): CookPreferences | null {
   };
 }
 
+function parseExclude(body: { exclude?: unknown }): ExcludeEntry[] {
+  if (!Array.isArray(body.exclude)) return [];
+  return body.exclude
+    .filter((e): e is Record<string, unknown> => typeof e === "object" && e !== null)
+    .map((e) => ({
+      title: typeof e.title === "string" ? e.title : "",
+      hook: typeof e.hook === "string" ? e.hook : "",
+      matchedIngredients: Array.isArray(e.matchedIngredients)
+        ? e.matchedIngredients.filter((x): x is string => typeof x === "string")
+        : [],
+    }))
+    .filter((e) => e.title);
+}
+
+const TARGET_RECIPE_COUNT = 3;
+const MAX_LIST_ATTEMPTS = 3;
+
 async function handleList(request: Request, env: Env, origin: string | null): Promise<Response> {
   let prefs: CookPreferences;
+  let exclude: ExcludeEntry[];
   try {
-    const body = (await request.json()) as Partial<CookPreferences>;
+    const body = (await request.json()) as Partial<CookPreferences> & { exclude?: unknown };
     const parsed = parsePrefs(body);
     if (!parsed) return json({ error: "ingredients is required" }, 400, origin);
     prefs = parsed;
+    exclude = parseExclude(body);
   } catch {
     return json({ error: "Invalid JSON body" }, 400, origin);
   }
 
   try {
-    const content = await callMistral(buildListPrompt(prefs), env.MISTRAL_API_KEY);
-    const parsed = JSON.parse(content) as { recipes?: unknown[] };
-    const recipes = Array.isArray(parsed.recipes) ? parsed.recipes : [];
-    const normalized = recipes
-      .map((r, i) => normalizeRecipe(r, i))
-      .filter((r): r is RecipeResult => r !== null);
+    const accepted: RecipeResult[] = [];
+    // Candidates rejected as duplicates of something already seen/accepted.
+    // Kept around as a last-resort fallback: if retries run out, showing 3
+    // recipes (one of them a near-miss) beats confidently showing only 1-2.
+    const fallbackPool: RecipeResult[] = [];
+    let currentExclude = exclude;
 
-    if (normalized.length === 0) throw new Error("Model returned no usable recipes");
-    return json(normalized, 200, origin);
+    for (let attempt = 0; attempt < MAX_LIST_ATTEMPTS && accepted.length < TARGET_RECIPE_COUNT; attempt++) {
+      const needed = TARGET_RECIPE_COUNT - accepted.length;
+      const content = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY);
+      const parsed = JSON.parse(content) as { recipes?: unknown[] };
+      const candidates = (Array.isArray(parsed.recipes) ? parsed.recipes : [])
+        .map((r, i) => normalizeRecipe(r, accepted.length + i))
+        .filter((r): r is RecipeResult => r !== null);
+
+      for (const candidate of candidates) {
+        if (accepted.length >= TARGET_RECIPE_COUNT) break;
+        const isDuplicate =
+          currentExclude.some((ex) => isSimilarRecipe(candidate, ex)) ||
+          accepted.some((a) => isSimilarRecipe(candidate, a));
+        if (isDuplicate) {
+          currentExclude = [...currentExclude, candidate];
+          fallbackPool.push(candidate);
+        } else {
+          accepted.push(candidate);
+        }
+      }
+    }
+
+    while (accepted.length < TARGET_RECIPE_COUNT && fallbackPool.length > 0) {
+      accepted.push(fallbackPool.shift()!);
+    }
+
+    if (accepted.length === 0) throw new Error("Model returned no usable recipes");
+    return json(accepted, 200, origin);
   } catch (err) {
     console.error(err);
     return json({ error: "Failed to generate recipes" }, 502, origin);

@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../i18n";
 
@@ -7,9 +7,84 @@ interface IngredientInputProps {
   onChange: (ingredients: string[]) => void;
 }
 
+const TYPE_SPEED_MS = 55;
+const DELETE_SPEED_MS = 30;
+const HOLD_MS = 1300;
+const GAP_MS = 400;
+
+function useTypewriter(examples: string[], enabled: boolean): string {
+  const [text, setText] = useState("");
+  const reducedMotion = useRef(
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    if (!enabled || examples.length === 0) {
+      setText("");
+      return;
+    }
+    if (reducedMotion.current) {
+      setText(examples[0]);
+      return;
+    }
+
+    let exampleIndex = 0;
+    let charIndex = 0;
+    let phase: "typing" | "holding" | "deleting" | "gap" = "typing";
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const tick = () => {
+      const current = examples[exampleIndex];
+
+      if (phase === "typing") {
+        charIndex++;
+        setText(current.slice(0, charIndex));
+        if (charIndex >= current.length) {
+          phase = "holding";
+          timeoutId = setTimeout(tick, HOLD_MS);
+        } else {
+          timeoutId = setTimeout(tick, TYPE_SPEED_MS);
+        }
+        return;
+      }
+
+      if (phase === "holding") {
+        phase = "deleting";
+        timeoutId = setTimeout(tick, DELETE_SPEED_MS);
+        return;
+      }
+
+      if (phase === "deleting") {
+        charIndex--;
+        setText(current.slice(0, charIndex));
+        if (charIndex <= 0) {
+          phase = "gap";
+          exampleIndex = (exampleIndex + 1) % examples.length;
+          timeoutId = setTimeout(tick, GAP_MS);
+        } else {
+          timeoutId = setTimeout(tick, DELETE_SPEED_MS);
+        }
+        return;
+      }
+
+      // gap
+      phase = "typing";
+      timeoutId = setTimeout(tick, TYPE_SPEED_MS);
+    };
+
+    timeoutId = setTimeout(tick, TYPE_SPEED_MS);
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, examples]);
+
+  return text;
+}
+
 export function IngredientInput({ ingredients, onChange }: IngredientInputProps) {
   const { t } = useLanguage();
   const [draft, setDraft] = useState("");
+
+  const animatedExample = useTypewriter(t.typingExamples, ingredients.length === 0 && draft === "");
 
   const addIngredient = (raw: string) => {
     const value = raw.trim();
@@ -38,6 +113,11 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
   const suggestions = t.examples
     .filter((item) => !ingredients.some((i) => i.toLowerCase() === item.toLowerCase()))
     .slice(0, 4);
+
+  const placeholder =
+    ingredients.length === 0
+      ? t.ingredientsPlaceholderFirst.replace("{example}", animatedExample)
+      : t.ingredientsPlaceholderMore;
 
   return (
     <div>
@@ -82,11 +162,7 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={() => addIngredient(draft)}
-          placeholder={
-            ingredients.length === 0
-              ? t.ingredientsPlaceholderFirst.replace("{example}", t.examples[0])
-              : t.ingredientsPlaceholderMore
-          }
+          placeholder={placeholder}
           className="min-w-24 flex-1 bg-transparent py-1.5 text-base text-text outline-none placeholder:text-text-muted"
         />
       </div>

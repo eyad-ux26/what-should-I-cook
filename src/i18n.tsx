@@ -16,6 +16,7 @@ interface Strings {
   ingredientsHelp: string;
   removeIngredient: (name: string) => string;
   examples: string[];
+  typingExamples: string[];
   refineLabel: string;
   refineOptional: string;
   timeAvailable: string;
@@ -70,7 +71,13 @@ const en: Strings = {
   ingredientsHelp: "Press Enter or comma to add each ingredient.",
   removeIngredient: (name) => `Remove ${name}`,
   examples: ["chicken thighs", "rice", "bell pepper", "eggs", "spinach", "canned tomatoes"],
-  refineLabel: "Refine",
+  typingExamples: [
+    "chicken, rice, onions",
+    "eggs, tomatoes, cheese",
+    "chicken thighs, potatoes, garlic",
+    "pasta, mushrooms, cream",
+  ],
+  refineLabel: "Set preferences",
   refineOptional: "(optional)",
   timeAvailable: "Time available",
   timeOptions: [
@@ -112,7 +119,7 @@ const en: Strings = {
   submitReady: "Find something to cook",
   steps: [
     { label: "Add ingredients", desc: "Whatever's in the fridge" },
-    { label: "Set preferences", desc: "Time, diet, cravings" },
+    { label: "Set preferences", desc: "Time, dietary needs, and more" },
     { label: "Get recipes", desc: "Matched to your pantry" },
   ],
   loadingMessages: [
@@ -156,7 +163,13 @@ const ar: Strings = {
   ingredientsHelp: "اضغط Enter أو الفاصلة لإضافة كل مكوّن.",
   removeIngredient: (name) => `إزالة ${name}`,
   examples: ["أفخاذ دجاج", "أرز", "فلفل رومي", "بيض", "سبانخ", "طماطم معلبة"],
-  refineLabel: "تخصيص",
+  typingExamples: [
+    "دجاج، أرز، بصل",
+    "بيض، طماطم، جبنة",
+    "أفخاذ دجاج، بطاطس، ثوم",
+    "مكرونة، فطر، كريمة",
+  ],
+  refineLabel: "حدد التفضيلات",
   refineOptional: "(اختياري)",
   timeAvailable: "الوقت المتاح",
   timeOptions: [
@@ -198,7 +211,7 @@ const ar: Strings = {
   submitReady: "ابحث عن طبخة",
   steps: [
     { label: "أضف المكونات", desc: "أي شيء في الثلاجة" },
-    { label: "حدد التفضيلات", desc: "الوقت، النظام الغذائي، الرغبة" },
+    { label: "حدد التفضيلات", desc: "الوقت، الاحتياجات الغذائية، والمزيد" },
     { label: "احصل على وصفات", desc: "مطابقة لما لديك" },
   ],
   loadingMessages: [
