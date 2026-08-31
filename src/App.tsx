@@ -8,6 +8,8 @@ import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
 import { BackgroundIcons } from "./components/BackgroundIcons";
 import { generateRecipes, generateRecipeDetails } from "./api/generateRecipes";
+import { LogoMark } from "./components/LogoMark";
+import { Footer } from "./components/Footer";
 import { useLanguage } from "./i18n";
 import type {
   AllergyTag,
@@ -18,18 +20,6 @@ import type {
   RecipeResult,
   TimeBudget,
 } from "./types";
-
-function LogoMark() {
-  return (
-    <img
-      src={`${import.meta.env.BASE_URL}logo-256.png`}
-      alt="What Should I Cook"
-      className="h-9 w-9 rounded-[10px] shadow-sm"
-      width={36}
-      height={36}
-    />
-  );
-}
 
 const STEP_BADGES = ["badge-sunset", "badge-violet", "badge-teal"];
 
@@ -341,6 +331,8 @@ function App() {
           )}
         </AnimatePresence>
       </div>
+
+      <Footer />
 
       {stage === "input" && (
         <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6">

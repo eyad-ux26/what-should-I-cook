@@ -56,6 +56,12 @@ interface Strings {
   copied: string;
   detailsError: string;
   languageToggle: string;
+  footerPrivacy: string;
+  footerTerms: string;
+  footerDisclaimer: string;
+  footerContact: string;
+  footerTagline: string;
+  backToApp: string;
 }
 
 const en: Strings = {
@@ -148,6 +154,12 @@ const en: Strings = {
   copied: "Copied",
   detailsError: "Couldn't load details. Try again.",
   languageToggle: "العربية",
+  footerPrivacy: "Privacy Policy",
+  footerTerms: "Terms of Use",
+  footerDisclaimer: "AI & Recipe Disclaimer",
+  footerContact: "Contact",
+  footerTagline: "Recipes are AI-generated — always check ingredients and food safety before cooking.",
+  backToApp: "← Back to the recipe generator",
 };
 
 const ar: Strings = {
@@ -240,6 +252,12 @@ const ar: Strings = {
   copied: "تم النسخ",
   detailsError: "تعذّر تحميل التفاصيل. حاول مرة أخرى.",
   languageToggle: "English",
+  footerPrivacy: "سياسة الخصوصية",
+  footerTerms: "شروط الاستخدام",
+  footerDisclaimer: "إخلاء مسؤولية الوصفات والذكاء الاصطناعي",
+  footerContact: "تواصل معنا",
+  footerTagline: "الوصفات مُولَّدة بالذكاء الاصطناعي — تحقق دائمًا من المكونات وسلامة الطعام قبل الطهي.",
+  backToApp: "→ العودة إلى مولّد الوصفات",
 };
 
 const STRINGS: Record<Lang, Strings> = { en, ar };
