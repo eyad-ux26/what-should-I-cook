@@ -12,3 +12,25 @@ class_name = "RateLimiterDO"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["RateLimiterDO"]
+
+# Operational limits — plain (non-secret) vars so they're easy to tune without
+# touching code. Every one has a built-in fallback in src/index.ts, so an
+# unset value never disables a protection. AI_ENABLED, MISTRAL_API_KEY, and
+# TURNSTILE_SECRET_KEY are set as `wrangler secret put ...` instead, since
+# secrets can be changed without a redeploy (see README notes in index.ts).
+[vars]
+RATE_LIMIT_MAX = "20"
+RATE_LIMIT_WINDOW_SECONDS = "60"
+BURST_LIMIT = "10"
+BURST_WINDOW_SECONDS = "10"
+DAILY_LIMIT = "150"
+DAILY_WINDOW_SECONDS = "86400"
+MAX_CONCURRENT_PER_IP = "2"
+FAILURE_LIMIT = "10"
+FAILURE_WINDOW_SECONDS = "300"
+MAX_INGREDIENTS = "25"
+MAX_INGREDIENT_LENGTH = "60"
+LIST_MAX_TOKENS = "1400"
+DETAIL_MAX_TOKENS = "900"
+MAX_BODY_BYTES = "20000"
+TURNSTILE_ENABLED = "false"

@@ -1,4 +1,5 @@
-import { checkRateLimit } from "./rateLimiter";
+import { acquireConcurrency, checkWindow, peekWindow, releaseConcurrency } from "./rateLimiter";
+import { envBool, envInt, logEvent, logWarning, shortHash, verifyTurnstile } from "./security";
 export { RateLimiterDO } from "./rateLimiter";
 
 export interface Env {
@@ -6,6 +7,70 @@ export interface Env {
   /** Kill switch: set to the literal string "false" (via `wrangler secret put AI_ENABLED`) to disable AI generation without a redeploy. */
   AI_ENABLED?: string;
   RATE_LIMITER_DO: DurableObjectNamespace;
+
+  // Scaffolding for Cloudflare Turnstile — inert unless explicitly enabled.
+  // Turn it on later by setting TURNSTILE_ENABLED = "true" in wrangler.toml
+  // [vars] and redeploying, plus a TURNSTILE_SECRET_KEY secret (`wrangler
+  // secret put TURNSTILE_SECRET_KEY`) — once the frontend also renders the
+  // widget and sends its token as `turnstileToken` in the request body.
+  TURNSTILE_ENABLED?: string;
+  TURNSTILE_SECRET_KEY?: string;
+
+  // All operational limits below are plain (non-secret) Worker vars — see
+  // wrangler.toml [vars]. Every one has a sensible built-in fallback, so an
+  // unset/malformed value never disables a protection.
+  RATE_LIMIT_MAX?: string;
+  RATE_LIMIT_WINDOW_SECONDS?: string;
+  BURST_LIMIT?: string;
+  BURST_WINDOW_SECONDS?: string;
+  DAILY_LIMIT?: string;
+  DAILY_WINDOW_SECONDS?: string;
+  MAX_CONCURRENT_PER_IP?: string;
+  FAILURE_LIMIT?: string;
+  FAILURE_WINDOW_SECONDS?: string;
+  MAX_INGREDIENTS?: string;
+  MAX_INGREDIENT_LENGTH?: string;
+  LIST_MAX_TOKENS?: string;
+  DETAIL_MAX_TOKENS?: string;
+  MAX_BODY_BYTES?: string;
+}
+
+interface SecurityConfig {
+  rateLimitMax: number;
+  rateLimitWindowMs: number;
+  burstLimit: number;
+  burstWindowMs: number;
+  dailyLimit: number;
+  dailyWindowMs: number;
+  maxConcurrentPerIp: number;
+  failureLimit: number;
+  failureWindowMs: number;
+  maxIngredients: number;
+  maxIngredientLength: number;
+  listMaxTokens: number;
+  detailMaxTokens: number;
+  maxBodyBytes: number;
+  turnstileEnabled: boolean;
+}
+
+function loadConfig(env: Env): SecurityConfig {
+  return {
+    rateLimitMax: envInt(env.RATE_LIMIT_MAX, 20),
+    rateLimitWindowMs: envInt(env.RATE_LIMIT_WINDOW_SECONDS, 60) * 1000,
+    burstLimit: envInt(env.BURST_LIMIT, 10),
+    burstWindowMs: envInt(env.BURST_WINDOW_SECONDS, 10) * 1000,
+    dailyLimit: envInt(env.DAILY_LIMIT, 150),
+    dailyWindowMs: envInt(env.DAILY_WINDOW_SECONDS, 86_400) * 1000,
+    maxConcurrentPerIp: envInt(env.MAX_CONCURRENT_PER_IP, 2),
+    failureLimit: envInt(env.FAILURE_LIMIT, 10),
+    failureWindowMs: envInt(env.FAILURE_WINDOW_SECONDS, 300) * 1000,
+    maxIngredients: envInt(env.MAX_INGREDIENTS, 25),
+    maxIngredientLength: envInt(env.MAX_INGREDIENT_LENGTH, 60),
+    listMaxTokens: envInt(env.LIST_MAX_TOKENS, 1400),
+    detailMaxTokens: envInt(env.DETAIL_MAX_TOKENS, 900),
+    maxBodyBytes: envInt(env.MAX_BODY_BYTES, 20_000),
+    turnstileEnabled: envBool(env.TURNSTILE_ENABLED, false),
+  };
 }
 
 type TimeBudget = "any" | "15" | "30" | "60";
@@ -125,15 +190,10 @@ function sanitizeStringArray(value: unknown, maxItems: number, maxItemLen: numbe
   return out;
 }
 
-const MAX_INGREDIENTS = 25;
-const MAX_INGREDIENT_LEN = 60;
 const MAX_SHORT_TEXT = 80;
 const MAX_CRAVING_LEN = 200;
 const MAX_EXCLUDE_ENTRIES = 15;
 const MAX_EXCLUDE_TEXT = 200;
-const MAX_BODY_BYTES = 20_000;
-const RATE_LIMIT_MAX = 20;
-const RATE_LIMIT_WINDOW_MS = 60_000;
 
 const DIET_VALUES: ReadonlySet<DietTag> = new Set([
   "vegetarian", "vegan", "gluten-free", "dairy-free", "low-calorie",
@@ -375,7 +435,7 @@ const toIngredientArray = (v: unknown): string[] =>
     .map((s) => s.trim())
     .filter(Boolean);
 
-function normalizeRecipe(raw: unknown, index: number): RecipeResult | null {
+function normalizeRecipe(raw: unknown, index: number, maxIngredientLength: number): RecipeResult | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
   if (typeof r.title !== "string" || typeof r.hook !== "string") return null;
@@ -392,8 +452,8 @@ function normalizeRecipe(raw: unknown, index: number): RecipeResult | null {
     timeMinutes: typeof r.timeMinutes === "number" ? r.timeMinutes : 30,
     difficulty,
     cuisine: sanitizeText(r.cuisine, 40) || "Fusion",
-    matchedIngredients: sanitizeStringArray(toIngredientArray(r.matchedIngredients), 15, MAX_INGREDIENT_LEN),
-    extraIngredients: sanitizeStringArray(toIngredientArray(r.extraIngredients), 15, MAX_INGREDIENT_LEN),
+    matchedIngredients: sanitizeStringArray(toIngredientArray(r.matchedIngredients), 15, maxIngredientLength),
+    extraIngredients: sanitizeStringArray(toIngredientArray(r.extraIngredients), 15, maxIngredientLength),
   };
 }
 
@@ -407,8 +467,8 @@ function normalizeStep(raw: unknown): RecipeStep | null {
   return { title, detail };
 }
 
-function parsePrefs(body: Partial<CookPreferences>): CookPreferences | null {
-  const ingredients = sanitizeStringArray(body.ingredients, MAX_INGREDIENTS, MAX_INGREDIENT_LEN);
+function parsePrefs(body: Partial<CookPreferences>, config: SecurityConfig): CookPreferences | null {
+  const ingredients = sanitizeStringArray(body.ingredients, config.maxIngredients, config.maxIngredientLength);
   if (ingredients.length === 0) return null;
 
   const timeBudget: TimeBudget =
@@ -430,7 +490,7 @@ function parsePrefs(body: Partial<CookPreferences>): CookPreferences | null {
   };
 }
 
-function parseExclude(body: { exclude?: unknown }): ExcludeEntry[] {
+function parseExclude(body: { exclude?: unknown }, config: SecurityConfig): ExcludeEntry[] {
   if (!Array.isArray(body.exclude)) return [];
   const out: ExcludeEntry[] = [];
   for (const e of body.exclude) {
@@ -442,7 +502,7 @@ function parseExclude(body: { exclude?: unknown }): ExcludeEntry[] {
     out.push({
       title,
       hook: sanitizeText(rec.hook, MAX_EXCLUDE_TEXT),
-      matchedIngredients: sanitizeStringArray(rec.matchedIngredients, 10, MAX_INGREDIENT_LEN),
+      matchedIngredients: sanitizeStringArray(rec.matchedIngredients, 10, config.maxIngredientLength),
     });
   }
   return out;
@@ -450,24 +510,35 @@ function parseExclude(body: { exclude?: unknown }): ExcludeEntry[] {
 
 const TARGET_RECIPE_COUNT = 3;
 const MAX_LIST_ATTEMPTS = 3;
-const LIST_MAX_TOKENS = 1400;
-const DETAIL_MAX_TOKENS = 900;
 
 function isAiDisabled(env: Env): boolean {
   return env.AI_ENABLED === "false";
 }
 
-async function handleList(request: Request, env: Env, origin: string | null): Promise<Response> {
+// A request is only ever built from: (1) the fixed prompt template text
+// written in this file, (2) validated/whitelisted preference enums, and
+// (3) length-capped, control-character-stripped free text. There is no code
+// path anywhere that lets a request body influence the model name,
+// temperature, max_tokens, response_format, or the system/instruction
+// framing — those are hardcoded in callMistral() above and never read from
+// `request`.
+
+async function handleList(
+  request: Request,
+  env: Env,
+  origin: string | null,
+  config: SecurityConfig,
+): Promise<{ response: Response; recipeCount?: number; attempts?: number }> {
   let prefs: CookPreferences;
   let exclude: ExcludeEntry[];
   try {
     const body = (await request.json()) as Partial<CookPreferences> & { exclude?: unknown };
-    const parsed = parsePrefs(body);
-    if (!parsed) return json({ error: "ingredients is required" }, 400, origin);
+    const parsed = parsePrefs(body, config);
+    if (!parsed) return { response: json({ error: "ingredients is required" }, 400, origin) };
     prefs = parsed;
-    exclude = parseExclude(body);
+    exclude = parseExclude(body, config);
   } catch {
-    return json({ error: "Invalid JSON body" }, 400, origin);
+    return { response: json({ error: "Invalid request" }, 400, origin) };
   }
 
   try {
@@ -477,13 +548,15 @@ async function handleList(request: Request, env: Env, origin: string | null): Pr
     // recipes (one of them a near-miss) beats confidently showing only 1-2.
     const fallbackPool: RecipeResult[] = [];
     let currentExclude = exclude;
+    let attempts = 0;
 
     for (let attempt = 0; attempt < MAX_LIST_ATTEMPTS && accepted.length < TARGET_RECIPE_COUNT; attempt++) {
+      attempts++;
       const needed = TARGET_RECIPE_COUNT - accepted.length;
-      const content = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY, LIST_MAX_TOKENS);
+      const content = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY, config.listMaxTokens);
       const parsed = JSON.parse(content) as { recipes?: unknown[] };
       const candidates = (Array.isArray(parsed.recipes) ? parsed.recipes : [])
-        .map((r, i) => normalizeRecipe(r, accepted.length + i))
+        .map((r, i) => normalizeRecipe(r, accepted.length + i, config.maxIngredientLength))
         .filter((r): r is RecipeResult => r !== null);
 
       for (const candidate of candidates) {
@@ -505,24 +578,29 @@ async function handleList(request: Request, env: Env, origin: string | null): Pr
     }
 
     if (accepted.length === 0) throw new Error("Model returned no usable recipes");
-    return json(accepted, 200, origin);
+    return { response: json(accepted, 200, origin), recipeCount: accepted.length, attempts };
   } catch (err) {
     console.error(err);
-    return json({ error: "Failed to generate recipes" }, 502, origin);
+    return { response: json({ error: "Failed to generate recipes" }, 502, origin) };
   }
 }
 
-async function handleDetails(request: Request, env: Env, origin: string | null): Promise<Response> {
+async function handleDetails(
+  request: Request,
+  env: Env,
+  origin: string | null,
+  config: SecurityConfig,
+): Promise<{ response: Response; stepCount?: number }> {
   let prefs: CookPreferences;
   let recipe: RecipeSummary;
   try {
     const body = (await request.json()) as { prefs?: Partial<CookPreferences>; recipe?: Partial<RecipeSummary> };
-    const parsedPrefs = parsePrefs(body.prefs ?? {});
-    if (!parsedPrefs) return json({ error: "prefs.ingredients is required" }, 400, origin);
+    const parsedPrefs = parsePrefs(body.prefs ?? {}, config);
+    if (!parsedPrefs) return { response: json({ error: "prefs.ingredients is required" }, 400, origin) };
     const title = sanitizeText(body.recipe?.title, 150);
     const hook = sanitizeText(body.recipe?.hook, 300);
     if (!title || !hook) {
-      return json({ error: "recipe is required" }, 400, origin);
+      return { response: json({ error: "recipe is required" }, 400, origin) };
     }
     prefs = parsedPrefs;
     recipe = {
@@ -537,15 +615,15 @@ async function handleDetails(request: Request, env: Env, origin: string | null):
         body.recipe?.difficulty === "easy" || body.recipe?.difficulty === "medium" || body.recipe?.difficulty === "hard"
           ? body.recipe.difficulty
           : "medium",
-      matchedIngredients: sanitizeStringArray(body.recipe?.matchedIngredients, 15, MAX_INGREDIENT_LEN),
-      extraIngredients: sanitizeStringArray(body.recipe?.extraIngredients, 15, MAX_INGREDIENT_LEN),
+      matchedIngredients: sanitizeStringArray(body.recipe?.matchedIngredients, 15, config.maxIngredientLength),
+      extraIngredients: sanitizeStringArray(body.recipe?.extraIngredients, 15, config.maxIngredientLength),
     };
   } catch {
-    return json({ error: "Invalid JSON body" }, 400, origin);
+    return { response: json({ error: "Invalid request" }, 400, origin) };
   }
 
   try {
-    const content = await callMistral(buildDetailPrompt(prefs, recipe), env.MISTRAL_API_KEY, DETAIL_MAX_TOKENS);
+    const content = await callMistral(buildDetailPrompt(prefs, recipe), env.MISTRAL_API_KEY, config.detailMaxTokens);
     const parsed = JSON.parse(content) as { steps?: unknown[] };
     const steps = Array.isArray(parsed.steps) ? parsed.steps : [];
     const normalized = steps
@@ -554,16 +632,17 @@ async function handleDetails(request: Request, env: Env, origin: string | null):
       .filter((s): s is RecipeStep => s !== null);
 
     if (normalized.length === 0) throw new Error("Model returned no usable steps");
-    return json({ steps: normalized }, 200, origin);
+    return { response: json({ steps: normalized }, 200, origin), stepCount: normalized.length };
   } catch (err) {
     console.error(err);
-    return json({ error: "Failed to generate recipe details" }, 502, origin);
+    return { response: json({ error: "Failed to generate recipe details" }, 502, origin) };
   }
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const origin = request.headers.get("Origin");
+    const config = loadConfig(env);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
@@ -573,9 +652,14 @@ export default {
       return json({ error: "Method not allowed" }, 405, origin);
     }
 
+    const { pathname } = new URL(request.url);
+    if (pathname !== "/" && pathname !== "/details") {
+      return json({ error: "Not found" }, 404, origin);
+    }
+
     // Reject oversized payloads before touching them.
     const contentLength = Number(request.headers.get("Content-Length") ?? "0");
-    if (contentLength > MAX_BODY_BYTES) {
+    if (contentLength > config.maxBodyBytes) {
       return json({ error: "Request body too large" }, 413, origin);
     }
 
@@ -584,10 +668,51 @@ export default {
     }
 
     const clientIp = request.headers.get("cf-connecting-ip") ?? "unknown";
+    const ipTag = shortHash(clientIp);
+
+    // Optional bot gate — inert unless explicitly turned on (see security.ts).
+    if (config.turnstileEnabled) {
+      let token = "";
+      try {
+        const peek = (await request.clone().json()) as { turnstileToken?: string };
+        token = typeof peek.turnstileToken === "string" ? peek.turnstileToken : "";
+      } catch {
+        // fall through with an empty token — verifyTurnstile will reject it
+      }
+      const verified = await verifyTurnstile(token, env.TURNSTILE_SECRET_KEY, clientIp);
+      if (!verified) {
+        logWarning("turnstile_failed", { ip: ipTag });
+        return json({ error: "Verification failed. Please refresh and try again." }, 403, origin);
+      }
+    }
+
     try {
-      const allowed = await checkRateLimit(env.RATE_LIMITER_DO, clientIp, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
-      if (!allowed) {
+      // A client that keeps sending malformed/rejected requests (scanning or
+      // fuzzing the API) gets cut off faster than the normal rate limit would
+      // otherwise allow — checked read-only so legitimate traffic is never
+      // penalized for it.
+      const recentFailures = await peekWindow(env.RATE_LIMITER_DO, clientIp, "failures", config.failureWindowMs);
+      if (recentFailures >= config.failureLimit) {
+        logWarning("blocked_repeated_failures", { ip: ipTag, count: recentFailures });
+        return json({ error: "Too many invalid requests. Please try again later." }, 429, origin);
+      }
+
+      const withinBurst = await checkWindow(env.RATE_LIMITER_DO, clientIp, "burst", config.burstLimit, config.burstWindowMs);
+      if (!withinBurst) {
+        logWarning("rate_limited", { ip: ipTag, bucket: "burst" });
         return json({ error: "Too many requests. Please slow down and try again shortly." }, 429, origin);
+      }
+
+      const withinSustained = await checkWindow(env.RATE_LIMITER_DO, clientIp, "sustained", config.rateLimitMax, config.rateLimitWindowMs);
+      if (!withinSustained) {
+        logWarning("rate_limited", { ip: ipTag, bucket: "sustained" });
+        return json({ error: "Too many requests. Please slow down and try again shortly." }, 429, origin);
+      }
+
+      const withinDaily = await checkWindow(env.RATE_LIMITER_DO, clientIp, "daily", config.dailyLimit, config.dailyWindowMs);
+      if (!withinDaily) {
+        logWarning("rate_limited", { ip: ipTag, bucket: "daily" });
+        return json({ error: "Daily request limit reached. Please try again tomorrow." }, 429, origin);
       }
     } catch (err) {
       // Rate limiter itself failing should not silently open the floodgates,
@@ -595,8 +720,42 @@ export default {
       console.error("Rate limiter error", err);
     }
 
-    const { pathname } = new URL(request.url);
-    if (pathname === "/details") return handleDetails(request, env, origin);
-    return handleList(request, env, origin);
+    let gotConcurrencySlot = false;
+    try {
+      gotConcurrencySlot = await acquireConcurrency(env.RATE_LIMITER_DO, clientIp, config.maxConcurrentPerIp);
+    } catch (err) {
+      console.error("Concurrency check error", err);
+      gotConcurrencySlot = true; // fail open on the limiter's own error, not on the user
+    }
+    if (!gotConcurrencySlot) {
+      logWarning("concurrency_limited", { ip: ipTag });
+      return json({ error: "Too many simultaneous requests. Please wait for your current request to finish." }, 429, origin);
+    }
+
+    const startedAt = Date.now();
+    try {
+      const result =
+        pathname === "/details"
+          ? await handleDetails(request, env, origin, config)
+          : await handleList(request, env, origin, config);
+
+      if (result.response.status === 400 || result.response.status === 413) {
+        ctx.waitUntil(checkWindow(env.RATE_LIMITER_DO, clientIp, "failures", config.failureLimit, config.failureWindowMs));
+        logWarning("validation_failed", { ip: ipTag, path: pathname, status: result.response.status });
+      } else if (result.response.status === 200) {
+        logEvent("generated", {
+          ip: ipTag,
+          path: pathname,
+          ms: Date.now() - startedAt,
+          ...("recipeCount" in result && result.recipeCount !== undefined ? { recipeCount: result.recipeCount } : {}),
+          ...("attempts" in result && result.attempts !== undefined ? { attempts: result.attempts } : {}),
+          ...("stepCount" in result && result.stepCount !== undefined ? { stepCount: result.stepCount } : {}),
+        });
+      }
+
+      return result.response;
+    } finally {
+      ctx.waitUntil(releaseConcurrency(env.RATE_LIMITER_DO, clientIp));
+    }
   },
 };
