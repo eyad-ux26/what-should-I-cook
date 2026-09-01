@@ -164,7 +164,10 @@ function App() {
   }, [lang]);
 
   return (
-    <div className="relative min-h-screen bg-bg" style={{ fontFamily: t.fontFamily }}>
+    <div
+      className={`relative bg-bg ${stage === "input" ? "pb-24 sm:pb-28" : ""}`}
+      style={{ fontFamily: t.fontFamily }}
+    >
       <BackgroundIcons />
       <section className="hero-band relative z-10 px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-10">
         <div className="hero-glow h-72 w-72 bg-orange-400/30" style={{ top: "-40px", insetInlineStart: "-60px" }} />
@@ -192,11 +195,7 @@ function App() {
         </div>
       </section>
 
-      <div
-        className={`relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 sm:-mt-24 sm:px-6 ${
-          stage === "input" ? "pb-32 sm:pb-36" : "pb-10"
-        }`}
-      >
+      <div className="relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 pb-10 sm:-mt-24 sm:px-6">
         <AnimatePresence mode="wait">
           {stage === "input" && (
             <motion.div

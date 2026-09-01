@@ -20,16 +20,16 @@ export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) 
   const { t } = useLanguage();
 
   return (
-    <div dir="ltr" className="relative min-h-screen bg-bg">
+    <div dir="ltr" className="relative bg-bg">
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col px-4 pb-4 pt-8 sm:px-6 sm:pt-10">
         <div className="mb-8 flex items-center justify-between gap-2.5">
-          <a href="#/" className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <LogoMark />
             <span className="text-sm font-semibold uppercase tracking-[0.14em] text-text-muted">
               What Should I Cook
             </span>
           </a>
-          <a href="#/" className="text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75">
+          <a href="/" className="text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75">
             {t.backToApp}
           </a>
         </div>
