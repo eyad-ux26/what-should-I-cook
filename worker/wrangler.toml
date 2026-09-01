@@ -1,7 +1,7 @@
 name = "what-should-i-cook-api"
 main = "src/index.ts"
 compatibility_date = "2025-01-01"
-workers_dev = true
+workers_dev = false
 
 [observability]
 enabled = true
