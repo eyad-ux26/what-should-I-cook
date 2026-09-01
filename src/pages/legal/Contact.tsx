@@ -1,41 +1,25 @@
 import { LegalLayout } from "./LegalLayout";
-import { H2, P, Ph } from "./shared";
+import { P } from "./shared";
 
-const CONTACT_EMAIL_PLACEHOLDER = "your-contact-email@example.com";
+const CONTACT_EMAIL = "info@what-should-i-cook.com";
 
 export function Contact() {
   return (
-    <LegalLayout title="Contact" lastUpdated="August 31, 2026">
+    <LegalLayout title="Contact" lastUpdated="September 1, 2026">
+      <P>Have a question, suggestion, or problem with What Should I Cook? We'd love to hear from you.</P>
       <P>
-        This Service doesn't have accounts or a support ticketing system — it's a small,
-        anonymous tool. For questions about privacy, these legal pages, a bug report, or anything
-        else, reach out by email:
+        For general questions, feedback, bug reports, or privacy-related requests, please contact
+        us using the email below.
       </P>
 
       <div className="rounded-xl border border-border bg-bg px-4 py-3">
         <a
-          href={`mailto:${CONTACT_EMAIL_PLACEHOLDER}`}
+          href={`mailto:${CONTACT_EMAIL}`}
           className="font-mono text-base font-semibold text-accent-hover underline underline-offset-2"
         >
-          {CONTACT_EMAIL_PLACEHOLDER}
+          {CONTACT_EMAIL}
         </a>
-        <p className="mt-1 text-xs text-text-muted">
-          (<Ph>Replace this with your real contact email before launch</Ph>)
-        </p>
       </div>
-
-      <H2>What to include</H2>
-      <P>
-        If you're reporting an issue, it helps to include roughly when it happened, what you
-        typed in, and what went wrong. Please don't include sensitive personal information in your
-        message — it isn't needed to help you.
-      </P>
-
-      <H2>Response time</H2>
-      <P>
-        This is a small, independently run project, so please allow reasonable time for a
-        response. There's no guaranteed support SLA.
-      </P>
     </LegalLayout>
   );
 }

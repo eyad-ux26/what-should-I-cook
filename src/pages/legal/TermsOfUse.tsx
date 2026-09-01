@@ -1,128 +1,96 @@
 import { LegalLayout } from "./LegalLayout";
-import { H2, P, Ph, Ul } from "./shared";
+import { H2, P, Ul } from "./shared";
 
 export function TermsOfUse() {
   return (
-    <LegalLayout title="Terms of Use" lastUpdated="August 31, 2026">
+    <LegalLayout title="Terms of Use" lastUpdated="September 1, 2026">
       <P>
-        These Terms of Use ("Terms") govern your use of "What Should I Cook" (the "Service"), an
-        anonymous, AI-powered recipe idea generator. By using the Service, you agree to these
-        Terms. If you don't agree, please don't use the Service.
+        These Terms of Use govern your use of What Should I Cook, an AI-powered recipe idea
+        generator. By using the Service, you agree to these Terms. If you do not agree, please do
+        not use the Service.
       </P>
 
-      <H2>What this Service is</H2>
+      <H2>Using the Service</H2>
       <P>
-        The Service lets you submit ingredients or a food-related request and receive
-        AI-generated recipe ideas. No account is required, and none is offered. There is no
-        guarantee of accuracy, availability, or fitness for any particular purpose — see the{" "}
-        <a href="#/disclaimer" className="text-accent-hover underline underline-offset-2">
-          AI &amp; Recipe Disclaimer
-        </a>{" "}
-        for details specific to the recipe content itself.
+        What Should I Cook allows you to enter ingredients, preferences, or other food-related
+        requests and receive AI-generated recipe ideas.
       </P>
+      <P>The Service is provided for general informational and entertainment purposes. No account is required to use it.</P>
 
-      <H2>Acceptable use</H2>
-      <P>You agree to use the Service only for its intended purpose: getting recipe ideas. In particular, you agree not to:</P>
+      <H2>Acceptable Use</H2>
+      <P>You agree to use the Service responsibly and only for lawful purposes.</P>
+      <P>You must not:</P>
       <Ul>
-        <li>Use the Service for any unlawful purpose, or to generate content intended to harm, harass, or deceive others.</li>
-        <li>Attempt to extract, reproduce, or resell the Service's output at scale, or otherwise use it as a substitute for direct access to the underlying AI provider.</li>
-        <li>Interfere with, disrupt, or place undue load on the Service or the infrastructure it runs on.</li>
-        <li>Reverse-engineer, scrape, or build automated tooling around the Service beyond normal, individual, human use.</li>
+        <li>Abuse, overload, disrupt, or interfere with the Service.</li>
+        <li>Use bots, scripts, or other automated systems to send excessive requests.</li>
+        <li>Attempt to bypass rate limits or other security measures.</li>
+        <li>Scrape, copy, or reproduce the Service at scale.</li>
+        <li>Attempt to access unauthorized parts of the Service or its underlying systems.</li>
+        <li>Attempt to obtain API keys, credentials, system instructions, or other confidential information.</li>
       </Ul>
-
-      <H2>Abuse, automated requests, and rate limits</H2>
       <P>
-        Because the Service is free and open to anyone without an account, we apply technical
-        protections — including rate limiting, request-size limits, and automated abuse
-        detection — to keep it available and to control costs. You agree not to attempt to bypass,
-        circumvent, disable, or interfere with these protections, including by using scripts, bots,
-        or other automated means to send requests faster or in greater volume than a normal human
-        user would, or by attempting to manipulate request parameters to obtain behavior the
-        Service does not intentionally offer.
-      </P>
-      <P>
-        We may block, throttle, or otherwise restrict access (temporarily or permanently) for any
-        traffic we reasonably believe is abusive, automated in a way that harms the Service, or in
-        violation of these Terms, without prior notice.
+        We may temporarily or permanently restrict access if we reasonably believe the Service is
+        being abused or these Terms are being violated.
       </P>
 
-      <H2>Service availability</H2>
+      <H2>AI-Generated Recipes</H2>
       <P>
-        The Service is provided on an "as available" basis. We do not guarantee uninterrupted or
-        error-free operation, and features (including AI generation itself) may be temporarily
-        disabled, rate-limited, or modified — including to protect the Service from cost overruns
-        or abuse — without prior notice.
+        Recipe ideas, ingredients, quantities, cooking instructions, and other content generated
+        by the Service are produced by an AI system and are not individually reviewed by a human.
       </P>
-
-      <H2>AI-generated content and accuracy</H2>
+      <P>AI-generated content may contain mistakes, omissions, or inaccurate information.</P>
       <P>
-        Recipe titles, descriptions, ingredient lists, and instructions are generated by a
-        third-party AI model and are not reviewed by a human before being shown to you. AI-generated
-        content can be inaccurate, incomplete, nonsensical, or unsafe if followed literally. You
-        are solely responsible for evaluating and verifying any content before relying on it —
-        see the{" "}
-        <a href="#/disclaimer" className="text-accent-hover underline underline-offset-2">
+        You should independently verify recipe information before using it. For important
+        information about food safety, allergens, and dietary restrictions, please see our{" "}
+        <a href="/disclaimer" className="text-accent-hover underline underline-offset-2">
           AI &amp; Recipe Disclaimer
-        </a>{" "}
-        for specifics on food safety and allergens.
+        </a>
+        .
       </P>
 
-      <H2>Your responsibility</H2>
+      <H2>Your Responsibility</H2>
+      <P>You are responsible for how you use the information provided by the Service.</P>
       <P>
-        You are responsible for what you type into the Service and for any decisions you make
-        based on its output — including what you cook, eat, serve to others, or purchase. This
-        includes verifying ingredient safety, checking for allergens, confirming cooking
-        temperatures and times are safe, and using your own judgment, especially for anyone with
-        food allergies, medical dietary restrictions, or other health-sensitive needs.
+        Always use your own judgment and verify ingredients, allergens, cooking temperatures,
+        cooking times, and food-safety information before preparing or serving food.
       </P>
+      <P>Do not rely on AI-generated recipes as medical or nutritional advice.</P>
 
-      <H2>Intellectual property</H2>
+      <H2>Intellectual Property</H2>
       <P>
-        The Service's design, branding, logo, and underlying source code are owned by{" "}
-        <Ph>your name or business name</Ph> unless otherwise noted, and may not be copied or
-        reused without permission. AI-generated recipe text is provided to you for personal,
-        non-commercial use. Because it is machine-generated, such content may not carry the same
-        copyright protections as human-authored work in every jurisdiction, and similar or
-        identical suggestions may be generated for other users from similar inputs.
+        The Service's name, branding, design, logo, and underlying software are protected by
+        applicable intellectual-property laws and may not be copied or reused without permission.
       </P>
+      <P>Recipe ideas generated by the Service are AI-generated and may be similar to ideas generated for other users.</P>
 
-      <H2>Prohibited misuse</H2>
-      <P>In addition to the acceptable-use rules above, you may not use the Service to:</P>
-      <Ul>
-        <li>Attempt to extract our system prompts, API keys, provider configuration, or other backend implementation details.</li>
-        <li>Submit content designed to manipulate the AI model into producing harmful, illegal, or policy-violating output unrelated to recipes.</li>
-        <li>Probe, scan, or test the Service's security, rate limiting, or infrastructure without prior written permission.</li>
-      </Ul>
+      <H2>Availability</H2>
+      <P>We aim to keep the Service available and reliable, but we do not guarantee that it will always be available, uninterrupted, or error-free.</P>
+      <P>We may modify, suspend, or discontinue the Service or its features, including AI generation, at any time.</P>
 
-      <H2>Limitation of liability</H2>
+      <H2>Disclaimer and Limitation of Liability</H2>
+      <P>The Service and its AI-generated content are provided on an "as is" and "as available" basis.</P>
       <P>
-        To the maximum extent permitted by applicable law, the Service is provided "as is" and "as
-        available," without warranties of any kind, express or implied. We are not liable for any
-        harm, loss, illness, injury, or damages arising from your use of the Service or reliance on
-        its output, including but not limited to issues arising from AI-generated recipe content,
-        food safety, or allergic reactions. Nothing in these Terms limits liability that cannot be
-        limited under the law of <Ph>governing jurisdiction</Ph>.
+        To the maximum extent permitted by applicable law, we make no guarantees regarding the
+        accuracy, completeness, reliability, or suitability of AI-generated recipe content.
       </P>
-
-      <H2>Changes and discontinuation</H2>
       <P>
-        We may update these Terms, modify or discontinue the Service (or any part of it, including
-        AI generation itself), at any time, with or without notice. Continued use of the Service
-        after changes are posted constitutes acceptance of the updated Terms. The "Last updated"
-        date above reflects the current version.
+        To the extent permitted by law, we are not responsible for losses, damages, illness,
+        injury, allergic reactions, or other consequences resulting from reliance on or use of
+        information provided by the Service.
       </P>
+      <P>Nothing in these Terms excludes or limits liability that cannot legally be excluded or limited.</P>
 
-      <H2>Governing law</H2>
+      <H2>Changes to These Terms</H2>
       <P>
-        These Terms are governed by the laws of <Ph>governing jurisdiction — to be confirmed</Ph>,
-        without regard to conflict-of-law principles, except where applicable local law provides
-        otherwise.
+        We may update these Terms when the Service or its practices change. The updated version
+        will be posted on this page with a new "Last updated" date.
       </P>
+      <P>Your continued use of the Service after changes are posted means you accept the updated Terms.</P>
 
       <H2>Contact</H2>
       <P>
-        Questions about these Terms can be sent via the{" "}
-        <a href="#/contact" className="text-accent-hover underline underline-offset-2">
+        If you have questions about these Terms, please contact us through the{" "}
+        <a href="/contact" className="text-accent-hover underline underline-offset-2">
           Contact page
         </a>
         .
