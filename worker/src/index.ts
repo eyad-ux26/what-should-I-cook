@@ -1,39 +1,11 @@
 import { acquireConcurrency, checkWindow, peekWindow, releaseConcurrency } from "./rateLimiter";
 import { envBool, envInt, logEvent, logWarning, shortHash, verifyTurnstile } from "./security";
+import { getAiEnabledFlag, recordMetric } from "./metrics";
+import { handleMonitor } from "./monitor";
+import type { Env } from "./env";
+export type { Env } from "./env";
 export { RateLimiterDO } from "./rateLimiter";
-
-export interface Env {
-  MISTRAL_API_KEY: string;
-  /** Kill switch: set to the literal string "false" (via `wrangler secret put AI_ENABLED`) to disable AI generation without a redeploy. */
-  AI_ENABLED?: string;
-  RATE_LIMITER_DO: DurableObjectNamespace;
-
-  // Scaffolding for Cloudflare Turnstile — inert unless explicitly enabled.
-  // Turn it on later by setting TURNSTILE_ENABLED = "true" in wrangler.toml
-  // [vars] and redeploying, plus a TURNSTILE_SECRET_KEY secret (`wrangler
-  // secret put TURNSTILE_SECRET_KEY`) — once the frontend also renders the
-  // widget and sends its token as `turnstileToken` in the request body.
-  TURNSTILE_ENABLED?: string;
-  TURNSTILE_SECRET_KEY?: string;
-
-  // All operational limits below are plain (non-secret) Worker vars — see
-  // wrangler.toml [vars]. Every one has a sensible built-in fallback, so an
-  // unset/malformed value never disables a protection.
-  RATE_LIMIT_MAX?: string;
-  RATE_LIMIT_WINDOW_SECONDS?: string;
-  BURST_LIMIT?: string;
-  BURST_WINDOW_SECONDS?: string;
-  DAILY_LIMIT?: string;
-  DAILY_WINDOW_SECONDS?: string;
-  MAX_CONCURRENT_PER_IP?: string;
-  FAILURE_LIMIT?: string;
-  FAILURE_WINDOW_SECONDS?: string;
-  MAX_INGREDIENTS?: string;
-  MAX_INGREDIENT_LENGTH?: string;
-  LIST_MAX_TOKENS?: string;
-  DETAIL_MAX_TOKENS?: string;
-  MAX_BODY_BYTES?: string;
-}
+export { MetricsDO } from "./metrics";
 
 interface SecurityConfig {
   rateLimitMax: number;
@@ -379,7 +351,12 @@ Use between 4 and 7 steps.`;
 
 const MISTRAL_TIMEOUT_MS = 25_000;
 
-async function callMistral(prompt: string, apiKey: string, maxTokens: number): Promise<string> {
+interface MistralResult {
+  content: string;
+  totalTokens: number;
+}
+
+async function callMistral(prompt: string, apiKey: string, maxTokens: number): Promise<MistralResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), MISTRAL_TIMEOUT_MS);
 
@@ -416,10 +393,13 @@ async function callMistral(prompt: string, apiKey: string, maxTokens: number): P
     throw new Error(`Mistral API error ${response.status}`);
   }
 
-  const data = (await response.json()) as { choices?: { message?: { content?: string } }[] };
+  const data = (await response.json()) as {
+    choices?: { message?: { content?: string } }[];
+    usage?: { total_tokens?: number };
+  };
   const content = data.choices?.[0]?.message?.content;
   if (!content) throw new Error("No content in model response");
-  return content;
+  return { content, totalTokens: typeof data.usage?.total_tokens === "number" ? data.usage.total_tokens : 0 };
 }
 
 const toStringArray = (v: unknown): string[] =>
@@ -511,8 +491,11 @@ function parseExclude(body: { exclude?: unknown }, config: SecurityConfig): Excl
 const TARGET_RECIPE_COUNT = 3;
 const MAX_LIST_ATTEMPTS = 3;
 
-function isAiDisabled(env: Env): boolean {
-  return env.AI_ENABLED === "false";
+/** Either switch being off disables generation: the static secret (CLI-only break-glass) or the dashboard's dynamic flag. */
+async function isAiDisabled(env: Env): Promise<boolean> {
+  if (env.AI_ENABLED === "false") return true;
+  const dynamicallyEnabled = await getAiEnabledFlag(env.METRICS_DO);
+  return !dynamicallyEnabled;
 }
 
 // A request is only ever built from: (1) the fixed prompt template text
@@ -528,19 +511,20 @@ async function handleList(
   env: Env,
   origin: string | null,
   config: SecurityConfig,
-): Promise<{ response: Response; recipeCount?: number; attempts?: number }> {
+): Promise<{ response: Response; recipeCount?: number; attempts?: number; tokensUsed: number }> {
   let prefs: CookPreferences;
   let exclude: ExcludeEntry[];
   try {
     const body = (await request.json()) as Partial<CookPreferences> & { exclude?: unknown };
     const parsed = parsePrefs(body, config);
-    if (!parsed) return { response: json({ error: "ingredients is required" }, 400, origin) };
+    if (!parsed) return { response: json({ error: "ingredients is required" }, 400, origin), tokensUsed: 0 };
     prefs = parsed;
     exclude = parseExclude(body, config);
   } catch {
-    return { response: json({ error: "Invalid request" }, 400, origin) };
+    return { response: json({ error: "Invalid request" }, 400, origin), tokensUsed: 0 };
   }
 
+  let tokensUsed = 0;
   try {
     const accepted: RecipeResult[] = [];
     // Candidates rejected as duplicates of something already seen/accepted.
@@ -553,7 +537,8 @@ async function handleList(
     for (let attempt = 0; attempt < MAX_LIST_ATTEMPTS && accepted.length < TARGET_RECIPE_COUNT; attempt++) {
       attempts++;
       const needed = TARGET_RECIPE_COUNT - accepted.length;
-      const content = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY, config.listMaxTokens);
+      const { content, totalTokens } = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY, config.listMaxTokens);
+      tokensUsed += totalTokens;
       const parsed = JSON.parse(content) as { recipes?: unknown[] };
       const candidates = (Array.isArray(parsed.recipes) ? parsed.recipes : [])
         .map((r, i) => normalizeRecipe(r, accepted.length + i, config.maxIngredientLength))
@@ -578,10 +563,10 @@ async function handleList(
     }
 
     if (accepted.length === 0) throw new Error("Model returned no usable recipes");
-    return { response: json(accepted, 200, origin), recipeCount: accepted.length, attempts };
+    return { response: json(accepted, 200, origin), recipeCount: accepted.length, attempts, tokensUsed };
   } catch (err) {
     console.error(err);
-    return { response: json({ error: "Failed to generate recipes" }, 502, origin) };
+    return { response: json({ error: "Failed to generate recipes" }, 502, origin), tokensUsed };
   }
 }
 
@@ -590,17 +575,17 @@ async function handleDetails(
   env: Env,
   origin: string | null,
   config: SecurityConfig,
-): Promise<{ response: Response; stepCount?: number }> {
+): Promise<{ response: Response; stepCount?: number; tokensUsed: number }> {
   let prefs: CookPreferences;
   let recipe: RecipeSummary;
   try {
     const body = (await request.json()) as { prefs?: Partial<CookPreferences>; recipe?: Partial<RecipeSummary> };
     const parsedPrefs = parsePrefs(body.prefs ?? {}, config);
-    if (!parsedPrefs) return { response: json({ error: "prefs.ingredients is required" }, 400, origin) };
+    if (!parsedPrefs) return { response: json({ error: "prefs.ingredients is required" }, 400, origin), tokensUsed: 0 };
     const title = sanitizeText(body.recipe?.title, 150);
     const hook = sanitizeText(body.recipe?.hook, 300);
     if (!title || !hook) {
-      return { response: json({ error: "recipe is required" }, 400, origin) };
+      return { response: json({ error: "recipe is required" }, 400, origin), tokensUsed: 0 };
     }
     prefs = parsedPrefs;
     recipe = {
@@ -619,11 +604,13 @@ async function handleDetails(
       extraIngredients: sanitizeStringArray(body.recipe?.extraIngredients, 15, config.maxIngredientLength),
     };
   } catch {
-    return { response: json({ error: "Invalid request" }, 400, origin) };
+    return { response: json({ error: "Invalid request" }, 400, origin), tokensUsed: 0 };
   }
 
+  let tokensUsed = 0;
   try {
-    const content = await callMistral(buildDetailPrompt(prefs, recipe), env.MISTRAL_API_KEY, config.detailMaxTokens);
+    const { content, totalTokens } = await callMistral(buildDetailPrompt(prefs, recipe), env.MISTRAL_API_KEY, config.detailMaxTokens);
+    tokensUsed = totalTokens;
     const parsed = JSON.parse(content) as { steps?: unknown[] };
     const steps = Array.isArray(parsed.steps) ? parsed.steps : [];
     const normalized = steps
@@ -632,15 +619,24 @@ async function handleDetails(
       .filter((s): s is RecipeStep => s !== null);
 
     if (normalized.length === 0) throw new Error("Model returned no usable steps");
-    return { response: json({ steps: normalized }, 200, origin), stepCount: normalized.length };
+    return { response: json({ steps: normalized }, 200, origin), stepCount: normalized.length, tokensUsed };
   } catch (err) {
     console.error(err);
-    return { response: json({ error: "Failed to generate recipe details" }, 502, origin) };
+    return { response: json({ error: "Failed to generate recipe details" }, 502, origin), tokensUsed };
   }
 }
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    // Entirely separate surface: its own auth, no CORS, no public rate
+    // limiting logic below applies to it. See monitor.ts.
+    if (pathname === "/monitor" || pathname.startsWith("/monitor/")) {
+      return handleMonitor(request, env, pathname);
+    }
+
     const origin = request.headers.get("Origin");
     const config = loadConfig(env);
 
@@ -652,7 +648,6 @@ export default {
       return json({ error: "Method not allowed" }, 405, origin);
     }
 
-    const { pathname } = new URL(request.url);
     if (pathname !== "/" && pathname !== "/details") {
       return json({ error: "Not found" }, 404, origin);
     }
@@ -663,7 +658,8 @@ export default {
       return json({ error: "Request body too large" }, 413, origin);
     }
 
-    if (isAiDisabled(env)) {
+    if (await isAiDisabled(env)) {
+      ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedKillSwitch"));
       return json({ error: "AI generation is temporarily unavailable. Please try again later." }, 503, origin);
     }
 
@@ -694,24 +690,28 @@ export default {
       const recentFailures = await peekWindow(env.RATE_LIMITER_DO, clientIp, "failures", config.failureWindowMs);
       if (recentFailures >= config.failureLimit) {
         logWarning("blocked_repeated_failures", { ip: ipTag, count: recentFailures });
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedFailure"));
         return json({ error: "Too many invalid requests. Please try again later." }, 429, origin);
       }
 
       const withinBurst = await checkWindow(env.RATE_LIMITER_DO, clientIp, "burst", config.burstLimit, config.burstWindowMs);
       if (!withinBurst) {
         logWarning("rate_limited", { ip: ipTag, bucket: "burst" });
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedRateLimit"));
         return json({ error: "Too many requests. Please slow down and try again shortly." }, 429, origin);
       }
 
       const withinSustained = await checkWindow(env.RATE_LIMITER_DO, clientIp, "sustained", config.rateLimitMax, config.rateLimitWindowMs);
       if (!withinSustained) {
         logWarning("rate_limited", { ip: ipTag, bucket: "sustained" });
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedRateLimit"));
         return json({ error: "Too many requests. Please slow down and try again shortly." }, 429, origin);
       }
 
       const withinDaily = await checkWindow(env.RATE_LIMITER_DO, clientIp, "daily", config.dailyLimit, config.dailyWindowMs);
       if (!withinDaily) {
         logWarning("rate_limited", { ip: ipTag, bucket: "daily" });
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedRateLimit"));
         return json({ error: "Daily request limit reached. Please try again tomorrow." }, 429, origin);
       }
     } catch (err) {
@@ -729,6 +729,7 @@ export default {
     }
     if (!gotConcurrencySlot) {
       logWarning("concurrency_limited", { ip: ipTag });
+      ctx.waitUntil(recordMetric(env.METRICS_DO, "blockedRateLimit"));
       return json({ error: "Too many simultaneous requests. Please wait for your current request to finish." }, 429, origin);
     }
 
@@ -738,15 +739,25 @@ export default {
         pathname === "/details"
           ? await handleDetails(request, env, origin, config)
           : await handleList(request, env, origin, config);
+      const ms = Date.now() - startedAt;
 
       if (result.response.status === 400 || result.response.status === 413) {
         ctx.waitUntil(checkWindow(env.RATE_LIMITER_DO, clientIp, "failures", config.failureLimit, config.failureWindowMs));
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "errors"));
         logWarning("validation_failed", { ip: ipTag, path: pathname, status: result.response.status });
+      } else if (result.response.status === 502) {
+        ctx.waitUntil(recordMetric(env.METRICS_DO, "aiFailures", { tokens: result.tokensUsed }));
       } else if (result.response.status === 200) {
+        ctx.waitUntil(
+          recordMetric(env.METRICS_DO, pathname === "/details" ? "detailGenerations" : "generations", {
+            ms,
+            tokens: result.tokensUsed,
+          }),
+        );
         logEvent("generated", {
           ip: ipTag,
           path: pathname,
-          ms: Date.now() - startedAt,
+          ms,
           ...("recipeCount" in result && result.recipeCount !== undefined ? { recipeCount: result.recipeCount } : {}),
           ...("attempts" in result && result.attempts !== undefined ? { attempts: result.attempts } : {}),
           ...("stepCount" in result && result.stepCount !== undefined ? { stepCount: result.stepCount } : {}),

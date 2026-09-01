@@ -9,15 +9,23 @@ enabled = true
 name = "RATE_LIMITER_DO"
 class_name = "RateLimiterDO"
 
+[[durable_objects.bindings]]
+name = "METRICS_DO"
+class_name = "MetricsDO"
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["RateLimiterDO"]
 
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["MetricsDO"]
+
 # Operational limits — plain (non-secret) vars so they're easy to tune without
 # touching code. Every one has a built-in fallback in src/index.ts, so an
-# unset value never disables a protection. AI_ENABLED, MISTRAL_API_KEY, and
-# TURNSTILE_SECRET_KEY are set as `wrangler secret put ...` instead, since
-# secrets can be changed without a redeploy (see README notes in index.ts).
+# unset value never disables a protection. AI_ENABLED, MISTRAL_API_KEY,
+# ADMIN_TOKEN, and TURNSTILE_SECRET_KEY are set as `wrangler secret put ...`
+# instead, since secrets can be changed without a redeploy.
 [vars]
 RATE_LIMIT_MAX = "20"
 RATE_LIMIT_WINDOW_SECONDS = "60"
@@ -34,3 +42,11 @@ LIST_MAX_TOKENS = "1400"
 DETAIL_MAX_TOKENS = "900"
 MAX_BODY_BYTES = "20000"
 TURNSTILE_ENABLED = "false"
+
+# --- /monitor (internal dashboard) ---
+# ADMIN_TOKEN (secret, required): `wrangler secret put ADMIN_TOKEN` — a long
+#   random string only you know. Without it, /monitor is permanently locked.
+# ADMIN_EMAILS (plain var, optional): comma-separated email(s), only
+#   meaningful once Cloudflare Access is configured in front of /monitor —
+#   see the project notes for setup steps. Leave unset until then.
+# ADMIN_EMAILS = "you@example.com"
