@@ -1,9 +1,17 @@
 name = "what-should-i-cook-api"
 main = "src/index.ts"
 compatibility_date = "2025-01-01"
+workers_dev = true
 
 [observability]
 enabled = true
+
+# Custom domain for the API — Cloudflare provisions DNS + SSL for this
+# automatically on deploy once what-should-i-cook.com is an active zone in
+# this Cloudflare account (see project notes for the one manual step needed).
+[[routes]]
+pattern = "api.what-should-i-cook.com"
+custom_domain = true
 
 [[durable_objects.bindings]]
 name = "RATE_LIMITER_DO"
@@ -46,7 +54,9 @@ TURNSTILE_ENABLED = "false"
 # --- /monitor (internal dashboard) ---
 # ADMIN_TOKEN (secret, required): `wrangler secret put ADMIN_TOKEN` — a long
 #   random string only you know. Without it, /monitor is permanently locked.
-# ADMIN_EMAILS (plain var, optional): comma-separated email(s), only
-#   meaningful once Cloudflare Access is configured in front of /monitor —
-#   see the project notes for setup steps. Leave unset until then.
+# ADMIN_EMAILS (plain var, optional): comma-separated email(s). Only
+#   meaningful once Cloudflare Access is configured in the dashboard for
+#   api.what-should-i-cook.com/monitor* — now possible since /monitor is
+#   served from a real custom domain instead of a workers.dev subdomain.
+#   Leave unset until Access is actually configured there.
 # ADMIN_EMAILS = "you@example.com"

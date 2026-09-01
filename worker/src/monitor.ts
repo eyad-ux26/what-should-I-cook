@@ -43,12 +43,12 @@ export async function handleMonitor(request: Request, env: Env, pathname: string
     const withinLimit = await checkWindow(env.RATE_LIMITER_DO, `admin_login:${clientIp}`, "attempts", LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS);
     if (!withinLimit) {
       logWarning("admin_login_rate_limited", { ip: shortHash(clientIp) });
-      return html(renderLoginPage(true), 429);
+      return html(renderLoginPage("rate-limited"), 429);
     }
 
     if (!env.ADMIN_TOKEN) {
       // No token configured yet — fail closed rather than accepting anything.
-      return html(renderLoginPage(true), 403);
+      return html(renderLoginPage("invalid"), 403);
     }
 
     let token = "";
@@ -57,13 +57,13 @@ export async function handleMonitor(request: Request, env: Env, pathname: string
       const value = form.get("token");
       token = typeof value === "string" ? value : "";
     } catch {
-      return html(renderLoginPage(true), 400);
+      return html(renderLoginPage("invalid"), 400);
     }
 
     const valid = token.length > 0 && (await checkLoginToken(token, env.ADMIN_TOKEN));
     if (!valid) {
       logWarning("admin_login_failed", { ip: shortHash(clientIp) });
-      return html(renderLoginPage(true), 401);
+      return html(renderLoginPage("invalid"), 401);
     }
 
     const cookie = await createSessionCookie(env.ADMIN_TOKEN);
@@ -100,7 +100,7 @@ export async function handleMonitor(request: Request, env: Env, pathname: string
 
   if (pathname === "/monitor" && request.method === "GET") {
     if (!authorized) {
-      return html(renderLoginPage(false), 200);
+      return html(renderLoginPage("none"), 200);
     }
     const summary = await getSummary(env.METRICS_DO);
     return html(renderDashboard(summary));

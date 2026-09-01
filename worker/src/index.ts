@@ -97,6 +97,11 @@ interface ExcludeEntry {
 }
 
 const ALLOWED_ORIGINS = new Set([
+  "https://what-should-i-cook.com",
+  "https://www.what-should-i-cook.com",
+  // Kept temporarily during the custom-domain cutover; remove once
+  // what-should-i-cook.com is confirmed live and the GitHub Pages URL is
+  // no longer used to reach the site.
   "https://eyad-ux26.github.io",
   "http://localhost:5199",
   "http://localhost:5173",

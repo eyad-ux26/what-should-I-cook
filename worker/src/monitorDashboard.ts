@@ -70,7 +70,14 @@ function page(title: string, body: string): string {
 </head><body>${body}</body></html>`;
 }
 
-export function renderLoginPage(error: boolean): string {
+export type LoginError = "none" | "invalid" | "rate-limited";
+
+const LOGIN_ERROR_MESSAGES: Record<Exclude<LoginError, "none">, string> = {
+  invalid: "Invalid token. Please try again.",
+  "rate-limited": "Too many attempts. Please wait about 15 minutes and try again.",
+};
+
+export function renderLoginPage(error: LoginError): string {
   return page(
     "Sign in — Monitoring",
     `<div class="login-box">
@@ -80,7 +87,7 @@ export function renderLoginPage(error: boolean): string {
         <input type="password" name="token" placeholder="Admin token" autofocus required />
         <button type="submit" class="btn-danger" style="width:100%">Sign in</button>
       </form>
-      ${error ? '<p class="error">Invalid token. Please try again.</p>' : ""}
+      ${error !== "none" ? `<p class="error">${LOGIN_ERROR_MESSAGES[error]}</p>` : ""}
     </div>`,
   );
 }

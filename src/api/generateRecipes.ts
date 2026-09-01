@@ -1,6 +1,6 @@
 import type { CookPreferences, RecipeResult, RecipeStep, RecipeSummary } from "../types";
 
-const API_URL = "https://what-should-i-cook-api.what-should-i-cook-api.workers.dev";
+const API_URL = "https://api.what-should-i-cook.com";
 
 export interface ExcludeEntry {
   title: string;
