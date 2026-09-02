@@ -75,6 +75,7 @@ function App() {
   const [customCuisine, setCustomCuisine] = useState("");
   const [allergies, setAllergies] = useState<AllergyTag[]>([]);
   const [customAllergy, setCustomAllergy] = useState("");
+  const [noExtraIngredients, setNoExtraIngredients] = useState(false);
   const [craving, setCraving] = useState("");
   const [results, setResults] = useState<RecipeResult[]>([]);
   const [shownRecipes, setShownRecipes] = useState<RecipeResult[]>([]);
@@ -92,6 +93,7 @@ function App() {
     allergies,
     customAllergy,
     craving,
+    noExtraIngredients,
     language: lang,
   });
 
@@ -131,6 +133,7 @@ function App() {
     setCustomCuisine("");
     setAllergies([]);
     setCustomAllergy("");
+    setNoExtraIngredients(false);
     setCraving("");
     setRefineOpen(false);
     setStage("input");
@@ -224,6 +227,8 @@ function App() {
                     onAllergiesChange={setAllergies}
                     customAllergy={customAllergy}
                     onCustomAllergyChange={setCustomAllergy}
+                    noExtraIngredients={noExtraIngredients}
+                    onNoExtraIngredientsChange={setNoExtraIngredients}
                     craving={craving}
                     onCravingChange={setCraving}
                   />

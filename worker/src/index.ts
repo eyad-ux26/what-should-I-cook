@@ -61,6 +61,7 @@ interface CookPreferences {
   allergies: AllergyTag[];
   customAllergy: string;
   craving: string;
+  noExtraIngredients: boolean;
   language: Language;
 }
 
@@ -266,9 +267,13 @@ function buildListPrompt(prefs: CookPreferences, exclude: ExcludeEntry[], count:
     ...buildConstraintLines(prefs),
   ];
 
+  const extraIngredientsInstruction = prefs.noExtraIngredients
+    ? 'STRICT CONSTRAINT (non-negotiable): every recipe must use ONLY the ingredients listed below — plus water, salt, and pepper if truly needed. Do NOT require any other ingredient, including common pantry staples like oil, butter, garlic, or sugar, unless it already appears in the ingredients list. The "extraIngredients" array MUST be empty ([]) for every recipe. If a tasty recipe is not possible under this constraint, suggest the closest simple option that still only uses the listed ingredients.'
+    : "Prefer recipes that need few, if any, extra ingredients beyond common pantry staples (salt, pepper, oil, butter, garlic).";
+
   return `You are a helpful cooking assistant. ${ANTI_INJECTION_NOTICE}
 
-Suggest exactly ${count} distinct recipe${count === 1 ? "" : "s"} using mainly the ingredients listed below. Prefer recipes that need few, if any, extra ingredients beyond common pantry staples (salt, pepper, oil, butter, garlic). Do NOT write step-by-step cooking instructions yet — only the summary fields below.
+Suggest exactly ${count} distinct recipe${count === 1 ? "" : "s"} using mainly the ingredients listed below. ${extraIngredientsInstruction} Do NOT write step-by-step cooking instructions yet — only the summary fields below.
 
 ${parts.join("\n")}
 ${languageInstruction(prefs.language, "title, hook, cuisine, matchedIngredients, extraIngredients")}
@@ -467,6 +472,7 @@ function parsePrefs(body: Partial<CookPreferences>, config: SecurityConfig): Coo
     allergies: sanitizeEnumArray(body.allergies, ALLERGY_VALUES, ALLERGY_VALUES.size),
     customAllergy: sanitizeText(body.customAllergy, MAX_SHORT_TEXT),
     craving: sanitizeText(body.craving, MAX_CRAVING_LEN),
+    noExtraIngredients: body.noExtraIngredients === true,
     language: body.language === "ar" ? "ar" : "en",
   };
 }
@@ -550,8 +556,14 @@ async function handleList(
         const isDuplicate =
           currentExclude.some((ex) => isSimilarRecipe(candidate, ex)) ||
           accepted.some((a) => isSimilarRecipe(candidate, a));
+        // The model is told to keep extraIngredients empty in strict mode, but
+        // isn't perfectly reliable — give it another attempt or two before
+        // falling back to a non-compliant candidate rather than failing outright.
+        const violatesStrictMode = prefs.noExtraIngredients && candidate.extraIngredients.length > 0;
         if (isDuplicate) {
           currentExclude = [...currentExclude, candidate];
+          fallbackPool.push(candidate);
+        } else if (violatesStrictMode) {
           fallbackPool.push(candidate);
         } else {
           accepted.push(candidate);
@@ -562,6 +574,12 @@ async function handleList(
     while (accepted.length < TARGET_RECIPE_COUNT && fallbackPool.length > 0) {
       accepted.push(fallbackPool.shift()!);
     }
+
+    // Recipes needing fewer additional ingredients first — most useful when
+    // the user can't/won't shop for anything extra, and a reasonable default
+    // ordering otherwise. Stable sort preserves the model's relative ordering
+    // among recipes that need the same number of extras.
+    accepted.sort((a, b) => a.extraIngredients.length - b.extraIngredients.length);
 
     if (accepted.length === 0) throw new Error("Model returned no usable recipes");
     return { response: json(accepted, 200, origin), recipeCount: accepted.length, attempts, tokensUsed };

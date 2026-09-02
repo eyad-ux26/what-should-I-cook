@@ -17,6 +17,8 @@ interface RefinePanelProps {
   onAllergiesChange: (value: AllergyTag[]) => void;
   customAllergy: string;
   onCustomAllergyChange: (value: string) => void;
+  noExtraIngredients: boolean;
+  onNoExtraIngredientsChange: (value: boolean) => void;
   craving: string;
   onCravingChange: (value: string) => void;
 }
@@ -61,6 +63,8 @@ export function RefinePanel({
   onAllergiesChange,
   customAllergy,
   onCustomAllergyChange,
+  noExtraIngredients,
+  onNoExtraIngredientsChange,
   craving,
   onCravingChange,
 }: RefinePanelProps) {
@@ -94,6 +98,7 @@ export function RefinePanel({
     diet.length +
     (cuisine ? 1 : 0) +
     allergies.length +
+    (noExtraIngredients ? 1 : 0) +
     (craving.trim() ? 1 : 0);
 
   return (
@@ -231,6 +236,21 @@ export function RefinePanel({
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              <div>
+                <label className="flex cursor-pointer items-start gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={noExtraIngredients}
+                    onChange={(e) => onNoExtraIngredientsChange(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-border text-accent accent-[color:var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-text">{t.noExtraIngredientsLabel}</span>
+                    <span className="block text-xs text-text-muted">{t.noExtraIngredientsHint}</span>
+                  </span>
+                </label>
               </div>
 
               <div>

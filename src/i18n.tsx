@@ -29,6 +29,8 @@ interface Strings {
   allergiesLabel: string;
   allergyOptions: { value: AllergyTag; label: string }[];
   allergyOtherPlaceholder: string;
+  noExtraIngredientsLabel: string;
+  noExtraIngredientsHint: string;
   moodLabel: string;
   moodPlaceholder: string;
   submitEmpty: string;
@@ -119,6 +121,8 @@ const en: Strings = {
     { value: "other", label: "Other" },
   ],
   allergyOtherPlaceholder: "Other allergy...",
+  noExtraIngredientsLabel: "Only use what I listed",
+  noExtraIngredientsHint: "No extra ingredients — not even pantry staples like oil or salt.",
   moodLabel: "In the mood for...",
   moodPlaceholder: "e.g. something spicy, comfort food, something quick",
   submitEmpty: "Add an ingredient to start",
@@ -217,6 +221,8 @@ const ar: Strings = {
     { value: "other", label: "أخرى" },
   ],
   allergyOtherPlaceholder: "حساسية أخرى...",
+  noExtraIngredientsLabel: "استخدم فقط ما أدرجته",
+  noExtraIngredientsHint: "بلا أي مكونات إضافية — حتى الأساسيات كالزيت أو الملح.",
   moodLabel: "ماذا تشتهي؟",
   moodPlaceholder: "مثال: شيء حار، أكل مريح، شيء سريع",
   submitEmpty: "أضف مكونًا للبدء",

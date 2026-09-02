@@ -15,6 +15,7 @@ export interface CookPreferences {
   allergies: AllergyTag[];
   customAllergy: string;
   craving: string;
+  noExtraIngredients: boolean;
   language: "en" | "ar";
 }
 
