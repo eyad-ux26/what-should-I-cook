@@ -71,6 +71,7 @@ interface Strings {
   copied: string;
   detailsError: string;
   languageToggle: string;
+  footerBlog: string;
   footerPrivacy: string;
   footerTerms: string;
   footerDisclaimer: string;
@@ -222,6 +223,7 @@ const en: Strings = {
   copied: "Copied",
   detailsError: "Couldn't load details. Try again.",
   languageToggle: "العربية",
+  footerBlog: "Blog",
   footerPrivacy: "Privacy Policy",
   footerTerms: "Terms of Use",
   footerDisclaimer: "AI & Recipe Disclaimer",
@@ -370,6 +372,7 @@ const ar: Strings = {
   copied: "تم النسخ",
   detailsError: "تعذّر تحميل التفاصيل. حاول مرة أخرى.",
   languageToggle: "English",
+  footerBlog: "المدونة",
   footerPrivacy: "سياسة الخصوصية",
   footerTerms: "شروط الاستخدام",
   footerDisclaimer: "إخلاء مسؤولية الوصفات والذكاء الاصطناعي",

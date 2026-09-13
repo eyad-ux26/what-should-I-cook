@@ -4,6 +4,12 @@ import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { TermsOfUse } from "./pages/legal/TermsOfUse";
 import { Disclaimer } from "./pages/legal/Disclaimer";
 import { Contact } from "./pages/legal/Contact";
+import { BlogIndex } from "./blog/pages/BlogIndex";
+import { DinnerDecision } from "./blog/pages/DinnerDecision";
+import { EasyDinnerIdeas } from "./blog/pages/EasyDinnerIdeas";
+import { PantryMeals } from "./blog/pages/PantryMeals";
+import { QuickDinners } from "./blog/pages/QuickDinners";
+import { Leftovers } from "./blog/pages/Leftovers";
 
 /**
  * Real path-based routing (no hash) — clean, crawlable URLs like /privacy
@@ -59,6 +65,18 @@ export function Root() {
       return <Disclaimer />;
     case "/contact":
       return <Contact />;
+    case "/blog":
+      return <BlogIndex />;
+    case "/blog/what-should-i-cook-for-dinner":
+      return <DinnerDecision />;
+    case "/blog/easy-dinner-ideas":
+      return <EasyDinnerIdeas />;
+    case "/blog/what-can-i-cook-with-what-i-have":
+      return <PantryMeals />;
+    case "/blog/quick-dinner-ideas":
+      return <QuickDinners />;
+    case "/blog/leftover-dinner-ideas":
+      return <Leftovers />;
     default:
       return <App />;
   }
