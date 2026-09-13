@@ -7,6 +7,7 @@ import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { RecipeCard } from "./components/RecipeCard";
 import { BackgroundIcons } from "./components/BackgroundIcons";
+import { InspirationSection } from "./components/InspirationSection";
 import { generateRecipes, generateRecipeDetails } from "./api/generateRecipes";
 import { LogoMark } from "./components/LogoMark";
 import { Footer } from "./components/Footer";
@@ -267,37 +268,7 @@ function App() {
                 })}
               </div>
 
-              <section className="flex flex-col gap-8 pt-2">
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-xl font-extrabold text-text">{t.howItWorksTitle}</h2>
-                  {t.howItWorksParagraphs.map((p, i) => (
-                    <p key={i} className="text-sm leading-relaxed text-text-muted">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-xl font-extrabold text-text">{t.tipsTitle}</h2>
-                  <ul className="list-disc space-y-1.5 ps-5 text-sm leading-relaxed text-text-muted">
-                    {t.tips.map((tip, i) => (
-                      <li key={i}>{tip}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-xl font-extrabold text-text">{t.faqTitle}</h2>
-                  <div className="flex flex-col divide-y divide-border rounded-2xl border border-border bg-bg">
-                    {t.faqItems.map((item, i) => (
-                      <div key={i} className="p-4">
-                        <p className="text-sm font-semibold text-text">{item.q}</p>
-                        <p className="mt-1.5 text-sm leading-relaxed text-text-muted">{item.a}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
+              <InspirationSection />
             </motion.div>
           )}
 

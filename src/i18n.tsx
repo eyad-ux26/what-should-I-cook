@@ -36,12 +36,19 @@ interface Strings {
   submitEmpty: string;
   submitReady: string;
   steps: { label: string; desc: string }[];
+  inspirationTitle: string;
+  inspirationIntro: string;
   howItWorksTitle: string;
+  howItWorksTeaser: string;
   howItWorksParagraphs: string[];
   tipsTitle: string;
+  tipsTeaser: string;
   tips: string[];
   faqTitle: string;
+  faqTeaser: string;
   faqItems: { q: string; a: string }[];
+  exploreLabel: string;
+  collapseLabel: string;
   loadingMessages: string[];
   loadingHeadline: string;
   errorTitle: string;
@@ -138,13 +145,20 @@ const en: Strings = {
     { label: "Set preferences", desc: "Time, dietary needs, and more" },
     { label: "Get recipes", desc: "Matched to your pantry" },
   ],
-  howItWorksTitle: "How What Should I Cook works",
+  inspirationTitle: "Cooking Inspiration",
+  inspirationIntro:
+    "A closer look at how it all works, plus practical tips and answers to the questions people ask most.",
+  howItWorksTitle: "How What Should I Cook Works",
+  howItWorksTeaser:
+    "See exactly how typing in a few ingredients turns into AI-generated recipe ideas — and how preferences shape the results.",
   howItWorksParagraphs: [
     "Type in whatever ingredients you have on hand — as many or as few as you like — and press Enter or a comma after each one. There's no sign-up and nothing to install; the tool works entirely in your browser.",
     "Behind the scenes, your ingredient list and any preferences you set are sent to an AI model, which suggests a handful of recipe ideas built around what you already have. Each suggestion shows how many extra ingredients (if any) you'd need, and results are ordered so the recipes needing the fewest extra ingredients come first.",
     "Want something more specific? Open \"Set preferences\" to add a time limit, dietary needs, a preferred cuisine, allergies to avoid, a mood or craving, or turn on \"Only use what I listed\" to rule out extra ingredients entirely.",
   ],
-  tipsTitle: "Tips for better results",
+  tipsTitle: "Tips for Better Results",
+  tipsTeaser:
+    "Practical ways to phrase your ingredients and use the preferences panel so you get more relevant, ready-to-cook ideas.",
   tips: [
     "Be specific: \"chicken thighs\" or \"canned chickpeas\" gives the AI more to work with than just \"chicken\" or \"beans.\"",
     "List everything you're willing to use, even basics like eggs, rice, or bread — the more you list, the more options the AI has.",
@@ -152,7 +166,8 @@ const en: Strings = {
     "Not feeling the results? Use \"Generate 3 more recipes\" to get new ideas without changing your ingredients or preferences.",
     "Set allergies and dietary needs before generating — they're applied to every recipe idea, not just filtered afterward.",
   ],
-  faqTitle: "Frequently asked questions",
+  faqTitle: "Frequently Asked Questions",
+  faqTeaser: "Straight answers about accounts, ingredient accuracy, allergies, data storage, and language support.",
   faqItems: [
     {
       q: "Do I need to create an account?",
@@ -179,6 +194,8 @@ const en: Strings = {
       a: "Yes — use the language toggle in the top-right corner to switch to Arabic.",
     },
   ],
+  exploreLabel: "Explore",
+  collapseLabel: "Show less",
   loadingMessages: [
     "Thinking about what pairs well...",
     "Checking a few flavor combos...",
@@ -279,13 +296,17 @@ const ar: Strings = {
     { label: "حدد التفضيلات", desc: "الوقت، الاحتياجات الغذائية، والمزيد" },
     { label: "احصل على وصفات", desc: "مطابقة لما لديك" },
   ],
+  inspirationTitle: "إلهام للطبخ",
+  inspirationIntro: "نظرة أقرب على كيفية عمل التطبيق، بالإضافة إلى نصائح عملية وإجابات لأكثر الأسئلة شيوعًا.",
   howItWorksTitle: "كيف يعمل تطبيق ماذا أطبخ",
+  howItWorksTeaser: "شاهد كيف يتحول إدراج بضعة مكونات إلى أفكار وصفات مُولَّدة بالذكاء الاصطناعي — وكيف تُشكِّل التفضيلات النتائج.",
   howItWorksParagraphs: [
     "اكتب أي مكونات متوفرة لديك — بقدر ما تريد — واضغط Enter أو الفاصلة بعد كل مكوّن. لا حاجة للتسجيل ولا لتثبيت أي شيء؛ يعمل التطبيق بالكامل من متصفحك.",
     "خلف الكواليس، تُرسل قائمة مكوناتك وأي تفضيلات حددتها إلى نموذج ذكاء اصطناعي، يقترح عليك عددًا من أفكار الوصفات المبنية على ما تملكه بالفعل. تُظهر كل وصفة عدد المكونات الإضافية (إن وجدت) التي ستحتاجها، وتُرتَّب النتائج بحيث تظهر الوصفات الأقل احتياجًا لمكونات إضافية أولاً.",
     "تريد نتائج أكثر تحديدًا؟ افتح \"حدد التفضيلات\" لإضافة وقت محدد، احتياجات غذائية، مطبخ مفضل، حساسية تريد تجنبها، أو مزاج معين، أو فعّل خيار \"استخدم فقط ما أدرجته\" لاستبعاد أي مكونات إضافية تمامًا.",
   ],
   tipsTitle: "نصائح للحصول على نتائج أفضل",
+  tipsTeaser: "طرق عملية لصياغة مكوناتك واستخدام لوحة التفضيلات للحصول على أفكار أكثر ملاءمة وجاهزة للطبخ مباشرة.",
   tips: [
     "كن محددًا: \"أفخاذ دجاج\" أو \"حمص معلب\" يعطي الذكاء الاصطناعي معلومات أدق من مجرد \"دجاج\" أو \"بقوليات\".",
     "أدرج كل ما لديك، حتى الأساسيات مثل البيض أو الأرز أو الخبز — كلما أدرجت أكثر، زادت الخيارات.",
@@ -294,6 +315,7 @@ const ar: Strings = {
     "حدد الحساسية والاحتياجات الغذائية قبل التوليد — تُطبَّق على كل الوصفات المقترحة، وليس فقط تُصفّى لاحقًا.",
   ],
   faqTitle: "الأسئلة الشائعة",
+  faqTeaser: "إجابات واضحة حول الحسابات، دقة المكونات، الحساسية الغذائية، تخزين البيانات، ودعم اللغة.",
   faqItems: [
     {
       q: "هل أحتاج إلى إنشاء حساب؟",
@@ -320,6 +342,8 @@ const ar: Strings = {
       a: "نعم — استخدم مبدّل اللغة في الزاوية العلوية لتبديل الواجهة إلى العربية.",
     },
   ],
+  exploreLabel: "استكشف",
+  collapseLabel: "عرض أقل",
   loadingMessages: [
     "نفكر في مكونات تتناسب مع بعضها...",
     "نتحقق من بعض التوليفات الشهية...",
