@@ -10,72 +10,72 @@ interface SeoOptions {
   type?: "website" | "article";
 }
 
-function upsertMeta(attr: "name" | "property", key: string, content: string): () => void {
+const DEFAULT_TITLE = "What Should I Cook?";
+const DEFAULT_DESCRIPTION =
+  "List your ingredients, tell us your preferences, and get AI-generated recipe ideas built around what you already have.";
+
+// Homepage values from index.html. Pages are served with their own
+// prerendered <head> (see scripts/prerender-routes.mjs), so "restore whatever
+// was there before" would leak a blog page's tags onto the homepage —
+// restore these fixed defaults instead.
+const DEFAULT_META: [attr: "name" | "property", key: string, content: string][] = [
+  ["name", "description", DEFAULT_DESCRIPTION],
+  ["property", "og:type", "website"],
+  ["property", "og:url", `${SITE_URL}/`],
+  ["property", "og:title", DEFAULT_TITLE],
+  ["property", "og:description", DEFAULT_DESCRIPTION],
+  ["property", "og:image", SITE_IMAGE],
+  ["name", "twitter:title", DEFAULT_TITLE],
+  ["name", "twitter:description", DEFAULT_DESCRIPTION],
+];
+
+function setMeta(attr: "name" | "property", key: string, content: string): void {
   let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
-  const existed = !!el;
-  const previous = el?.getAttribute("content") ?? null;
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute(attr, key);
     document.head.appendChild(el);
   }
   el.setAttribute("content", content);
-  return () => {
-    if (!existed) {
-      el?.remove();
-    } else if (previous !== null) {
-      el?.setAttribute("content", previous);
-    }
-  };
 }
 
-function upsertCanonical(href: string): () => void {
+function setCanonical(href: string | null): void {
   let el = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-  const existed = !!el;
-  const previous = el?.getAttribute("href") ?? null;
+  if (href === null) {
+    el?.remove();
+    return;
+  }
   if (!el) {
     el = document.createElement("link");
     el.setAttribute("rel", "canonical");
     document.head.appendChild(el);
   }
   el.setAttribute("href", href);
-  return () => {
-    if (!existed) {
-      el?.remove();
-    } else if (previous !== null) {
-      el?.setAttribute("href", previous);
-    }
-  };
 }
 
 /**
  * Sets document title + meta description/canonical/OG/Twitter tags for the
- * lifetime of the mounted page, restoring whatever was there before on
- * unmount. Safe for a client-rendered SPA with no per-route server render —
- * every cleanup restores the previous value (or removes the tag if it
- * didn't exist), so navigating between pages never leaks stale metadata.
+ * lifetime of the mounted page, and puts the homepage defaults back on
+ * unmount (the next routed page that calls this hook overrides them again).
  */
 export function useSeo({ title, description, path, type = "article" }: SeoOptions): void {
   useEffect(() => {
-    const previousTitle = document.title;
-    document.title = title;
     const url = `${SITE_URL}${path}`;
-
-    const cleanups = [
-      upsertMeta("name", "description", description),
-      upsertCanonical(url),
-      upsertMeta("property", "og:type", type),
-      upsertMeta("property", "og:url", url),
-      upsertMeta("property", "og:title", title),
-      upsertMeta("property", "og:description", description),
-      upsertMeta("property", "og:image", SITE_IMAGE),
-      upsertMeta("name", "twitter:title", title),
-      upsertMeta("name", "twitter:description", description),
-    ];
+    document.title = title;
+    setCanonical(url);
+    setMeta("name", "description", description);
+    setMeta("property", "og:type", type);
+    setMeta("property", "og:url", url);
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", description);
+    setMeta("property", "og:image", SITE_IMAGE);
+    setMeta("name", "twitter:title", title);
+    setMeta("name", "twitter:description", description);
 
     return () => {
-      document.title = previousTitle;
-      cleanups.forEach((fn) => fn());
+      document.title = DEFAULT_TITLE;
+      setCanonical(null);
+      for (const [attr, key, content] of DEFAULT_META) setMeta(attr, key, content);
     };
   }, [title, description, path, type]);
 }
