@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import App from "./App";
 import { PrivacyPolicy } from "./pages/legal/PrivacyPolicy";
 import { TermsOfUse } from "./pages/legal/TermsOfUse";
@@ -10,23 +10,19 @@ import { EasyDinnerIdeas } from "./blog/pages/EasyDinnerIdeas";
 import { PantryMeals } from "./blog/pages/PantryMeals";
 import { QuickDinners } from "./blog/pages/QuickDinners";
 import { Leftovers } from "./blog/pages/Leftovers";
+import { navigate, usePathname } from "./routing";
 
 /**
  * Real path-based routing (no hash) — clean, crawlable URLs like /privacy
  * instead of /#/privacy. GitHub Pages can't do server-side rewrites, so
- * direct loads/refreshes on those paths are handled by public/404.html +
- * public/spa-redirect.js (the standard GitHub Pages SPA redirect trick).
+ * direct loads/refreshes on those paths are handled by prerendered
+ * <route>.html files (scripts/prerender-routes.mjs) with public/404.html +
+ * public/spa-redirect.js as the fallback for anything else.
  * In-app navigation uses pushState via a single document-level click
  * listener, so internal links never trigger a full page reload.
  */
-function usePathRoute(): string {
-  const [route, setRoute] = useState(() => window.location.pathname);
-
-  useEffect(() => {
-    const onPopState = () => setRoute(window.location.pathname);
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, []);
+function useRoute(): string {
+  const route = usePathname();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,8 +36,7 @@ function usePathRoute(): string {
 
     e.preventDefault();
     if (anchor.pathname !== window.location.pathname) {
-      window.history.pushState(null, "", anchor.pathname + anchor.search + anchor.hash);
-      setRoute(anchor.pathname);
+      navigate(anchor.pathname + anchor.search + anchor.hash);
     }
   }, []);
 
@@ -54,7 +49,7 @@ function usePathRoute(): string {
 }
 
 export function Root() {
-  const route = usePathRoute();
+  const route = useRoute();
 
   switch (route) {
     case "/privacy":
@@ -77,6 +72,10 @@ export function Root() {
       return <QuickDinners />;
     case "/blog/leftover-dinner-ideas":
       return <Leftovers />;
+    // "/" and "/ar" render the same component; the URL decides the language
+    // (see LanguageProvider), and keeping one element here preserves the
+    // form state when switching between them.
+    case "/ar":
     default:
       return <App />;
   }

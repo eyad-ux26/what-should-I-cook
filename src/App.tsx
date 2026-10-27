@@ -12,6 +12,9 @@ import { generateRecipes, generateRecipeDetails } from "./api/generateRecipes";
 import { LogoMark } from "./components/LogoMark";
 import { Footer } from "./components/Footer";
 import { useLanguage } from "./i18n";
+import { usePathname } from "./routing";
+import { useHomepageLinks } from "./useHomepageLinks";
+import { mergeIngredients, splitIngredients } from "./ingredients";
 import type {
   AllergyTag,
   AppStage,
@@ -50,16 +53,32 @@ const STEP_ICONS: React.ReactNode[] = [
   />,
 ];
 
-function LanguageToggle() {
-  const { t, toggleLang } = useLanguage();
+/** Real links between the two homepage URLs ("/" and "/ar"); client-side navigation is handled by Root. */
+function LanguageSwitch() {
+  const { t, lang } = useLanguage();
+  const target = lang === "ar" ? "en" : "ar";
   return (
-    <button
-      type="button"
-      onClick={toggleLang}
-      className="rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur transition-colors hover:bg-white/20"
+    <a
+      href={target === "ar" ? "/ar" : "/"}
+      hrefLang={target}
+      lang={target}
+      className="rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
     >
       {t.languageToggle}
-    </button>
+    </a>
+  );
+}
+
+function HeaderBlogLink() {
+  const { t } = useLanguage();
+  return (
+    <a
+      href="/blog"
+      hrefLang="en"
+      className="inline-flex min-h-10 items-center rounded-full px-3 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+    >
+      {t.headerBlog}
+    </a>
   );
 }
 
@@ -68,8 +87,11 @@ const MAX_EXCLUDE_HISTORY = 9;
 
 function App() {
   const { t, lang } = useLanguage();
+  const path = usePathname();
+  useHomepageLinks(path);
   const [stage, setStage] = useState<AppStage>("input");
   const [ingredients, setIngredients] = useState<string[]>([]);
+  const [draft, setDraft] = useState("");
   const [timeBudget, setTimeBudget] = useState<TimeBudget>("any");
   const [diet, setDiet] = useState<DietTag[]>([]);
   const [cuisine, setCuisine] = useState<CuisineTag | null>(null);
@@ -82,11 +104,39 @@ function App() {
   const [shownRecipes, setShownRecipes] = useState<RecipeResult[]>([]);
   const [refineOpen, setRefineOpen] = useState(false);
   const refineSectionRef = useRef<HTMLDivElement>(null);
+  const inFlightRef = useRef(false);
 
-  const canSubmit = ingredients.length > 0 && stage !== "loading";
+  // Text typed but not yet added still counts: "Find recipes" adds it first.
+  const hasPendingIngredient = splitIngredients(draft).length > 0;
+  const canSubmit = (ingredients.length > 0 || hasPendingIngredient) && stage !== "loading";
 
-  const buildPrefs = (): CookPreferences => ({
-    ingredients,
+  // The inline action row is the primary place to generate; the sticky bar
+  // only appears while that row is scrolled out of view.
+  const [actionsEl, setActionsEl] = useState<HTMLDivElement | null>(null);
+  const [actionsVisible, setActionsVisible] = useState(true);
+  useEffect(() => {
+    if (!actionsEl || typeof IntersectionObserver === "undefined") {
+      setActionsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => setActionsVisible(entry.isIntersecting));
+    observer.observe(actionsEl);
+    return () => observer.disconnect();
+  }, [actionsEl]);
+  const showSticky = stage === "input" && !actionsVisible;
+
+  // Keep focused controls clear of the sticky bar when the browser scrolls them into view.
+  useEffect(() => {
+    if (!showSticky) return;
+    const root = document.documentElement;
+    root.style.scrollPaddingBottom = "7rem";
+    return () => {
+      root.style.scrollPaddingBottom = "";
+    };
+  }, [showSticky]);
+
+  const buildPrefs = (ingredientsOverride?: string[]): CookPreferences => ({
+    ingredients: ingredientsOverride ?? ingredients,
     timeBudget,
     diet,
     cuisine,
@@ -98,22 +148,30 @@ function App() {
     language: lang,
   });
 
-  const runGeneration = async (options: { resetHistory?: boolean } = {}) => {
+  const runGeneration = async (options: { resetHistory?: boolean; ingredients?: string[] } = {}) => {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     setStage("loading");
     const history = options.resetHistory ? [] : shownRecipes.slice(-MAX_EXCLUDE_HISTORY);
     try {
-      const recipes = await generateRecipes(buildPrefs(), history);
+      const recipes = await generateRecipes(buildPrefs(options.ingredients), history);
       setResults(recipes);
       setShownRecipes([...history, ...recipes]);
       setStage("results");
     } catch {
       setStage("error");
+    } finally {
+      inFlightRef.current = false;
     }
   };
 
   const handleSubmit = () => {
-    if (!canSubmit) return;
-    void runGeneration({ resetHistory: true });
+    if (!canSubmit || inFlightRef.current) return;
+    // Use the merged list for this request directly instead of waiting for state to update.
+    const finalIngredients = mergeIngredients(ingredients, draft);
+    setIngredients(finalIngredients);
+    setDraft("");
+    void runGeneration({ resetHistory: true, ingredients: finalIngredients });
   };
 
   const handleGenerateMore = () => {
@@ -124,10 +182,8 @@ function App() {
     setStage("input");
   };
 
-  const handleStartOver = () => {
-    setResults([]);
-    setShownRecipes([]);
-    setIngredients([]);
+  /** Back to unrestricted defaults for every preference; ingredients and pending text are untouched. */
+  const handleClearPreferences = () => {
     setTimeBudget("any");
     setDiet([]);
     setCuisine(null);
@@ -136,6 +192,14 @@ function App() {
     setCustomAllergy("");
     setNoExtraIngredients(false);
     setCraving("");
+  };
+
+  const handleStartOver = () => {
+    setResults([]);
+    setShownRecipes([]);
+    setIngredients([]);
+    setDraft("");
+    handleClearPreferences();
     setRefineOpen(false);
     setStage("input");
   };
@@ -178,13 +242,16 @@ function App() {
         <div className="hero-glow h-80 w-80 bg-pink-500/20" style={{ top: "-60px", insetInlineEnd: "-80px" }} />
         <div className="relative mx-auto w-full max-w-xl">
           <div className="mb-6 flex items-center justify-between gap-2.5">
-            <div className="flex items-center gap-2.5">
+            <div className="flex min-w-0 items-center gap-2.5">
               <LogoMark />
               <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
                 {t.brand}
               </span>
             </div>
-            <LanguageToggle />
+            <div className="flex shrink-0 items-center gap-1">
+              <HeaderBlogLink />
+              <LanguageSwitch />
+            </div>
           </div>
           <h1 className="text-[36px] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[46px]">
             {t.headlinePrefix}{" "}
@@ -211,7 +278,15 @@ function App() {
               className="flex flex-col gap-6"
             >
               <div className="console-card flex flex-col gap-5 p-5 sm:p-6">
-                <IngredientInput ingredients={ingredients} onChange={setIngredients} />
+                <IngredientInput
+                  ingredients={ingredients}
+                  onChange={setIngredients}
+                  draft={draft}
+                  onDraftChange={setDraft}
+                  onFind={handleSubmit}
+                  canFind={canSubmit}
+                  actionsRef={setActionsEl}
+                />
                 <div ref={refineSectionRef}>
                   <RefinePanel
                     open={refineOpen}
@@ -232,6 +307,7 @@ function App() {
                     onNoExtraIngredientsChange={setNoExtraIngredients}
                     craving={craving}
                     onCravingChange={setCraving}
+                    onClear={handleClearPreferences}
                   />
                 </div>
               </div>
@@ -341,11 +417,11 @@ function App() {
 
       <Footer />
 
-      {stage === "input" && (
+      {showSticky && (
         <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6">
           <div className="mx-auto w-full max-w-xl">
             <PrimaryButton onClick={handleSubmit} disabled={!canSubmit} className="w-full">
-              {ingredients.length === 0 ? t.submitEmpty : t.submitReady}
+              {canSubmit ? t.findRecipes : t.submitEmpty}
             </PrimaryButton>
           </div>
         </div>

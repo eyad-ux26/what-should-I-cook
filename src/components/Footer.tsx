@@ -23,7 +23,7 @@ export function Footer() {
           {t.footerContact}
         </a>
       </nav>
-      <p className="mt-3 text-center text-[11px] leading-relaxed text-text-muted/70">
+      <p className="mt-3 text-center text-[11px] leading-relaxed text-text-muted">
         {t.footerTagline}
         <br />
         &copy; {year} What Should I Cook

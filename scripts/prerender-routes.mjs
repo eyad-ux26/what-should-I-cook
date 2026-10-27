@@ -3,7 +3,8 @@
 // index pages that return 404, so give every public route its own real
 // <route>.html file — GitHub Pages serves it at the extensionless URL with
 // a 200. The app still renders client-side; this just fixes the status code
-// and puts route-specific title/description/canonical in the static HTML.
+// and puts route-specific head tags (title/description/canonical, and for the
+// two homepage routes: html lang/dir, canonical and hreflang) in the static HTML.
 //
 // Keep ROUTES in sync with src/Root.tsx and src/blog/data.ts.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
@@ -57,7 +58,16 @@ const ROUTES = [
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
+// Read the untouched template once; every output is derived from it so the
+// homepage-only tags below never leak into the other routes.
 const template = readFileSync(join(DIST, "index.html"), "utf8");
+
+function write(path, html) {
+  const out = join(DIST, path === "/" ? "index.html" : `${path}.html`);
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, html);
+  console.log(`prerendered ${path} -> ${out}`);
+}
 
 for (const { path, title, description } of ROUTES) {
   let html = template;
@@ -73,8 +83,25 @@ for (const { path, title, description } of ROUTES) {
       .replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${esc(description)}"`)
       .replace("</head>", `    <link rel="canonical" href="${url}" />\n  </head>`);
   }
-  const out = join(DIST, `${path}.html`);
-  mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, html);
-  console.log(`prerendered ${path} -> ${out}`);
+  write(path, html);
 }
+
+// The two homepage routes: same page and copy, different language. Each is
+// self-canonical and both list the other as an alternate (plus x-default).
+const HOME_ALTERNATES = [
+  ["en", `${SITE}/`],
+  ["ar", `${SITE}/ar`],
+  ["x-default", `${SITE}/`],
+]
+  .map(([lang, href]) => `    <link rel="alternate" hreflang="${lang}" href="${href}" />`)
+  .join("\n");
+
+function homepage(canonical, { lang, dir }) {
+  return template
+    .replace(/<html lang="[^"]*"( dir="[^"]*")?>/, `<html lang="${lang}" dir="${dir}">`)
+    .replace(/(<meta property="og:url" content=")[^"]*"/, `$1${canonical}"`)
+    .replace("</head>", `    <link rel="canonical" href="${canonical}" />\n${HOME_ALTERNATES}\n  </head>`);
+}
+
+write("/ar", homepage(`${SITE}/ar`, { lang: "ar", dir: "rtl" }));
+write("/", homepage(`${SITE}/`, { lang: "en", dir: "ltr" }));

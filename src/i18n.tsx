@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import type { AllergyTag, CuisineTag, DietTag, Difficulty, TimeBudget } from "./types";
+import { usePathname } from "./routing";
 
 export type Lang = "en" | "ar";
 
@@ -14,6 +15,9 @@ interface Strings {
   ingredientsPlaceholderFirst: string;
   ingredientsPlaceholderMore: string;
   ingredientsHelp: string;
+  addIngredient: string;
+  findRecipes: string;
+  headerBlog: string;
   removeIngredient: (name: string) => string;
   examples: string[];
   typingExamples: string[];
@@ -26,15 +30,17 @@ interface Strings {
   cuisineLabel: string;
   cuisineOptions: { value: CuisineTag; label: string }[];
   cuisineOtherPlaceholder: string;
+  customCuisineLabel: string;
   allergiesLabel: string;
   allergyOptions: { value: AllergyTag; label: string }[];
   allergyOtherPlaceholder: string;
+  customAllergyLabel: string;
+  clearFilters: string;
   noExtraIngredientsLabel: string;
   noExtraIngredientsHint: string;
   moodLabel: string;
   moodPlaceholder: string;
   submitEmpty: string;
-  submitReady: string;
   steps: { label: string; desc: string }[];
   inspirationTitle: string;
   inspirationIntro: string;
@@ -90,7 +96,11 @@ const en: Strings = {
   ingredientsLabel: "What's in your kitchen?",
   ingredientsPlaceholderFirst: "e.g. {example}",
   ingredientsPlaceholderMore: "Add another...",
-  ingredientsHelp: "Press Enter or comma to add each ingredient.",
+  ingredientsHelp:
+    "Type an ingredient and press Enter or tap “Add ingredient”. To add several at once, separate them with commas (, or ،) or paste a list.",
+  addIngredient: "Add ingredient",
+  findRecipes: "Find recipes",
+  headerBlog: "Blog",
   removeIngredient: (name) => `Remove ${name}`,
   examples: ["chicken thighs", "rice", "bell pepper", "eggs", "spinach", "canned tomatoes"],
   typingExamples: [
@@ -103,7 +113,6 @@ const en: Strings = {
   refineOptional: "(optional)",
   timeAvailable: "Time available",
   timeOptions: [
-    { value: "any", label: "Any time" },
     { value: "15", label: "Under 15 min" },
     { value: "30", label: "Under 30 min" },
     { value: "60", label: "Under 1 hr" },
@@ -126,6 +135,7 @@ const en: Strings = {
     { value: "other", label: "Other" },
   ],
   cuisineOtherPlaceholder: "What cuisine are you in the mood for?",
+  customCuisineLabel: "Other cuisine",
   allergiesLabel: "Allergies",
   allergyOptions: [
     { value: "nuts", label: "Nuts" },
@@ -135,12 +145,13 @@ const en: Strings = {
     { value: "other", label: "Other" },
   ],
   allergyOtherPlaceholder: "Other allergy...",
+  customAllergyLabel: "Other allergy",
+  clearFilters: "Clear filters",
   noExtraIngredientsLabel: "Only use what I listed",
   noExtraIngredientsHint: "No extra ingredients — not even pantry staples like oil or salt.",
   moodLabel: "In the mood for...",
   moodPlaceholder: "e.g. something spicy, comfort food, something quick",
   submitEmpty: "Add an ingredient to start",
-  submitReady: "Find something to cook",
   steps: [
     { label: "Add ingredients", desc: "Whatever's in the fridge" },
     { label: "Set preferences", desc: "Time, dietary needs, and more" },
@@ -242,7 +253,11 @@ const ar: Strings = {
   ingredientsLabel: "ماذا يوجد في مطبخك؟",
   ingredientsPlaceholderFirst: "مثال: {example}",
   ingredientsPlaceholderMore: "أضف مكونًا آخر...",
-  ingredientsHelp: "اضغط Enter أو الفاصلة لإضافة كل مكوّن.",
+  ingredientsHelp:
+    "اكتب مكوّنًا واضغط Enter أو اضغط «إضافة مكوّن». لإضافة عدة مكوّنات معًا، افصل بينها بفاصلة (, أو ،) أو الصق قائمة.",
+  addIngredient: "إضافة مكوّن",
+  findRecipes: "اعثر على وصفات",
+  headerBlog: "المدونة",
   removeIngredient: (name) => `إزالة ${name}`,
   examples: ["أفخاذ دجاج", "أرز", "فلفل رومي", "بيض", "سبانخ", "طماطم معلبة"],
   typingExamples: [
@@ -255,7 +270,6 @@ const ar: Strings = {
   refineOptional: "(اختياري)",
   timeAvailable: "الوقت المتاح",
   timeOptions: [
-    { value: "any", label: "أي وقت" },
     { value: "15", label: "أقل من 15 دقيقة" },
     { value: "30", label: "أقل من 30 دقيقة" },
     { value: "60", label: "أقل من ساعة" },
@@ -278,6 +292,7 @@ const ar: Strings = {
     { value: "other", label: "أخرى" },
   ],
   cuisineOtherPlaceholder: "ما نوع المطبخ الذي تفضله؟",
+  customCuisineLabel: "مطبخ آخر",
   allergiesLabel: "الحساسية الغذائية",
   allergyOptions: [
     { value: "nuts", label: "المكسرات" },
@@ -287,12 +302,13 @@ const ar: Strings = {
     { value: "other", label: "أخرى" },
   ],
   allergyOtherPlaceholder: "حساسية أخرى...",
+  customAllergyLabel: "حساسية أخرى",
+  clearFilters: "مسح التفضيلات",
   noExtraIngredientsLabel: "استخدم فقط ما أدرجته",
   noExtraIngredientsHint: "بلا أي مكونات إضافية — حتى الأساسيات كالزيت أو الملح.",
   moodLabel: "ماذا تشتهي؟",
   moodPlaceholder: "مثال: شيء حار، أكل مريح، شيء سريع",
   submitEmpty: "أضف مكونًا للبدء",
-  submitReady: "ابحث عن طبخة",
   steps: [
     { label: "أضف المكونات", desc: "أي شيء في الثلاجة" },
     { label: "حدد التفضيلات", desc: "الوقت، الاحتياجات الغذائية، والمزيد" },
@@ -386,33 +402,45 @@ const STRINGS: Record<Lang, Strings> = { en, ar };
 interface LanguageContextValue {
   lang: Lang;
   t: Strings;
-  toggleLang: () => void;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function getInitialLang(): Lang {
-  const stored = localStorage.getItem("lang");
-  return stored === "ar" || stored === "en" ? stored : "en";
+/** The homepage language is decided by the URL: "/" is English, "/ar" is Arabic. */
+function langForPath(path: string): Lang | null {
+  if (path === "/ar") return "ar";
+  if (path === "/") return "en";
+  return null;
+}
+
+/** Other routes (legal pages, blog) fall back to the last homepage language shown. */
+function getStoredLang(): Lang {
+  try {
+    const stored = localStorage.getItem("lang");
+    return stored === "ar" || stored === "en" ? stored : "en";
+  } catch {
+    return "en";
+  }
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>(getInitialLang);
+  const path = usePathname();
+  const urlLang = langForPath(path);
+  const lang: Lang = urlLang ?? getStoredLang();
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = STRINGS[lang].dir;
-    localStorage.setItem("lang", lang);
-  }, [lang]);
+    if (urlLang) {
+      try {
+        localStorage.setItem("lang", urlLang);
+      } catch {
+        // Storage unavailable (private mode etc.) — the URL still decides the language.
+      }
+    }
+  }, [lang, urlLang]);
 
-  const value = useMemo<LanguageContextValue>(
-    () => ({
-      lang,
-      t: STRINGS[lang],
-      toggleLang: () => setLang((l) => (l === "en" ? "ar" : "en")),
-    }),
-    [lang],
-  );
+  const value = useMemo<LanguageContextValue>(() => ({ lang, t: STRINGS[lang] }), [lang]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

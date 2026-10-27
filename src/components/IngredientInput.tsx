@@ -1,13 +1,21 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type ClipboardEvent, type ChangeEvent, type KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../i18n";
+import { mergeIngredients, splitIngredients, MAX_INGREDIENT_LENGTH, SEPARATOR_PATTERN } from "../ingredients";
+import { PrimaryButton } from "./PrimaryButton";
 
 interface IngredientInputProps {
   ingredients: string[];
   onChange: (ingredients: string[]) => void;
+  /** Text typed but not yet added as an ingredient. Owned by the parent so "Find recipes" can include it. */
+  draft: string;
+  onDraftChange: (draft: string) => void;
+  onFind: () => void;
+  canFind: boolean;
+  /** Callback ref for the action row, so the parent can tell when it scrolls out of view. */
+  actionsRef?: (el: HTMLDivElement | null) => void;
 }
 
-const MAX_INGREDIENTS = 25;
 const TYPE_SPEED_MS = 55;
 const DELETE_SPEED_MS = 30;
 const HOLD_MS = 1300;
@@ -81,21 +89,27 @@ function useTypewriter(examples: string[], enabled: boolean): string {
   return text;
 }
 
-export function IngredientInput({ ingredients, onChange }: IngredientInputProps) {
+export function IngredientInput({
+  ingredients,
+  onChange,
+  draft,
+  onDraftChange,
+  onFind,
+  canFind,
+  actionsRef,
+}: IngredientInputProps) {
   const { t } = useLanguage();
-  const [draft, setDraft] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const animatedExample = useTypewriter(t.typingExamples, ingredients.length === 0 && draft === "");
+  const canAdd = splitIngredients(draft).length > 0;
 
-  const addIngredient = (raw: string) => {
-    const value = raw.trim().slice(0, 60);
-    if (!value || ingredients.length >= MAX_INGREDIENTS) return;
-    if (ingredients.some((i) => i.toLowerCase() === value.toLowerCase())) {
-      setDraft("");
-      return;
-    }
-    onChange([...ingredients, value]);
-    setDraft("");
+  /** Adds everything in the input (it may hold several comma-separated entries), clears it, keeps focus. */
+  const commitDraft = () => {
+    if (!canAdd) return;
+    onChange(mergeIngredients(ingredients, draft));
+    onDraftChange("");
+    inputRef.current?.focus();
   };
 
   const removeIngredient = (index: number) => {
@@ -103,12 +117,40 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.nativeEvent.isComposing) return;
+    if (e.key === "Enter" || e.key === "," || e.key === "،") {
       e.preventDefault();
-      addIngredient(draft);
+      commitDraft();
     } else if (e.key === "Backspace" && draft === "" && ingredients.length > 0) {
       removeIngredient(ingredients.length - 1);
     }
+  };
+
+  // Some mobile keyboards don't report a usable key for "," / "،" on keydown,
+  // so a separator can also arrive through the input value itself.
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!SEPARATOR_PATTERN.test(value)) {
+      onDraftChange(value);
+      return;
+    }
+    const parts = value.split(SEPARATOR_PATTERN);
+    const remainder = parts.pop() ?? "";
+    onChange(mergeIngredients(ingredients, parts.join(",")));
+    onDraftChange(remainder.trimStart());
+  };
+
+  // Pasting "tomato, cucumber" (or Arabic "طماطم، خيار") adds each entry as its
+  // own ingredient. Plain pastes without a separator behave normally.
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text");
+    if (!SEPARATOR_PATTERN.test(pasted)) return;
+    e.preventDefault();
+    const el = e.currentTarget;
+    const before = draft.slice(0, el.selectionStart ?? draft.length);
+    const after = draft.slice(el.selectionEnd ?? draft.length);
+    onChange(mergeIngredients(ingredients, before + pasted + after));
+    onDraftChange("");
   };
 
   const suggestions = t.examples
@@ -134,16 +176,16 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center gap-1 rounded-full bg-accent-soft py-1.5 ps-3 pe-2 text-sm font-medium text-accent-hover"
+              className="flex items-center gap-1 rounded-full bg-accent-soft py-1.5 ps-3 pe-2 text-sm font-medium text-text"
             >
-              {ingredient}
+              <bdi>{ingredient}</bdi>
               <button
                 type="button"
                 onClick={() => removeIngredient(index)}
                 aria-label={t.removeIngredient(ingredient)}
-                className="flex h-5 w-5 items-center justify-center rounded-full text-accent-hover/70 transition-colors hover:bg-accent/20 hover:text-accent-hover"
+                className="flex h-5 w-5 items-center justify-center rounded-full text-text/70 transition-colors hover:bg-accent/20 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
               >
-                <svg viewBox="0 0 16 16" fill="none" className="h-3 w-3">
+                <svg viewBox="0 0 16 16" fill="none" className="h-3 w-3" aria-hidden="true">
                   <path
                     d="M4 4l8 8M12 4l-8 8"
                     stroke="currentColor"
@@ -156,26 +198,46 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
           ))}
         </AnimatePresence>
         <input
+          ref={inputRef}
           id="ingredient-input"
           type="text"
           inputMode="text"
-          maxLength={60}
+          maxLength={MAX_INGREDIENT_LENGTH}
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
-          onBlur={() => addIngredient(draft)}
+          onPaste={handlePaste}
           placeholder={placeholder}
+          aria-describedby="ingredient-help"
           className="min-w-24 flex-1 bg-transparent py-1.5 text-base text-text outline-none placeholder:text-text-muted"
         />
       </div>
 
+      <div ref={actionsRef} className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={commitDraft}
+          disabled={!canAdd}
+          className="min-h-12 flex-1 basis-36 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-text shadow-sm transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-border"
+        >
+          {t.addIngredient}
+        </button>
+        <PrimaryButton
+          onClick={onFind}
+          disabled={!canFind}
+          className="min-h-12 flex-1 basis-36 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2"
+        >
+          {t.findRecipes}
+        </PrimaryButton>
+      </div>
+
       {suggestions.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {suggestions.map((item) => (
             <button
               key={item}
               type="button"
-              onClick={() => addIngredient(item)}
+              onClick={() => onChange(mergeIngredients(ingredients, item))}
               className="suggestion-chip rounded-full px-3 py-1.5 text-xs font-medium"
             >
               + {item}
@@ -184,7 +246,9 @@ export function IngredientInput({ ingredients, onChange }: IngredientInputProps)
         </div>
       )}
 
-      <p className="mt-3 text-xs text-text-muted">{t.ingredientsHelp}</p>
+      <p id="ingredient-help" className="mt-3 text-xs leading-relaxed text-text-muted">
+        {t.ingredientsHelp}
+      </p>
     </div>
   );
 }

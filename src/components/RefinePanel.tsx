@@ -21,6 +21,8 @@ interface RefinePanelProps {
   onNoExtraIngredientsChange: (value: boolean) => void;
   craving: string;
   onCravingChange: (value: string) => void;
+  /** Resets every preference to its unrestricted default (does not touch ingredients). */
+  onClear: () => void;
 }
 
 function Pill({
@@ -67,6 +69,7 @@ export function RefinePanel({
   onNoExtraIngredientsChange,
   craving,
   onCravingChange,
+  onClear,
 }: RefinePanelProps) {
   const { t } = useLanguage();
 
@@ -101,12 +104,16 @@ export function RefinePanel({
     (noExtraIngredients ? 1 : 0) +
     (craving.trim() ? 1 : 0);
 
+  const hasPreferences =
+    activeCount > 0 || customCuisine !== "" || customAllergy !== "" || craving !== "";
+
   return (
     <div className="group rounded-2xl border border-border bg-bg transition-colors hover:border-accent/35">
       <button
         type="button"
         onClick={() => onOpenChange(!open)}
         aria-expanded={open}
+        aria-controls="refine-panel"
         className="flex w-full cursor-pointer items-center justify-between rounded-2xl px-4 py-3.5 text-start transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
       >
         <span className="text-sm font-semibold text-text">
@@ -131,6 +138,7 @@ export function RefinePanel({
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
+            id="refine-panel"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -139,15 +147,15 @@ export function RefinePanel({
           >
             <div className="space-y-5 px-4 pb-5 pt-1">
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                <p id="refine-time-label" className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {t.timeAvailable}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div role="group" aria-labelledby="refine-time-label" className="flex flex-wrap gap-2">
                   {t.timeOptions.map((opt) => (
                     <Pill
                       key={opt.value}
                       active={timeBudget === opt.value}
-                      onClick={() => onTimeBudgetChange(opt.value)}
+                      onClick={() => onTimeBudgetChange(timeBudget === opt.value ? "any" : opt.value)}
                     >
                       {opt.label}
                     </Pill>
@@ -156,10 +164,10 @@ export function RefinePanel({
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                <p id="refine-diet-label" className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {t.dietaryNeeds}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div role="group" aria-labelledby="refine-diet-label" className="flex flex-wrap gap-2">
                   {t.dietOptions.map((opt) => (
                     <Pill key={opt.value} active={diet.includes(opt.value)} onClick={() => toggleDiet(opt.value)}>
                       {opt.label}
@@ -169,10 +177,10 @@ export function RefinePanel({
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                <p id="refine-cuisine-label" className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {t.cuisineLabel}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div role="group" aria-labelledby="refine-cuisine-label" className="flex flex-wrap gap-2">
                   {t.cuisineOptions.map((opt) => (
                     <Pill key={opt.value} active={cuisine === opt.value} onClick={() => selectCuisine(opt.value)}>
                       {opt.label}
@@ -188,13 +196,20 @@ export function RefinePanel({
                       transition={{ duration: 0.15 }}
                       className="overflow-hidden"
                     >
+                      <label
+                        htmlFor="custom-cuisine"
+                        className="mt-3 block text-xs font-semibold uppercase tracking-wide text-text-muted"
+                      >
+                        {t.customCuisineLabel}
+                      </label>
                       <input
+                        id="custom-cuisine"
                         type="text"
                         maxLength={80}
                         value={customCuisine}
                         onChange={(e) => onCustomCuisineChange(e.target.value)}
                         placeholder={t.cuisineOtherPlaceholder}
-                        className="mt-2.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
+                        className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                       />
                     </motion.div>
                   )}
@@ -202,10 +217,10 @@ export function RefinePanel({
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                <p id="refine-allergy-label" className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                   {t.allergiesLabel}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div role="group" aria-labelledby="refine-allergy-label" className="flex flex-wrap gap-2">
                   {t.allergyOptions.map((opt) => (
                     <Pill
                       key={opt.value}
@@ -225,13 +240,20 @@ export function RefinePanel({
                       transition={{ duration: 0.15 }}
                       className="overflow-hidden"
                     >
+                      <label
+                        htmlFor="custom-allergy"
+                        className="mt-3 block text-xs font-semibold uppercase tracking-wide text-text-muted"
+                      >
+                        {t.customAllergyLabel}
+                      </label>
                       <input
+                        id="custom-allergy"
                         type="text"
                         maxLength={80}
                         value={customAllergy}
                         onChange={(e) => onCustomAllergyChange(e.target.value)}
                         placeholder={t.allergyOtherPlaceholder}
-                        className="mt-2.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
+                        className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                       />
                     </motion.div>
                   )}
@@ -266,6 +288,17 @@ export function RefinePanel({
                   placeholder={t.moodPlaceholder}
                   className="w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                 />
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={onClear}
+                  disabled={!hasPreferences}
+                  className="inline-flex min-h-10 items-center rounded-full px-3 text-sm font-semibold text-text underline underline-offset-2 transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:text-text-muted disabled:no-underline disabled:opacity-60 disabled:hover:opacity-60"
+                >
+                  {t.clearFilters}
+                </button>
               </div>
             </div>
           </motion.div>
