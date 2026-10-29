@@ -110,20 +110,8 @@ function App() {
   const hasPendingIngredient = splitIngredients(draft).length > 0;
   const canSubmit = (ingredients.length > 0 || hasPendingIngredient) && stage !== "loading";
 
-  // The inline action row is the primary place to generate; the sticky bar
-  // only appears while that row is scrolled out of view.
-  const [actionsEl, setActionsEl] = useState<HTMLDivElement | null>(null);
-  const [actionsVisible, setActionsVisible] = useState(true);
-  useEffect(() => {
-    if (!actionsEl || typeof IntersectionObserver === "undefined") {
-      setActionsVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => setActionsVisible(entry.isIntersecting));
-    observer.observe(actionsEl);
-    return () => observer.disconnect();
-  }, [actionsEl]);
-  const showSticky = stage === "input" && !actionsVisible;
+  // Find recipes is a bar fixed to the bottom of the viewport while on the input stage.
+  const showSticky = stage === "input";
 
   // Keep focused controls clear of the sticky bar when the browser scrolls them into view.
   useEffect(() => {
@@ -283,9 +271,6 @@ function App() {
                   onChange={setIngredients}
                   draft={draft}
                   onDraftChange={setDraft}
-                  onFind={handleSubmit}
-                  canFind={canSubmit}
-                  actionsRef={setActionsEl}
                 />
                 <div ref={refineSectionRef}>
                   <RefinePanel

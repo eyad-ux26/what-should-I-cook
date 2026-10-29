@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type ClipboardEvent, type ChangeEvent, typ
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../i18n";
 import { mergeIngredients, splitIngredients, MAX_INGREDIENT_LENGTH, SEPARATOR_PATTERN } from "../ingredients";
-import { PrimaryButton } from "./PrimaryButton";
 
 interface IngredientInputProps {
   ingredients: string[];
@@ -10,10 +9,6 @@ interface IngredientInputProps {
   /** Text typed but not yet added as an ingredient. Owned by the parent so "Find recipes" can include it. */
   draft: string;
   onDraftChange: (draft: string) => void;
-  onFind: () => void;
-  canFind: boolean;
-  /** Callback ref for the action row, so the parent can tell when it scrolls out of view. */
-  actionsRef?: (el: HTMLDivElement | null) => void;
 }
 
 const TYPE_SPEED_MS = 55;
@@ -94,9 +89,6 @@ export function IngredientInput({
   onChange,
   draft,
   onDraftChange,
-  onFind,
-  canFind,
-  actionsRef,
 }: IngredientInputProps) {
   const { t } = useLanguage();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -211,24 +203,14 @@ export function IngredientInput({
           aria-describedby="ingredient-help"
           className="min-w-24 flex-1 bg-transparent py-1.5 text-base text-text outline-none placeholder:text-text-muted"
         />
-      </div>
-
-      <div ref={actionsRef} className="mt-3 flex flex-wrap gap-2">
         <button
           type="button"
           onClick={commitDraft}
           disabled={!canAdd}
-          className="min-h-12 flex-1 basis-36 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-text shadow-sm transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-border"
+          className="ms-auto shrink-0 rounded-full bg-accent-soft px-4 py-1.5 text-sm font-semibold text-text transition-colors hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-accent-soft"
         >
           {t.addIngredient}
         </button>
-        <PrimaryButton
-          onClick={onFind}
-          disabled={!canFind}
-          className="min-h-12 flex-1 basis-36 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2"
-        >
-          {t.findRecipes}
-        </PrimaryButton>
       </div>
 
       {suggestions.length > 0 && (

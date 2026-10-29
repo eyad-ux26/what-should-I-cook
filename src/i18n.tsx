@@ -97,8 +97,8 @@ const en: Strings = {
   ingredientsPlaceholderFirst: "e.g. {example}",
   ingredientsPlaceholderMore: "Add another...",
   ingredientsHelp:
-    "Type an ingredient and press Enter or tap “Add ingredient”. To add several at once, separate them with commas (, or ،) or paste a list.",
-  addIngredient: "Add ingredient",
+    "Type an ingredient and press Enter or tap “Add”. To add several at once, separate them with commas (, or ،) or paste a list.",
+  addIngredient: "Add",
   findRecipes: "Find recipes",
   headerBlog: "Blog",
   removeIngredient: (name) => `Remove ${name}`,
@@ -254,8 +254,8 @@ const ar: Strings = {
   ingredientsPlaceholderFirst: "مثال: {example}",
   ingredientsPlaceholderMore: "أضف مكونًا آخر...",
   ingredientsHelp:
-    "اكتب مكوّنًا واضغط Enter أو اضغط «إضافة مكوّن». لإضافة عدة مكوّنات معًا، افصل بينها بفاصلة (, أو ،) أو الصق قائمة.",
-  addIngredient: "إضافة مكوّن",
+    "اكتب مكوّنًا واضغط Enter أو اضغط «أضف». لإضافة عدة مكوّنات معًا، افصل بينها بفاصلة (, أو ،) أو الصق قائمة.",
+  addIngredient: "أضف",
   findRecipes: "اعثر على وصفات",
   headerBlog: "المدونة",
   removeIngredient: (name) => `إزالة ${name}`,
