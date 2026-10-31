@@ -495,8 +495,16 @@ function parseExclude(body: { exclude?: unknown }, config: SecurityConfig): Excl
   return out;
 }
 
-const TARGET_RECIPE_COUNT = 3;
+const DEFAULT_RECIPE_COUNT = 3;
+const MAX_RECIPE_COUNT = 3;
 const MAX_LIST_ATTEMPTS = 3;
+
+/** Optional "count" (1-3) so "generate 1 more" costs less; anything invalid falls back to the default of 3. */
+function parseCount(body: { count?: unknown }): number {
+  const n = body.count;
+  if (typeof n !== "number" || !Number.isInteger(n) || n < 1 || n > MAX_RECIPE_COUNT) return DEFAULT_RECIPE_COUNT;
+  return n;
+}
 
 /** Either switch being off disables generation: the static secret (CLI-only break-glass) or the dashboard's dynamic flag. */
 async function isAiDisabled(env: Env): Promise<boolean> {
@@ -521,12 +529,14 @@ async function handleList(
 ): Promise<{ response: Response; recipeCount?: number; attempts?: number; tokensUsed: number }> {
   let prefs: CookPreferences;
   let exclude: ExcludeEntry[];
+  let targetCount = DEFAULT_RECIPE_COUNT;
   try {
-    const body = (await request.json()) as Partial<CookPreferences> & { exclude?: unknown };
+    const body = (await request.json()) as Partial<CookPreferences> & { exclude?: unknown; count?: unknown };
     const parsed = parsePrefs(body, config);
     if (!parsed) return { response: json({ error: "ingredients is required" }, 400, origin), tokensUsed: 0 };
     prefs = parsed;
     exclude = parseExclude(body, config);
+    targetCount = parseCount(body);
   } catch {
     return { response: json({ error: "Invalid request" }, 400, origin), tokensUsed: 0 };
   }
@@ -541,9 +551,9 @@ async function handleList(
     let currentExclude = exclude;
     let attempts = 0;
 
-    for (let attempt = 0; attempt < MAX_LIST_ATTEMPTS && accepted.length < TARGET_RECIPE_COUNT; attempt++) {
+    for (let attempt = 0; attempt < MAX_LIST_ATTEMPTS && accepted.length < targetCount; attempt++) {
       attempts++;
-      const needed = TARGET_RECIPE_COUNT - accepted.length;
+      const needed = targetCount - accepted.length;
       const { content, totalTokens } = await callMistral(buildListPrompt(prefs, currentExclude, needed), env.MISTRAL_API_KEY, config.listMaxTokens);
       tokensUsed += totalTokens;
       const parsed = JSON.parse(content) as { recipes?: unknown[] };
@@ -552,7 +562,7 @@ async function handleList(
         .filter((r): r is RecipeResult => r !== null);
 
       for (const candidate of candidates) {
-        if (accepted.length >= TARGET_RECIPE_COUNT) break;
+        if (accepted.length >= targetCount) break;
         const isDuplicate =
           currentExclude.some((ex) => isSimilarRecipe(candidate, ex)) ||
           accepted.some((a) => isSimilarRecipe(candidate, a));
@@ -571,7 +581,7 @@ async function handleList(
       }
     }
 
-    while (accepted.length < TARGET_RECIPE_COUNT && fallbackPool.length > 0) {
+    while (accepted.length < targetCount && fallbackPool.length > 0) {
       accepted.push(fallbackPool.shift()!);
     }
 

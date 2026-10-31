@@ -11,11 +11,12 @@ export interface ExcludeEntry {
 export async function generateRecipes(
   prefs: CookPreferences,
   exclude: ExcludeEntry[] = [],
+  count = 3,
 ): Promise<RecipeResult[]> {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...prefs, exclude }),
+    body: JSON.stringify({ ...prefs, exclude, count }),
   });
 
   if (!response.ok) {

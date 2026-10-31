@@ -62,7 +62,11 @@ interface Strings {
   tryAgain: string;
   resultsCount: (n: number) => string;
   editIngredients: string;
-  generateMore: string;
+  generateMoreThree: string;
+  generateMoreOne: string;
+  limitReached: string;
+  newRecipesAdded: (n: number) => string;
+  loadingMore: string;
   startOver: string;
   difficultyLabel: Record<Difficulty, string>;
   minUnit: (n: number) => string;
@@ -72,9 +76,10 @@ interface Strings {
   stepsLabel: string;
   showDetails: string;
   hideDetails: string;
-  copyTitle: string;
-  copyHook: string;
+  copyRecipe: string;
   copied: string;
+  copyLabels: { time: string; difficulty: string; cuisine: string; alsoNeed: string };
+  copyAttribution: string;
   detailsError: string;
   languageToggle: string;
   footerBlog: string;
@@ -93,11 +98,11 @@ const en: Strings = {
   headlineAccent: "Let's cook.",
   subtitle:
     "List your ingredients, tell us your constraints, and get recipe ideas built around what you already have.",
-  ingredientsLabel: "What's in your kitchen?",
+  ingredientsLabel: "Your ingredients",
   ingredientsPlaceholderFirst: "e.g. {example}",
   ingredientsPlaceholderMore: "Add another...",
   ingredientsHelp:
-    "Type an ingredient and press Enter or tap “Add”. To add several at once, separate them with commas (, or ،) or paste a list.",
+    "Type an ingredient and press Enter or tap “Add”. To add several at once, paste a list or separate items with commas.",
   addIngredient: "Add",
   findRecipes: "Find recipes",
   headerBlog: "Blog",
@@ -123,7 +128,7 @@ const en: Strings = {
     { value: "vegan", label: "Vegan" },
     { value: "gluten-free", label: "Gluten-free" },
     { value: "dairy-free", label: "Dairy-free" },
-    { value: "low-calorie", label: "Low calories" },
+    { value: "low-calorie", label: "Low-calorie" },
   ],
   cuisineLabel: "Cuisine",
   cuisineOptions: [
@@ -164,7 +169,7 @@ const en: Strings = {
   howItWorksTeaser:
     "See exactly how typing in a few ingredients turns into AI-generated recipe ideas — and how preferences shape the results.",
   howItWorksParagraphs: [
-    "Type in whatever ingredients you have on hand — as many or as few as you like — and press Enter or a comma after each one. There's no sign-up and nothing to install; the tool works entirely in your browser.",
+    "Type the ingredients you have, then tap Add or press Enter — as many or as few as you like. There's no sign-up and nothing to install.",
     "Behind the scenes, your ingredient list and any preferences you set are sent to an AI model, which suggests a handful of recipe ideas built around what you already have. Each suggestion shows how many extra ingredients (if any) you'd need, and results are ordered so the recipes needing the fewest extra ingredients come first.",
     "Want something more specific? Open \"Set preferences\" to add a time limit, dietary needs, a preferred cuisine, allergies to avoid, a mood or craving, or turn on \"Only use what I listed\" to rule out extra ingredients entirely.",
   ],
@@ -176,7 +181,7 @@ const en: Strings = {
     "List everything you're willing to use, even basics like eggs, rice, or bread — the more you list, the more options the AI has.",
     "Turn on \"Only use what I listed\" if you don't want to run to the store for anything extra.",
     "Not feeling the results? Use \"Generate 3 more recipes\" to get new ideas without changing your ingredients or preferences.",
-    "Set allergies and dietary needs before generating — they're applied to every recipe idea, not just filtered afterward.",
+    "Set allergies and dietary needs before generating — they're included in every request. Always double-check ingredients yourself.",
   ],
   faqTitle: "Frequently Asked Questions",
   faqTeaser: "Straight answers about accounts, ingredient accuracy, allergies, data storage, and language support.",
@@ -187,11 +192,11 @@ const en: Strings = {
     },
     {
       q: "Will the recipes only use the ingredients I list?",
-      a: "The AI tries to minimize extra ingredients by default, and results are sorted so recipes needing the fewest extras appear first. If you want a hard guarantee, turn on \"Only use what I listed\" in the preferences panel before generating.",
+      a: "The AI tries to minimize extra ingredients by default, and results are sorted so recipes needing the fewest extras appear first. Turn on “Only use what I listed” in the preferences panel to request recipes limited to your ingredients. AI can make mistakes, so check each recipe before cooking.",
     },
     {
       q: "Can I set allergies or dietary restrictions?",
-      a: "Yes. Open \"Set preferences\" to select common allergies, dietary needs (like vegetarian, vegan, or gluten-free), a preferred cuisine, a time limit, and even a mood or craving.",
+      a: "Yes. Open \"Set preferences\" to select common allergies, dietary needs (like vegetarian, vegan, or gluten-free), a preferred cuisine, a time limit, and even a mood or craving. AI suggestions may miss restrictions, so always check ingredients yourself.",
     },
     {
       q: "Are the recipes reviewed by a chef or nutritionist?",
@@ -211,27 +216,32 @@ const en: Strings = {
   loadingMessages: [
     "Thinking about what pairs well...",
     "Checking a few flavor combos...",
-    "Almost got something good...",
+    "Almost there...",
   ],
   loadingHeadline: "Turning your ingredients into recipe ideas...",
-  errorTitle: "Couldn't come up with anything",
-  errorSubtitle: "Something went wrong on our end. Give it another try.",
+  errorTitle: "Something went wrong",
+  errorSubtitle: "We couldn't get recipe ideas just now. Please try again.",
   tryAgain: "Try again",
-  resultsCount: (n) => `${n} idea${n !== 1 ? "s" : ""} based on what you've got`,
+  resultsCount: (n) => `${n} recipe${n !== 1 ? "s" : ""} based on what you've got`,
   editIngredients: "Edit ingredients",
-  generateMore: "Generate 3 more recipes",
+  generateMoreThree: "Generate 3 more recipes",
+  generateMoreOne: "Generate 1 more recipe",
+  limitReached: "You've reached the 9-recipe limit. Start over to try new ingredients.",
+  newRecipesAdded: (n) => `${n} new recipe${n !== 1 ? "s" : ""} added`,
+  loadingMore: "Finding more recipes...",
   startOver: "Start over",
   difficultyLabel: { easy: "Easy", medium: "Medium", hard: "Hard" },
   minUnit: (n) => `${n} min`,
   moreNeeded: (n) => `${n} more ingredient${n > 1 ? "s" : ""} needed`,
-  haveEverything: "You have everything",
+  haveEverything: "No extra ingredients needed",
   youllAlsoNeed: "You'll also need",
   stepsLabel: "Steps",
   showDetails: "Show recipe details",
   hideDetails: "Hide recipe details",
-  copyTitle: "Copy title",
-  copyHook: "Copy description",
+  copyRecipe: "Copy recipe",
   copied: "Copied",
+  copyLabels: { time: "Time", difficulty: "Difficulty", cuisine: "Cuisine", alsoNeed: "You'll also need" },
+  copyAttribution: "Recipe generated by What Should I Cook — https://what-should-i-cook.com",
   detailsError: "Couldn't load details. Try again.",
   languageToggle: "العربية",
   footerBlog: "Blog",
@@ -249,12 +259,12 @@ const ar: Strings = {
   brand: "ماذا أطبخ",
   headlinePrefix: "عندك مكونات؟",
   headlineAccent: "يلا نطبخ!",
-  subtitle: "اذكر مكوناتك، وأخبرنا بقيودك، واحصل على أفكار وصفات مبنية على ما تملكه بالفعل.",
+  subtitle: "اذكر مكوناتك، وأخبرنا بتفضيلاتك، واحصل على أفكار وصفات مبنية على ما تملكه بالفعل.",
   ingredientsLabel: "ماذا يوجد في مطبخك؟",
   ingredientsPlaceholderFirst: "مثال: {example}",
   ingredientsPlaceholderMore: "أضف مكونًا آخر...",
   ingredientsHelp:
-    "اكتب مكوّنًا واضغط Enter أو اضغط «أضف». لإضافة عدة مكوّنات معًا، افصل بينها بفاصلة (, أو ،) أو الصق قائمة.",
+    "اكتب مكوّنًا واضغط Enter أو «أضف». لإضافة عدة مكوّنات معًا، افصل بينها بفاصلة أو الصق قائمة.",
   addIngredient: "أضف",
   findRecipes: "اعثر على وصفات",
   headerBlog: "المدونة",
@@ -274,15 +284,15 @@ const ar: Strings = {
     { value: "30", label: "أقل من 30 دقيقة" },
     { value: "60", label: "أقل من ساعة" },
   ],
-  dietaryNeeds: "احتياجات غذائية",
+  dietaryNeeds: "النظام الغذائي",
   dietOptions: [
     { value: "vegetarian", label: "نباتي" },
-    { value: "vegan", label: "نباتي صرف" },
+    { value: "vegan", label: "نباتي صرف (فيغان)" },
     { value: "gluten-free", label: "خالٍ من الغلوتين" },
     { value: "dairy-free", label: "خالٍ من الألبان" },
     { value: "low-calorie", label: "منخفض السعرات" },
   ],
-  cuisineLabel: "المطبخ",
+  cuisineLabel: "نوع المطبخ",
   cuisineOptions: [
     { value: "italian", label: "إيطالي 🇮🇹" },
     { value: "asian", label: "آسيوي 🌏" },
@@ -307,45 +317,45 @@ const ar: Strings = {
   noExtraIngredientsLabel: "استخدم فقط ما أدرجته",
   noExtraIngredientsHint: "بلا أي مكونات إضافية — حتى الأساسيات كالزيت أو الملح.",
   moodLabel: "ماذا تشتهي؟",
-  moodPlaceholder: "مثال: شيء حار، أكل مريح، شيء سريع",
+  moodPlaceholder: "مثال: شيء حار، أكل بيتي، شيء سريع",
   submitEmpty: "أضف مكونًا للبدء",
   steps: [
     { label: "أضف المكونات", desc: "أي شيء في الثلاجة" },
     { label: "حدد التفضيلات", desc: "الوقت، الاحتياجات الغذائية، والمزيد" },
-    { label: "احصل على وصفات", desc: "مطابقة لما لديك" },
+    { label: "احصل على وصفات", desc: "مناسبة لما لديك" },
   ],
   inspirationTitle: "إلهام للطبخ",
-  inspirationIntro: "نظرة أقرب على كيفية عمل التطبيق، بالإضافة إلى نصائح عملية وإجابات لأكثر الأسئلة شيوعًا.",
+  inspirationIntro: "نظرة أقرب إلى كيفية عمل التطبيق، بالإضافة إلى نصائح عملية وإجابات لأكثر الأسئلة شيوعًا.",
   howItWorksTitle: "كيف يعمل تطبيق ماذا أطبخ",
   howItWorksTeaser: "شاهد كيف يتحول إدراج بضعة مكونات إلى أفكار وصفات مُولَّدة بالذكاء الاصطناعي — وكيف تُشكِّل التفضيلات النتائج.",
   howItWorksParagraphs: [
-    "اكتب أي مكونات متوفرة لديك — بقدر ما تريد — واضغط Enter أو الفاصلة بعد كل مكوّن. لا حاجة للتسجيل ولا لتثبيت أي شيء؛ يعمل التطبيق بالكامل من متصفحك.",
-    "خلف الكواليس، تُرسل قائمة مكوناتك وأي تفضيلات حددتها إلى نموذج ذكاء اصطناعي، يقترح عليك عددًا من أفكار الوصفات المبنية على ما تملكه بالفعل. تُظهر كل وصفة عدد المكونات الإضافية (إن وجدت) التي ستحتاجها، وتُرتَّب النتائج بحيث تظهر الوصفات الأقل احتياجًا لمكونات إضافية أولاً.",
-    "تريد نتائج أكثر تحديدًا؟ افتح \"حدد التفضيلات\" لإضافة وقت محدد، احتياجات غذائية، مطبخ مفضل، حساسية تريد تجنبها، أو مزاج معين، أو فعّل خيار \"استخدم فقط ما أدرجته\" لاستبعاد أي مكونات إضافية تمامًا.",
+    "اكتب المكونات المتوفرة لديك — بقدر ما تريد — ثم اضغط «أضف» أو Enter. لا حاجة للتسجيل ولا لتثبيت أي شيء.",
+    "خلف الكواليس، تُرسل قائمة مكوناتك وأي تفضيلات حددتها إلى نموذج ذكاء اصطناعي، يقترح عليك عددًا من أفكار الوصفات المبنية على ما تملكه بالفعل. تُظهر كل وصفة عدد المكونات الإضافية (إن وجدت) التي ستحتاجها، وتُرتَّب النتائج بحيث تظهر الوصفات الأقل احتياجًا لمكونات إضافية أولًا.",
+    "تريد نتائج أكثر تحديدًا؟ افتح «حدد التفضيلات» لإضافة وقت محدد، احتياجات غذائية، مطبخ مفضل، حساسية تريد تجنبها، أو مزاج معين، أو فعّل خيار «استخدم فقط ما أدرجته» لاستبعاد أي مكونات إضافية تمامًا.",
   ],
   tipsTitle: "نصائح للحصول على نتائج أفضل",
   tipsTeaser: "طرق عملية لصياغة مكوناتك واستخدام لوحة التفضيلات للحصول على أفكار أكثر ملاءمة وجاهزة للطبخ مباشرة.",
   tips: [
-    "كن محددًا: \"أفخاذ دجاج\" أو \"حمص معلب\" يعطي الذكاء الاصطناعي معلومات أدق من مجرد \"دجاج\" أو \"بقوليات\".",
+    "كن محددًا: «أفخاذ دجاج» أو «حمص معلب» يعطي الذكاء الاصطناعي معلومات أدق من مجرد «دجاج» أو «بقوليات».",
     "أدرج كل ما لديك، حتى الأساسيات مثل البيض أو الأرز أو الخبز — كلما أدرجت أكثر، زادت الخيارات.",
-    "فعّل \"استخدم فقط ما أدرجته\" إن كنت لا تريد الذهاب لشراء أي شيء إضافي.",
-    "لم تعجبك النتائج؟ استخدم \"أعطني 3 وصفات جديدة\" للحصول على أفكار جديدة دون تغيير مكوناتك أو تفضيلاتك.",
-    "حدد الحساسية والاحتياجات الغذائية قبل التوليد — تُطبَّق على كل الوصفات المقترحة، وليس فقط تُصفّى لاحقًا.",
+    "فعّل «استخدم فقط ما أدرجته» إن كنت لا تريد الذهاب لشراء أي شيء إضافي.",
+    "لم تعجبك النتائج؟ استخدم «أعطني 3 وصفات جديدة» للحصول على أفكار جديدة دون تغيير مكوناتك أو تفضيلاتك.",
+    "حدد الحساسية والاحتياجات الغذائية قبل البحث — تُرسَل مع كل طلب. وتحقق دائمًا من المكونات بنفسك.",
   ],
   faqTitle: "الأسئلة الشائعة",
   faqTeaser: "إجابات واضحة حول الحسابات، دقة المكونات، الحساسية الغذائية، تخزين البيانات، ودعم اللغة.",
   faqItems: [
     {
       q: "هل أحتاج إلى إنشاء حساب؟",
-      a: "لا. لا يحتوي \"ماذا أطبخ\" على حسابات أو تسجيل دخول أو سجل محفوظ — يمكنك البدء فورًا.",
+      a: "لا. لا يحتوي «ماذا أطبخ» على حسابات أو تسجيل دخول أو سجل محفوظ — يمكنك البدء فورًا.",
     },
     {
       q: "هل ستستخدم الوصفات فقط المكونات التي أدرجتها؟",
-      a: "يحاول الذكاء الاصطناعي تقليل المكونات الإضافية افتراضيًا، وتُرتَّب النتائج بحيث تظهر الوصفات الأقل احتياجًا للمكونات الإضافية أولاً. إذا أردت ضمانًا كاملاً، فعّل خيار \"استخدم فقط ما أدرجته\" في لوحة التفضيلات قبل التوليد.",
+      a: "يحاول الذكاء الاصطناعي تقليل المكونات الإضافية افتراضيًا، وتُرتَّب النتائج بحيث تظهر الوصفات الأقل احتياجًا للمكونات الإضافية أولًا. فعّل خيار «استخدم فقط ما أدرجته» في لوحة التفضيلات لطلب وصفات تقتصر على مكوناتك. قد يخطئ الذكاء الاصطناعي، لذا تحقق من كل وصفة قبل الطهي.",
     },
     {
       q: "هل يمكنني تحديد الحساسية أو القيود الغذائية؟",
-      a: "نعم. افتح \"حدد التفضيلات\" لاختيار الحساسية الشائعة، الاحتياجات الغذائية (مثل نباتي، نباتي صرف، أو خالٍ من الغلوتين)، مطبخ مفضل، وقت محدد، وحتى مزاج أو رغبة معينة.",
+      a: "نعم. افتح «حدد التفضيلات» لاختيار الحساسية الشائعة، الاحتياجات الغذائية (مثل نباتي، نباتي صرف، أو خالٍ من الغلوتين)، مطبخ مفضل، وقت محدد، وحتى مزاج أو رغبة معينة. قد تغفل اقتراحات الذكاء الاصطناعي بعض القيود، لذا تحقق دائمًا من المكونات بنفسك.",
     },
     {
       q: "هل تتم مراجعة الوصفات من قبل طاهٍ أو أخصائي تغذية؟",
@@ -368,24 +378,38 @@ const ar: Strings = {
     "أوشكنا على إيجاد شيء رائع...",
   ],
   loadingHeadline: "نحوّل مكوناتك إلى أفكار وصفات...",
-  errorTitle: "لم نتمكن من إيجاد شيء",
-  errorSubtitle: "حدث خطأ من جانبنا. حاول مرة أخرى.",
+  errorTitle: "حدث خطأ ما",
+  errorSubtitle: "تعذّر الحصول على أفكار الوصفات الآن. حاول مرة أخرى.",
   tryAgain: "حاول مرة أخرى",
-  resultsCount: (n) => `${n} فكرة بناءً على ما لديك`,
+  resultsCount: (n) => {
+    if (n === 1) return "وصفة واحدة بناءً على ما لديك";
+    if (n === 2) return "وصفتان بناءً على ما لديك";
+    return `${n} ${n <= 10 ? "وصفات" : "وصفة"} بناءً على ما لديك`;
+  },
   editIngredients: "تعديل المكونات",
-  generateMore: "أعطني 3 وصفات جديدة",
+  generateMoreThree: "أعطني 3 وصفات جديدة",
+  generateMoreOne: "أعطني وصفة جديدة واحدة",
+  limitReached: "وصلت إلى الحد الأقصى (9 وصفات). ابدأ من جديد لتجرب مكونات أخرى.",
+  newRecipesAdded: (n) =>
+    n === 1 ? "أُضيفت وصفة جديدة واحدة" : n === 2 ? "أُضيفت وصفتان جديدتان" : `أُضيفت ${n} وصفات جديدة`,
+  loadingMore: "نبحث عن المزيد من الوصفات...",
   startOver: "البدء من جديد",
   difficultyLabel: { easy: "سهل", medium: "متوسط", hard: "صعب" },
   minUnit: (n) => `${n} دقيقة`,
-  moreNeeded: (n) => `${n} مكوّن إضافي مطلوب`,
-  haveEverything: "لديك كل شيء",
+  moreNeeded: (n) => {
+    if (n === 1) return "مكوّن إضافي واحد مطلوب";
+    if (n === 2) return "مكوّنان إضافيان مطلوبان";
+    return n <= 10 ? `${n} مكوّنات إضافية مطلوبة` : `${n} مكوّنًا إضافيًا مطلوبًا`;
+  },
+  haveEverything: "لا تحتاج إلى مكونات إضافية",
   youllAlsoNeed: "ستحتاج أيضًا إلى",
   stepsLabel: "الخطوات",
   showDetails: "عرض تفاصيل الوصفة",
   hideDetails: "إخفاء تفاصيل الوصفة",
-  copyTitle: "نسخ العنوان",
-  copyHook: "نسخ الوصف",
+  copyRecipe: "نسخ الوصفة",
   copied: "تم النسخ",
+  copyLabels: { time: "الوقت", difficulty: "الصعوبة", cuisine: "المطبخ", alsoNeed: "ستحتاج أيضًا إلى" },
+  copyAttribution: "وصفة من موقع ماذا أطبخ — https://what-should-i-cook.com",
   detailsError: "تعذّر تحميل التفاصيل. حاول مرة أخرى.",
   languageToggle: "English",
   footerBlog: "المدونة",

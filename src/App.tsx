@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IngredientInput } from "./components/IngredientInput";
 import { RefinePanel } from "./components/RefinePanel";
@@ -84,6 +84,16 @@ function HeaderBlogLink() {
 
 /** Bound how many previously-shown recipes we send back as exclusions, to keep prompt size in check. */
 const MAX_EXCLUDE_HISTORY = 9;
+/** The first generation returns 3; "generate more" adds 3 once, then 1 at a time, up to this total. */
+const FIRST_BATCH = 3;
+const BIG_BATCH_UNTIL = 6;
+const MAX_RECIPES = 9;
+
+const BOTTOM_BAR_CLASS =
+  "fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6";
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 function App() {
   const { t, lang } = useLanguage();
@@ -101,27 +111,53 @@ function App() {
   const [noExtraIngredients, setNoExtraIngredients] = useState(false);
   const [craving, setCraving] = useState("");
   const [results, setResults] = useState<RecipeResult[]>([]);
-  const [shownRecipes, setShownRecipes] = useState<RecipeResult[]>([]);
+  const [moreStatus, setMoreStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [announcement, setAnnouncement] = useState("");
   const [refineOpen, setRefineOpen] = useState(false);
   const refineSectionRef = useRef<HTMLDivElement>(null);
   const inFlightRef = useRef(false);
+  // Bumped whenever results are reset, so a response from a superseded request is ignored.
+  const requestIdRef = useRef(0);
+  const scrollToHeaderRef = useRef(false);
+  const scrollToRecipeIdRef = useRef<string | null>(null);
 
   // Text typed but not yet added still counts: "Find recipes" adds it first.
   const hasPendingIngredient = splitIngredients(draft).length > 0;
   const canSubmit = (ingredients.length > 0 || hasPendingIngredient) && stage !== "loading";
 
-  // Find recipes is a bar fixed to the bottom of the viewport while on the input stage.
-  const showSticky = stage === "input";
+  const atLimit = results.length >= MAX_RECIPES;
+  const nextBatchSize = Math.min(results.length < BIG_BATCH_UNTIL ? 3 : 1, MAX_RECIPES - results.length);
 
-  // Keep focused controls clear of the sticky bar when the browser scrolls them into view.
+  // Both stages with a fixed bottom bar: Find recipes (input) and Generate more / Start over (results).
+  const showBar = stage === "input" || stage === "results";
+
+  // Keep focused controls clear of the fixed bar when the browser scrolls them into view.
   useEffect(() => {
-    if (!showSticky) return;
+    if (!showBar) return;
     const root = document.documentElement;
     root.style.scrollPaddingBottom = "7rem";
     return () => {
       root.style.scrollPaddingBottom = "";
     };
-  }, [showSticky]);
+  }, [showBar]);
+
+  // Scroll to and focus the results header only when a fresh set of results appears.
+  const resultsHeaderRef = useCallback((el: HTMLHeadingElement | null) => {
+    if (!el || !scrollToHeaderRef.current) return;
+    scrollToHeaderRef.current = false;
+    el.focus({ preventScroll: true });
+    el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }, []);
+
+  // After "generate more", bring the first newly added card into view.
+  useEffect(() => {
+    const id = scrollToRecipeIdRef.current;
+    if (!id) return;
+    scrollToRecipeIdRef.current = null;
+    document
+      .getElementById(`recipe-${id}`)
+      ?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }, [results]);
 
   const buildPrefs = (ingredientsOverride?: string[]): CookPreferences => ({
     ingredients: ingredientsOverride ?? ingredients,
@@ -136,20 +172,24 @@ function App() {
     language: lang,
   });
 
-  const runGeneration = async (options: { resetHistory?: boolean; ingredients?: string[] } = {}) => {
-    if (inFlightRef.current) return;
+  /** A fresh set of 3 with a clean history. A superseding request (e.g. language switch) cancels any request in flight. */
+  const runGeneration = async (options: { ingredients?: string[]; supersede?: boolean } = {}) => {
+    if (inFlightRef.current && !options.supersede) return;
     inFlightRef.current = true;
+    const requestId = ++requestIdRef.current;
+    setMoreStatus("idle");
+    setAnnouncement("");
     setStage("loading");
-    const history = options.resetHistory ? [] : shownRecipes.slice(-MAX_EXCLUDE_HISTORY);
     try {
-      const recipes = await generateRecipes(buildPrefs(options.ingredients), history);
+      const recipes = (await generateRecipes(buildPrefs(options.ingredients), [], FIRST_BATCH)).slice(0, FIRST_BATCH);
+      if (requestId !== requestIdRef.current) return;
+      scrollToHeaderRef.current = true;
       setResults(recipes);
-      setShownRecipes([...history, ...recipes]);
       setStage("results");
     } catch {
-      setStage("error");
+      if (requestId === requestIdRef.current) setStage("error");
     } finally {
-      inFlightRef.current = false;
+      if (requestId === requestIdRef.current) inFlightRef.current = false;
     }
   };
 
@@ -159,11 +199,36 @@ function App() {
     const finalIngredients = mergeIngredients(ingredients, draft);
     setIngredients(finalIngredients);
     setDraft("");
-    void runGeneration({ resetHistory: true, ingredients: finalIngredients });
+    void runGeneration({ ingredients: finalIngredients });
   };
 
-  const handleGenerateMore = () => {
-    void runGeneration();
+  /** Appends new recipes below the existing ones; existing cards are untouched. */
+  const handleGenerateMore = async () => {
+    if (inFlightRef.current || atLimit || stage !== "results") return;
+    inFlightRef.current = true;
+    const requestId = requestIdRef.current;
+    const count = nextBatchSize;
+    setMoreStatus("loading");
+    try {
+      const history = results.slice(-MAX_EXCLUDE_HISTORY);
+      const fetched = (await generateRecipes(buildPrefs(), history, count)).slice(0, count);
+      if (requestId !== requestIdRef.current) return;
+      const usedIds = new Set(results.map((r) => r.id));
+      const added = fetched.map((r, i) => {
+        let id = r.id;
+        while (usedIds.has(id)) id = `${r.id}-${i}-${usedIds.size}`;
+        usedIds.add(id);
+        return { ...r, id };
+      });
+      scrollToRecipeIdRef.current = added[0].id;
+      setResults([...results, ...added]);
+      setMoreStatus("idle");
+      setAnnouncement(t.newRecipesAdded(added.length));
+    } catch {
+      if (requestId === requestIdRef.current) setMoreStatus("error");
+    } finally {
+      if (requestId === requestIdRef.current) inFlightRef.current = false;
+    }
   };
 
   const handleEditIngredients = () => {
@@ -183,8 +248,11 @@ function App() {
   };
 
   const handleStartOver = () => {
+    requestIdRef.current++;
+    inFlightRef.current = false;
+    setMoreStatus("idle");
+    setAnnouncement("");
     setResults([]);
-    setShownRecipes([]);
     setIngredients([]);
     setDraft("");
     handleClearPreferences();
@@ -214,14 +282,16 @@ function App() {
     if (prevLangRef.current !== lang) {
       prevLangRef.current = lang;
       if (stage === "results") {
-        void runGeneration({ resetHistory: true });
+        void runGeneration({ supersede: true });
       }
     }
   }, [lang]);
 
   return (
     <div
-      className={`relative bg-bg ${stage === "input" ? "pb-24 sm:pb-28" : ""}`}
+      className={`relative bg-bg ${
+        stage === "input" ? "pb-24 sm:pb-28" : stage === "results" ? (atLimit ? "pb-44" : "pb-32") : ""
+      }`}
       style={{ fontFamily: t.fontFamily }}
     >
       <BackgroundIcons />
@@ -341,7 +411,7 @@ function App() {
 
           {stage === "error" && (
             <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <ErrorState onRetry={handleGenerateMore} />
+              <ErrorState onRetry={() => void runGeneration({ supersede: true })} />
             </motion.div>
           )}
 
@@ -356,7 +426,13 @@ function App() {
             >
               <div className="console-card flex flex-col gap-3 px-5 py-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-text">{t.resultsCount(results.length)}</p>
+                  <h2
+                    ref={resultsHeaderRef}
+                    tabIndex={-1}
+                    className="scroll-mt-4 text-sm font-semibold text-text outline-none focus:outline-none"
+                  >
+                    {t.resultsCount(results.length)}
+                  </h2>
                   <button
                     type="button"
                     onClick={handleEditIngredients}
@@ -377,23 +453,24 @@ function App() {
                 </div>
               </div>
               {results.map((recipe, i) => (
-                <RecipeCard key={recipe.id} recipe={recipe} accentIndex={i} onFetchDetails={handleFetchDetails} />
+                <div key={recipe.id} id={`recipe-${recipe.id}`} className="scroll-mt-4">
+                  <RecipeCard recipe={recipe} accentIndex={i} onFetchDetails={handleFetchDetails} />
+                </div>
               ))}
-              <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={handleGenerateMore}
-                  className="flex-1 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-text shadow-sm transition-colors hover:border-accent/40"
-                >
-                  {t.generateMore}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleStartOver}
-                  className="flex-1 rounded-full px-5 py-3 text-sm font-semibold text-text-muted transition-colors hover:text-text"
-                >
-                  {t.startOver}
-                </button>
+              {moreStatus === "loading" && <LoadingState compact />}
+              {moreStatus === "error" && (
+                <div role="alert" className="panel flex flex-col items-center gap-3 px-5 py-5 text-center">
+                  <div>
+                    <p className="text-sm font-semibold text-text">{t.errorTitle}</p>
+                    <p className="mt-0.5 text-sm text-text-muted">{t.errorSubtitle}</p>
+                  </div>
+                  <PrimaryButton onClick={() => void handleGenerateMore()} className="px-5 py-2.5 text-sm">
+                    {t.tryAgain}
+                  </PrimaryButton>
+                </div>
+              )}
+              <div className="sr-only" role="status" aria-live="polite">
+                {announcement}
               </div>
             </motion.div>
           )}
@@ -402,12 +479,36 @@ function App() {
 
       <Footer />
 
-      {showSticky && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/85 px-4 py-3 shadow-[0_-8px_24px_rgba(26,18,12,0.1)] backdrop-blur sm:px-6">
+      {stage === "input" && (
+        <div className={BOTTOM_BAR_CLASS}>
           <div className="mx-auto w-full max-w-xl">
             <PrimaryButton onClick={handleSubmit} disabled={!canSubmit} className="w-full">
               {canSubmit ? t.findRecipes : t.submitEmpty}
             </PrimaryButton>
+          </div>
+        </div>
+      )}
+
+      {stage === "results" && (
+        <div className={BOTTOM_BAR_CLASS}>
+          <div className="mx-auto w-full max-w-xl">
+            {atLimit && <p className="mb-2 text-center text-xs leading-snug text-text-muted">{t.limitReached}</p>}
+            <div className="flex items-center gap-2">
+              <PrimaryButton
+                onClick={() => void handleGenerateMore()}
+                disabled={atLimit || moreStatus === "loading"}
+                className="min-w-0 flex-1 whitespace-nowrap px-3 text-sm sm:px-6 sm:text-base"
+              >
+                {results.length < BIG_BATCH_UNTIL ? t.generateMoreThree : t.generateMoreOne}
+              </PrimaryButton>
+              <button
+                type="button"
+                onClick={handleStartOver}
+                className="min-h-12 shrink-0 rounded-full border border-border bg-surface px-3.5 text-sm font-semibold text-text-muted transition-colors hover:border-accent/40 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+              >
+                {t.startOver}
+              </button>
+            </div>
           </div>
         </div>
       )}
