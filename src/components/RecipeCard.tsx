@@ -30,17 +30,6 @@ function ChefHatIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-/** Readable plain-text version of the card, in the active language. */
-function buildCopyText(recipe: RecipeResult, t: ReturnType<typeof useLanguage>["t"]): string {
-  const l = t.copyLabels;
-  const meta = `${l.time}: ${t.minUnit(recipe.timeMinutes)} · ${l.difficulty}: ${t.difficultyLabel[recipe.difficulty]} · ${l.cuisine}: ${recipe.cuisine}`;
-  const extras =
-    recipe.extraIngredients.length > 0
-      ? `${l.alsoNeed}: ${recipe.extraIngredients.join(", ")}`
-      : t.haveEverything;
-  return [recipe.title, recipe.hook, meta, extras, "", t.copyAttribution].join("\n");
-}
-
 type DetailsStatus = "idle" | "loading" | "loaded" | "error";
 
 export function RecipeCard({ recipe, accentIndex = 0, onFetchDetails }: RecipeCardProps) {
@@ -56,7 +45,7 @@ export function RecipeCard({ recipe, accentIndex = 0, onFetchDetails }: RecipeCa
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(buildCopyText(recipe, t));
+      await navigator.clipboard.writeText(recipe.title);
     } catch {
       return;
     }
@@ -90,7 +79,30 @@ export function RecipeCard({ recipe, accentIndex = 0, onFetchDetails }: RecipeCa
           <div className={`icon-badge ${accent.badge} mt-0.5 h-9 w-9 text-white`}>
             <ChefHatIcon className="h-[18px] w-[18px]" />
           </div>
-          <h3 className="min-w-0 flex-1 text-lg font-semibold leading-snug text-text">{recipe.title}</h3>
+          <div className="flex min-w-0 flex-1 items-start justify-between gap-1">
+            <h3 className="min-w-0 flex-1 text-lg font-semibold leading-snug text-text">{recipe.title}</h3>
+            <button
+              type="button"
+              onClick={() => void handleCopy()}
+              aria-label={t.copyTitle}
+              title={t.copyTitle}
+              className="-me-2 -mt-1.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-bg hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+            >
+              {copied ? (
+                <svg viewBox="0 0 16 16" fill="none" className="h-[18px] w-[18px] text-success" aria-hidden="true">
+                  <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 16 16" fill="none" className="h-[18px] w-[18px]" aria-hidden="true">
+                  <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+                  <path d="M3.5 10.5V3.5A1.5 1.5 0 0 1 5 2h6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
+            <span className="sr-only" aria-live="polite">
+              {copied ? t.copied : ""}
+            </span>
+          </div>
         </div>
 
         <p className="ps-12 text-sm text-text-muted">{recipe.hook}</p>
@@ -138,12 +150,11 @@ export function RecipeCard({ recipe, accentIndex = 0, onFetchDetails }: RecipeCa
         )}
 
         <div className="ps-12">
-          <div className="flex flex-wrap items-center justify-between gap-x-3">
           <button
             type="button"
             onClick={() => void handleDetailsClick()}
             disabled={status === "loading"}
-            className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75 disabled:opacity-60"
           >
             {status === "loading" ? (
               <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-accent-soft border-t-accent-hover" />
@@ -160,27 +171,6 @@ export function RecipeCard({ recipe, accentIndex = 0, onFetchDetails }: RecipeCa
             )}
             {status === "loaded" ? (open ? t.hideDetails : t.showDetails) : t.showDetails}
           </button>
-          <button
-            type="button"
-            onClick={() => void handleCopy()}
-            className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-text-muted transition-colors hover:bg-bg hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
-          >
-            {copied ? (
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 text-success" aria-hidden="true">
-                <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
-                <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-                <path d="M3.5 10.5V3.5A1.5 1.5 0 0 1 5 2h6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
-            )}
-            {copied ? t.copied : t.copyRecipe}
-          </button>
-          <span className="sr-only" aria-live="polite">
-            {copied ? t.copied : ""}
-          </span>
-          </div>
           {status === "error" && <p className="mt-1.5 text-xs text-accent-hover">{t.detailsError}</p>}
         </div>
       </div>
