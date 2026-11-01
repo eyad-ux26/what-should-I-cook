@@ -1,12 +1,9 @@
 import { ArticleShell } from "../ArticleShell";
-import { getArticle } from "../data";
 import { H2, H3, P, Strong, InternalLink, IdeaBlock as Idea, Callout } from "../components";
-
-const article = getArticle("easy-dinner-ideas")!;
 
 export function EasyDinnerIdeas() {
   return (
-    <ArticleShell article={article}>
+    <ArticleShell slug="easy-dinner-ideas">
       <P>
         "Easy" means different things depending on the night. Sometimes it means fast. Sometimes
         it means one pan to wash. Sometimes it just means you don't want to think too hard. This is

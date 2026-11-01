@@ -1,12 +1,9 @@
 import { ArticleShell } from "../ArticleShell";
-import { getArticle } from "../data";
 import { H2, H3, P, Strong, InternalLink, FormulaBlock, Callout, ArticleTable } from "../components";
-
-const article = getArticle("what-can-i-cook-with-what-i-have")!;
 
 export function PantryMeals() {
   return (
-    <ArticleShell article={article}>
+    <ArticleShell slug="what-can-i-cook-with-what-i-have">
       <P>
         "What can I cook with what I have?" usually gets answered by staring into the fridge,
         hoping something suggests itself. A faster approach is to work from the ingredient outward:

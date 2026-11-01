@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import { LogoMark } from "../components/LogoMark";
 import { Footer } from "../components/Footer";
+import { LanguageSwitch } from "../components/LanguageSwitch";
 import { useLanguage } from "../i18n";
+import { homePath } from "./data";
+import { useBlogStrings } from "./strings";
 
 interface BlogLayoutProps {
   children: ReactNode;
@@ -9,30 +12,36 @@ interface BlogLayoutProps {
 }
 
 /**
- * Shared chrome for /blog and every article page. English-only content
- * (same reasoning as the legal pages: this is written, SEO-targeted prose,
- * not app UI), so — like LegalLayout — it's locked to LTR regardless of
- * the app's current language setting.
+ * Shared chrome for /blog and every article page, in English ("/blog/...")
+ * or Arabic ("/ar/blog/..."). Direction and font follow the page language.
  */
 export function BlogLayout({ children, breadcrumb }: BlogLayoutProps) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const bs = useBlogStrings();
+  const home = homePath(lang);
 
   return (
-    <div dir="ltr" className="relative bg-bg">
+    <div dir={t.dir} lang={lang} className="relative bg-bg" style={{ fontFamily: t.fontFamily }}>
       <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-2.5 px-4 pt-8 sm:px-6 sm:pt-10">
-        <a href="/" className="flex items-center gap-2.5">
+        <a href={home} className="flex min-w-0 items-center gap-2.5">
           <LogoMark />
-          <span className="text-sm font-semibold uppercase tracking-[0.14em] text-text-muted">
-            What Should I Cook
+          <span className="truncate text-sm font-semibold uppercase tracking-[0.14em] text-text-muted rtl:tracking-normal">
+            {bs.siteName}
           </span>
         </a>
-        <a href="/" className="text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75">
-          {t.backToApp}
-        </a>
+        <div className="flex shrink-0 items-center gap-3">
+          <a
+            href={home}
+            className="hidden text-sm font-semibold text-accent-hover transition-opacity hover:opacity-75 sm:inline"
+          >
+            {t.backToApp}
+          </a>
+          <LanguageSwitch variant="light" />
+        </div>
       </header>
 
       {breadcrumb && breadcrumb.length > 0 && (
-        <nav aria-label="Breadcrumb" className="mx-auto w-full max-w-5xl px-4 pt-5 sm:px-6">
+        <nav aria-label={bs.breadcrumb} className="mx-auto w-full max-w-5xl px-4 pt-5 sm:px-6">
           <ol className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-text-muted">
             {breadcrumb.map((item, i) => (
               <li key={i} className="flex items-center gap-1.5">

@@ -43,3 +43,10 @@ export function navigate(url: string): void {
 export function usePathname(): string {
   return useSyncExternalStore(subscribe, getSnapshot, () => "/");
 }
+
+/** The same page in the other language: "/blog/x" <-> "/ar/blog/x", "/" <-> "/ar". */
+export function counterpartPath(path: string): string {
+  if (path === "/ar") return "/";
+  if (path.startsWith("/ar/")) return path.slice(3);
+  return path === "/" ? "/ar" : `/ar${path}`;
+}

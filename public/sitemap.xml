@@ -20,39 +20,165 @@
   </url>
   <url>
     <loc>https://what-should-i-cook.com/blog</loc>
-    <lastmod>2026-09-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog" />
+    <lastmod>2026-11-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://what-should-i-cook.com/ar/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://what-should-i-cook.com/blog/what-should-i-cook-for-dinner</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-should-i-cook-for-dinner" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-should-i-cook-for-dinner" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-should-i-cook-for-dinner" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/what-should-i-cook-for-dinner</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-should-i-cook-for-dinner" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-should-i-cook-for-dinner" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-should-i-cook-for-dinner" />
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://what-should-i-cook.com/blog/easy-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/easy-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/easy-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/easy-dinner-ideas" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/easy-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/easy-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/easy-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/easy-dinner-ideas" />
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://what-should-i-cook.com/blog/what-can-i-cook-with-what-i-have</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-what-i-have" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-what-i-have" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-what-i-have" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-what-i-have</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-what-i-have" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-what-i-have" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-what-i-have" />
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://what-should-i-cook.com/blog/quick-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/quick-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/quick-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/quick-dinner-ideas" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://what-should-i-cook.com/ar/blog/quick-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/quick-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/quick-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/quick-dinner-ideas" />
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://what-should-i-cook.com/blog/leftover-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/leftover-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/leftover-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/leftover-dinner-ideas" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/leftover-dinner-ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/leftover-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/leftover-dinner-ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/leftover-dinner-ideas" />
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/what-to-cook-with-chicken-and-rice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-to-cook-with-chicken-and-rice" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-to-cook-with-chicken-and-rice" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-to-cook-with-chicken-and-rice" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/what-to-cook-with-chicken-and-rice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-to-cook-with-chicken-and-rice" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-to-cook-with-chicken-and-rice" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-to-cook-with-chicken-and-rice" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/what-can-i-cook-with-eggs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-eggs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-eggs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-eggs" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-eggs</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-eggs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/what-can-i-cook-with-eggs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/what-can-i-cook-with-eggs" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/easy-vegetarian-meals</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/easy-vegetarian-meals" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/easy-vegetarian-meals" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/easy-vegetarian-meals" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/easy-vegetarian-meals</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/easy-vegetarian-meals" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/easy-vegetarian-meals" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/easy-vegetarian-meals" />
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://what-should-i-cook.com/privacy</loc>

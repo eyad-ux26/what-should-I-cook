@@ -1,0 +1,174 @@
+{
+  "index": {
+    "en": {
+      "title": "Cooking Ideas & Meal Inspiration | What Should I Cook?",
+      "description": "Practical cooking ideas, simple meal inspiration, and ways to make more from what you already have — from a quick decision framework to pantry, leftover, and ingredient guides."
+    },
+    "ar": {
+      "title": "أفكار طبخ وإلهام للوجبات | ماذا أطبخ؟",
+      "description": "أفكار طبخ عملية وإلهام لوجبات بسيطة وطرق لتستفيد أكثر مما لديك — من إطار سريع لاتخاذ القرار إلى أدلة المخزن وبقايا الطعام والمكونات."
+    }
+  },
+  "articles": [
+    {
+      "slug": "what-should-i-cook-for-dinner",
+      "category": "decide",
+      "readingMinutes": 8,
+      "datePublished": "2026-09-13",
+      "en": {
+        "title": "What Should I Cook for Dinner? A Simple Way to Decide",
+        "dek": "A five-question framework for cutting through decision fatigue and actually landing on something to make tonight.",
+        "excerpt": "A five-question framework for getting from “I have no idea” to a real plan for tonight.",
+        "description": "Stuck on what to cook for dinner? A practical, five-question framework — based on what you have, your time, and what you're craving — to help you decide tonight.",
+        "keyword": "what should I cook for dinner"
+      },
+      "ar": {
+        "title": "ماذا أطبخ على العشاء؟ طريقة بسيطة لتقرر",
+        "dek": "إطار من خمسة أسئلة يخلّصك من إرهاق اتخاذ القرار ويوصلك إلى فكرة محددة تطبخها الليلة.",
+        "excerpt": "إطار من خمسة أسئلة ينقلك من «لا أعرف» إلى خطة واضحة لليلة.",
+        "description": "لا تعرف ماذا تطبخ على العشاء؟ إطار عملي من خمسة أسئلة — يعتمد على ما لديك ووقتك وما تشتهيه — يساعدك على اتخاذ القرار الليلة.",
+        "keyword": "ماذا أطبخ على العشاء"
+      }
+    },
+    {
+      "slug": "easy-dinner-ideas",
+      "category": "easy",
+      "readingMinutes": 9,
+      "datePublished": "2026-09-13",
+      "en": {
+        "title": "Easy Dinner Ideas When You Don't Know What to Cook",
+        "dek": "A situation-sorted collection of low-effort dinners — by pan, by pantry, and by how much time you actually have.",
+        "excerpt": "Low-effort dinner ideas sorted by situation — one-pan, pantry-only, quick pasta, and more.",
+        "description": "A practical collection of easy dinner ideas sorted by situation: 15-minute meals, one-pan dinners, pantry staples, easy pasta, rice, vegetarian, and chicken meals.",
+        "keyword": "easy dinner ideas"
+      },
+      "ar": {
+        "title": "أفكار عشاء سهلة عندما لا تعرف ماذا تطبخ",
+        "dek": "مجموعة أفكار عشاء قليلة الجهد مرتبة حسب الموقف — حسب الإناء الواحد، وما في المخزن، والوقت المتاح فعلًا.",
+        "excerpt": "أفكار عشاء قليلة الجهد مرتبة حسب الموقف — إناء واحد، مكونات المخزن فقط، مكرونة سريعة، وغيرها.",
+        "description": "مجموعة عملية من أفكار العشاء السهلة مرتبة حسب الموقف: وجبات في 15 دقيقة، وعشاء بإناء واحد، ومكونات المخزن، ومكرونة وأرز ووجبات نباتية ودجاج.",
+        "keyword": "أفكار عشاء سهلة"
+      }
+    },
+    {
+      "slug": "what-can-i-cook-with-what-i-have",
+      "category": "pantry",
+      "readingMinutes": 10,
+      "datePublished": "2026-09-13",
+      "en": {
+        "title": "What Can I Cook With What I Have? A Guide to Pantry and Fridge Meals",
+        "dek": "A practical framework — protein + carb + vegetable + sauce — plus meal directions for the ten ingredients most kitchens already have.",
+        "excerpt": "A protein + carb + vegetable + sauce framework, built around ten ingredients most kitchens already have.",
+        "description": "What can you cook with what's already in your kitchen? A practical framework built around eggs, rice, pasta, potatoes, chicken, beans, and other common staples.",
+        "keyword": "what can I cook with what I have"
+      },
+      "ar": {
+        "title": "ماذا أطبخ بما لديّ؟ دليل لوجبات المخزن والثلاجة",
+        "dek": "إطار عملي — بروتين + نشويات + خضار + صلصة — مع اتجاهات للوجبات حول عشرة مكونات موجودة في معظم المطابخ.",
+        "excerpt": "إطار بروتين + نشويات + خضار + صلصة، مبني على عشرة مكونات موجودة في معظم المطابخ.",
+        "description": "ماذا يمكنك أن تطبخ بما هو موجود في مطبخك؟ إطار عملي مبني على البيض والأرز والمكرونة والبطاطس والدجاج والفول والبقوليات وغيرها من المكونات الشائعة.",
+        "keyword": "ماذا أطبخ بما لدي"
+      }
+    },
+    {
+      "slug": "quick-dinner-ideas",
+      "category": "quick",
+      "readingMinutes": 8,
+      "datePublished": "2026-09-13",
+      "en": {
+        "title": "Quick Dinner Ideas for Busy Weeknights",
+        "dek": "Dinners organized by exactly how much time you have — from a 10-minute scramble to a 30-minute sheet-pan meal — plus six habits that actually save time.",
+        "excerpt": "Dinners organized by exactly how much time you have, plus six habits that genuinely save time.",
+        "description": "Quick dinner ideas organized by time — 10 to 30 minutes — plus practical habits for cooking faster on busy weeknights.",
+        "keyword": "quick dinner ideas"
+      },
+      "ar": {
+        "title": "أفكار عشاء سريعة لأيام الأسبوع المزدحمة",
+        "dek": "أفكار عشاء مرتبة حسب الوقت المتاح بالضبط — من بيض مخفوق في 10 دقائق إلى وجبة صينية في 30 دقيقة — مع ست عادات توفّر الوقت فعلًا.",
+        "excerpt": "أفكار عشاء مرتبة حسب الوقت المتاح بالضبط، مع ست عادات توفّر الوقت فعلًا.",
+        "description": "أفكار عشاء سريعة مرتبة حسب الوقت — من 10 إلى 30 دقيقة — مع عادات عملية للطبخ بسرعة أكبر في أيام الأسبوع المزدحمة.",
+        "keyword": "أفكار عشاء سريعة"
+      }
+    },
+    {
+      "slug": "leftover-dinner-ideas",
+      "category": "leftovers",
+      "readingMinutes": 8,
+      "datePublished": "2026-09-13",
+      "en": {
+        "title": "How to Turn Leftovers Into a New Dinner",
+        "dek": "Leftover chicken, rice, vegetables, and potatoes each have four or five different second lives — plus how to store and reheat them safely.",
+        "excerpt": "Leftover chicken, rice, vegetables, and potatoes each have several different second lives.",
+        "description": "Practical ideas for turning leftover chicken, rice, vegetables, and potatoes into a completely different dinner, plus safe storage and reheating guidance.",
+        "keyword": "leftover dinner ideas"
+      },
+      "ar": {
+        "title": "كيف تحوّل بقايا الطعام إلى عشاء جديد",
+        "dek": "لكل من بقايا الدجاج والأرز والخضار والبطاطس أربع أو خمس حيوات ثانية مختلفة — مع طريقة تخزينها وإعادة تسخينها بأمان.",
+        "excerpt": "لكل من بقايا الدجاج والأرز والخضار والبطاطس عدة حيوات ثانية مختلفة.",
+        "description": "أفكار عملية لتحويل بقايا الدجاج والأرز والخضار والبطاطس إلى عشاء مختلف تمامًا، مع إرشادات للتخزين وإعادة التسخين بأمان.",
+        "keyword": "أفكار عشاء من بقايا الطعام"
+      }
+    },
+    {
+      "slug": "what-to-cook-with-chicken-and-rice",
+      "category": "staples",
+      "readingMinutes": 8,
+      "datePublished": "2026-11-01",
+      "en": {
+        "title": "What to Cook With Chicken and Rice: Easy Meal Ideas",
+        "dek": "Seven different meals from the same two ingredients — skillet, bowl, soup, fried rice, and more — plus simple seasoning directions to keep them from tasting alike.",
+        "excerpt": "Seven different meals from one classic pair, plus seasoning directions that keep them from tasting alike.",
+        "description": "Not sure what to cook with chicken and rice? Seven easy meal ideas — one-pan, skillet, soup, fried rice, bowls — plus seasoning directions and basic food-safety tips.",
+        "keyword": "what to cook with chicken and rice"
+      },
+      "ar": {
+        "title": "ماذا أطبخ بالدجاج والأرز؟ أفكار وجبات سهلة",
+        "dek": "سبع وجبات مختلفة من المكونين نفسيهما — في مقلاة، وفي طبق، وشوربة، وأرز مقلي وغيرها — مع اتجاهات بسيطة للتتبيل حتى لا تتشابه في الطعم.",
+        "excerpt": "سبع وجبات مختلفة من ثنائي كلاسيكي واحد، مع اتجاهات تتبيل تمنعها من أن تتشابه.",
+        "description": "لا تعرف ماذا تطبخ بالدجاج والأرز؟ سبع أفكار لوجبات سهلة — بإناء واحد، ومقلاة، وشوربة، وأرز مقلي، وأطباق — مع اتجاهات للتتبيل ونصائح أساسية لسلامة الطعام.",
+        "keyword": "ماذا أطبخ بالدجاج والأرز"
+      }
+    },
+    {
+      "slug": "what-can-i-cook-with-eggs",
+      "category": "staples",
+      "readingMinutes": 8,
+      "datePublished": "2026-11-01",
+      "en": {
+        "title": "What Can I Cook With Eggs? Easy Meals Beyond Scrambled",
+        "dek": "Eggs can anchor a full meal at almost any hour — from a ten-minute fried rice to a baked frittata — plus a few simple techniques that make them turn out better.",
+        "excerpt": "Eggs can anchor a full meal at almost any hour, plus simple techniques that make them turn out better.",
+        "description": "What can you cook with eggs? Easy meal ideas beyond scrambled — fried rice, frittata, shakshuka-style skillet, egg salad, and more — with simple cooking and food-safety tips.",
+        "keyword": "what can I cook with eggs"
+      },
+      "ar": {
+        "title": "ماذا أطبخ بالبيض؟ وجبات سهلة تتجاوز البيض المخفوق",
+        "dek": "يمكن للبيض أن يكون أساس وجبة كاملة في أي وقت تقريبًا — من أرز مقلي في عشر دقائق إلى فريتاتا مخبوزة — مع تقنيات بسيطة تجعله ينجح أكثر.",
+        "excerpt": "يمكن للبيض أن يكون أساس وجبة كاملة في أي وقت، مع تقنيات بسيطة تجعله ينجح أكثر.",
+        "description": "ماذا يمكنك أن تطبخ بالبيض؟ أفكار وجبات سهلة تتجاوز البيض المخفوق — أرز مقلي، وفريتاتا، ومقلاة على طريقة الشكشوكة، وسلطة بيض وغيرها — مع نصائح بسيطة للطبخ وسلامة الطعام.",
+        "keyword": "ماذا أطبخ بالبيض"
+      }
+    },
+    {
+      "slug": "easy-vegetarian-meals",
+      "category": "vegetarian",
+      "readingMinutes": 9,
+      "datePublished": "2026-11-01",
+      "en": {
+        "title": "Easy Vegetarian Meals You Can Make From Pantry Staples",
+        "dek": "A practical way to build filling meatless meals from beans, lentils, eggs, pasta, rice, and canned tomatoes — plus how to make sure they're satisfying, not just salad.",
+        "excerpt": "Filling meatless meals from beans, lentils, eggs, pasta, and rice — built mostly from the pantry.",
+        "description": "Easy vegetarian meals built from pantry staples: beans, lentils, eggs, pasta, rice, and canned tomatoes. A simple formula, eight meal ideas, and tips for making meatless meals filling.",
+        "keyword": "easy vegetarian meals"
+      },
+      "ar": {
+        "title": "وجبات نباتية سهلة من مكونات المخزن",
+        "dek": "طريقة عملية لبناء وجبات شبعة بلا لحم من الفول والعدس والبيض والمكرونة والأرز والطماطم المعلبة — مع كيف تجعلها مشبعة وليست مجرد سلطة.",
+        "excerpt": "وجبات مشبعة بلا لحم من الفول والعدس والبيض والمكرونة والأرز — مبنية في معظمها من المخزن.",
+        "description": "وجبات نباتية سهلة مبنية من مكونات المخزن: الفول والعدس والبيض والمكرونة والأرز والطماطم المعلبة. معادلة بسيطة، وثماني أفكار لوجبات، ونصائح لجعل الوجبات بلا لحم مشبعة.",
+        "keyword": "وجبات نباتية سهلة"
+      }
+    }
+  ]
+}

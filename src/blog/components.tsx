@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
-import { CATEGORIES, ARTICLES, type ArticleMeta } from "./data";
+import { useLanguage } from "../i18n";
+import { CATEGORIES, blogBase, getRelated, homePath, type ArticleMeta } from "./data";
 import { ArrowIcon, ClockIcon, CATEGORY_ICONS } from "./icons";
+import { useBlogStrings } from "./strings";
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-hover">{children}</p>
+    <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-hover rtl:tracking-normal">{children}</p>
   );
 }
 
@@ -36,24 +38,26 @@ export function CategoryBanner({ category }: { category: ArticleMeta["category"]
 export function CategoryBadge({ category }: { category: ArticleMeta["category"] }) {
   const info = CATEGORIES[category];
   const Icon = CATEGORY_ICONS[category];
+  const bs = useBlogStrings();
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white"
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white rtl:tracking-normal"
       style={{ background: info.gradient }}
     >
       <Icon className="h-3 w-3" />
-      {info.label}
+      {bs.categories[category]}
     </span>
   );
 }
 
 export function ArticleMetaRow({ article }: { article: ArticleMeta }) {
+  const bs = useBlogStrings();
   const date = new Date(article.datePublished + "T00:00:00");
-  const formatted = date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const formatted = date.toLocaleDateString(bs.dateLocale, { month: "short", day: "numeric", year: "numeric" });
   return (
     <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted">
       <ClockIcon className="h-3.5 w-3.5" />
-      <span>{article.readingMinutes} min read</span>
+      <span>{bs.minRead(article.readingMinutes)}</span>
       <span aria-hidden="true">·</span>
       <time dateTime={article.datePublished}>{formatted}</time>
     </div>
@@ -136,12 +140,13 @@ export function IdeaBlock({
   variation: string;
   children: ReactNode;
 }) {
+  const bs = useBlogStrings();
   return (
     <div className="flex flex-col gap-2.5">
       <P>{children}</P>
       <IngredientChips items={ingredients} />
       <p className="text-sm text-text-muted">
-        <Strong>Time:</Strong> {time} · <Strong>Easy variation:</Strong> {variation}
+        <Strong>{bs.time}</Strong> {time} · <Strong>{bs.easyVariation}</Strong> {variation}
       </p>
     </div>
   );
@@ -162,19 +167,20 @@ export function IngredientChips({ items }: { items: string[] }) {
 /* ---------- Callouts ---------- */
 
 const CALLOUT_STYLES = {
-  tip: { label: "Good to know", accent: "#14b8a6", soft: "#e4f9f5" },
-  try: { label: "Try this", accent: "#ff6a3d", soft: "var(--color-accent-soft)" },
+  tip: { accent: "#14b8a6", soft: "#e4f9f5" },
+  try: { accent: "#ff6a3d", soft: "var(--color-accent-soft)" },
 } as const;
 
 export function Callout({ variant, children }: { variant: "tip" | "try"; children: ReactNode }) {
   const style = CALLOUT_STYLES[variant];
+  const bs = useBlogStrings();
   return (
     <div
       className="flex flex-col gap-1 rounded-2xl border px-5 py-4"
       style={{ borderColor: style.accent + "33", background: style.soft }}
     >
-      <p className="text-xs font-bold uppercase tracking-wide" style={{ color: style.accent }}>
-        {style.label}
+      <p className="text-xs font-bold uppercase tracking-wide rtl:tracking-normal" style={{ color: style.accent }}>
+        {variant === "tip" ? bs.tip : bs.tryThis}
       </p>
       <div className="text-[15px] leading-relaxed text-text">{children}</div>
     </div>
@@ -222,20 +228,20 @@ export function QuickDecisionBox({ title, steps }: { title: string; steps: strin
 }
 
 /** Tasteful CTA back to the generator — a helpful next step, not an ad. */
-export function GeneratorCta({ prompt = "Still not sure what to make?" }: { prompt?: string }) {
+export function GeneratorCta() {
+  const { lang } = useLanguage();
+  const bs = useBlogStrings();
   return (
     <div className="flex flex-col items-start gap-3 rounded-2xl border border-accent/20 bg-accent-soft px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
       <div>
-        <p className="font-bold text-text">{prompt}</p>
-        <p className="mt-0.5 text-sm text-text-muted">
-          Tell us what ingredients you have and we'll help you find an idea.
-        </p>
+        <p className="font-bold text-text">{bs.ctaPrompt}</p>
+        <p className="mt-0.5 text-sm text-text-muted">{bs.ctaBody}</p>
       </div>
       <a
-        href="/"
+        href={homePath(lang)}
         className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
       >
-        What should I cook?
+        {bs.ctaButton}
         <ArrowIcon className="h-3.5 w-3.5" />
       </a>
     </div>
@@ -243,17 +249,19 @@ export function GeneratorCta({ prompt = "Still not sure what to make?" }: { prom
 }
 
 export function KeepExploring({ currentSlug }: { currentSlug: string }) {
-  const related = ARTICLES.filter((a) => a.slug !== currentSlug).slice(0, 3);
+  const { lang } = useLanguage();
+  const bs = useBlogStrings();
+  const related = getRelated(currentSlug, lang);
   return (
     <div className="flex flex-col gap-4">
-      <Eyebrow>Keep exploring</Eyebrow>
+      <Eyebrow>{bs.keepExploring}</Eyebrow>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {related.map((a) => {
           const info = CATEGORIES[a.category];
           return (
             <a
               key={a.slug}
-              href={`/blog/${a.slug}`}
+              href={`${blogBase(lang)}/${a.slug}`}
               className="group flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <span
@@ -263,7 +271,7 @@ export function KeepExploring({ currentSlug }: { currentSlug: string }) {
               />
               <span className="text-sm font-bold leading-snug text-text">{a.title}</span>
               <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-accent-hover">
-                Read article
+                {bs.readArticle}
                 <ArrowIcon className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
               </span>
             </a>

@@ -3,58 +3,49 @@
 // index pages that return 404, so give every public route its own real
 // <route>.html file — GitHub Pages serves it at the extensionless URL with
 // a 200. The app still renders client-side; this just fixes the status code
-// and puts route-specific head tags (title/description/canonical, and for the
-// two homepage routes: html lang/dir, canonical and hreflang) in the static HTML.
+// and puts route-specific head tags (title/description/canonical/hreflang, and
+// html lang/dir for Arabic pages) in the static HTML.
 //
-// Keep ROUTES in sync with src/Root.tsx and src/blog/data.ts.
+// Blog routes come from src/blog/articles.json; keep the static routes in sync
+// with src/Root.tsx.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const SITE = "https://what-should-i-cook.com";
 const DIST = "dist";
 
-const ROUTES = [
-  { path: "/privacy" },
-  { path: "/terms" },
-  { path: "/disclaimer" },
-  { path: "/contact" },
-  {
-    path: "/blog",
-    title: "Cooking Ideas & Dinner Inspiration | What Should I Cook?",
-    description:
-      "Practical cooking ideas, simple dinner inspiration, and ways to make more from what you already have — from a quick decision framework to pantry and leftover meals.",
-  },
-  {
-    path: "/blog/what-should-i-cook-for-dinner",
-    title: "What Should I Cook for Dinner? A Simple Way to Decide | What Should I Cook",
-    description:
-      "Stuck on what to cook for dinner? A practical, five-question framework — based on what you have, your time, and what you're craving — to help you decide tonight.",
-  },
-  {
-    path: "/blog/easy-dinner-ideas",
-    title: "Easy Dinner Ideas When You Don't Know What to Cook | What Should I Cook",
-    description:
-      "A practical collection of easy dinner ideas sorted by situation: 15-minute meals, one-pan dinners, pantry staples, easy pasta, rice, vegetarian, and chicken meals.",
-  },
-  {
-    path: "/blog/what-can-i-cook-with-what-i-have",
-    title: "What Can I Cook With What I Have? A Guide to Pantry and Fridge Meals | What Should I Cook",
-    description:
-      "What can you cook with what's already in your kitchen? A practical framework built around eggs, rice, pasta, potatoes, chicken, beans, and other common staples.",
-  },
-  {
-    path: "/blog/quick-dinner-ideas",
-    title: "Quick Dinner Ideas for Busy Weeknights | What Should I Cook",
-    description:
-      "Quick dinner ideas organized by time — 10 to 30 minutes — plus practical habits for cooking faster on busy weeknights.",
-  },
-  {
-    path: "/blog/leftover-dinner-ideas",
-    title: "How to Turn Leftovers Into a New Dinner | What Should I Cook",
-    description:
-      "Practical ideas for turning leftover chicken, rice, vegetables, and potatoes into a completely different dinner, plus safe storage and reheating guidance.",
-  },
+// Blog metadata lives in one JSON file shared with the app (src/blog/data.ts),
+// so titles/descriptions here can't drift from what the pages render.
+const blog = JSON.parse(readFileSync("src/blog/articles.json", "utf8"));
+const SITE_NAME = { en: "What Should I Cook", ar: "ماذا أطبخ" };
+
+/** [hreflang, absolute URL] pairs for a page that exists in both languages. */
+const alternatesFor = (enPath, arPath) => [
+  ["en", `${SITE}${enPath}`],
+  ["ar", `${SITE}${arPath}`],
+  ["x-default", `${SITE}${enPath}`],
 ];
+
+const blogRoutes = [
+  ...["en", "ar"].map((lang) => ({
+    path: lang === "ar" ? "/ar/blog" : "/blog",
+    title: blog.index[lang].title,
+    description: blog.index[lang].description,
+    lang,
+    alternates: alternatesFor("/blog", "/ar/blog"),
+  })),
+  ...blog.articles.flatMap((a) =>
+    ["en", "ar"].map((lang) => ({
+      path: lang === "ar" ? `/ar/blog/${a.slug}` : `/blog/${a.slug}`,
+      title: `${a[lang].title} | ${SITE_NAME[lang]}`,
+      description: a[lang].description,
+      lang,
+      alternates: alternatesFor(`/blog/${a.slug}`, `/ar/blog/${a.slug}`),
+    })),
+  ),
+];
+
+const ROUTES = [{ path: "/privacy" }, { path: "/terms" }, { path: "/disclaimer" }, { path: "/contact" }, ...blogRoutes];
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
@@ -69,7 +60,10 @@ function write(path, html) {
   console.log(`prerendered ${path} -> ${out}`);
 }
 
-for (const { path, title, description } of ROUTES) {
+const alternateLinks = (alternates) =>
+  alternates.map(([lang, href]) => `    <link rel="alternate" hreflang="${lang}" href="${href}" />`).join("\n");
+
+for (const { path, title, description, lang, alternates } of ROUTES) {
   let html = template;
   if (title && description) {
     const url = `${SITE}${path}`;
@@ -81,7 +75,10 @@ for (const { path, title, description } of ROUTES) {
       .replace(/(<meta property="og:description" content=")[^"]*"/, `$1${esc(description)}"`)
       .replace(/(<meta name="twitter:title" content=")[^"]*"/, `$1${esc(title)}"`)
       .replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${esc(description)}"`)
-      .replace("</head>", `    <link rel="canonical" href="${url}" />\n  </head>`);
+      .replace("</head>", `    <link rel="canonical" href="${url}" />\n${alternates ? alternateLinks(alternates) + "\n" : ""}  </head>`);
+  }
+  if (lang === "ar") {
+    html = html.replace(/<html lang="[^"]*"( dir="[^"]*")?>/, '<html lang="ar" dir="rtl">');
   }
   write(path, html);
 }

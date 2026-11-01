@@ -11,6 +11,8 @@ import { InspirationSection } from "./components/InspirationSection";
 import { generateRecipes, generateRecipeDetails } from "./api/generateRecipes";
 import { LogoMark } from "./components/LogoMark";
 import { Footer } from "./components/Footer";
+import { LanguageSwitch } from "./components/LanguageSwitch";
+import { blogBase } from "./blog/data";
 import { useLanguage } from "./i18n";
 import { usePathname } from "./routing";
 import { useHomepageLinks } from "./useHomepageLinks";
@@ -53,28 +55,12 @@ const STEP_ICONS: React.ReactNode[] = [
   />,
 ];
 
-/** Real links between the two homepage URLs ("/" and "/ar"); client-side navigation is handled by Root. */
-function LanguageSwitch() {
-  const { t, lang } = useLanguage();
-  const target = lang === "ar" ? "en" : "ar";
-  return (
-    <a
-      href={target === "ar" ? "/ar" : "/"}
-      hrefLang={target}
-      lang={target}
-      className="rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-    >
-      {t.languageToggle}
-    </a>
-  );
-}
-
 function HeaderBlogLink() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   return (
     <a
-      href="/blog"
-      hrefLang="en"
+      href={blogBase(lang)}
+      hrefLang={lang}
       className="inline-flex min-h-10 items-center rounded-full px-3 text-xs font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
     >
       {t.headerBlog}
@@ -302,7 +288,7 @@ function App() {
           <div className="mb-6 flex items-center justify-between gap-2.5">
             <div className="flex min-w-0 items-center gap-2.5">
               <LogoMark />
-              <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
+              <span className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70 rtl:tracking-normal">
                 {t.brand}
               </span>
             </div>

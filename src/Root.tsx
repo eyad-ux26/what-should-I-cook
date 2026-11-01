@@ -5,11 +5,7 @@ import { TermsOfUse } from "./pages/legal/TermsOfUse";
 import { Disclaimer } from "./pages/legal/Disclaimer";
 import { Contact } from "./pages/legal/Contact";
 import { BlogIndex } from "./blog/pages/BlogIndex";
-import { DinnerDecision } from "./blog/pages/DinnerDecision";
-import { EasyDinnerIdeas } from "./blog/pages/EasyDinnerIdeas";
-import { PantryMeals } from "./blog/pages/PantryMeals";
-import { QuickDinners } from "./blog/pages/QuickDinners";
-import { Leftovers } from "./blog/pages/Leftovers";
+import { ARTICLE_PAGES } from "./blog/pages";
 import { navigate, usePathname } from "./routing";
 
 /**
@@ -51,6 +47,15 @@ function useRoute(): string {
 export function Root() {
   const route = useRoute();
 
+  // Blog: "/blog", "/blog/<slug>" (English) and "/ar/blog", "/ar/blog/<slug>" (Arabic).
+  const blog = /^(\/ar)?\/blog(?:\/([^/]+))?$/.exec(route);
+  if (blog) {
+    const [, arPrefix, slug] = blog;
+    if (!slug) return <BlogIndex />;
+    const Page = ARTICLE_PAGES[slug]?.[arPrefix ? "ar" : "en"];
+    if (Page) return <Page />;
+  }
+
   switch (route) {
     case "/privacy":
       return <PrivacyPolicy />;
@@ -60,18 +65,6 @@ export function Root() {
       return <Disclaimer />;
     case "/contact":
       return <Contact />;
-    case "/blog":
-      return <BlogIndex />;
-    case "/blog/what-should-i-cook-for-dinner":
-      return <DinnerDecision />;
-    case "/blog/easy-dinner-ideas":
-      return <EasyDinnerIdeas />;
-    case "/blog/what-can-i-cook-with-what-i-have":
-      return <PantryMeals />;
-    case "/blog/quick-dinner-ideas":
-      return <QuickDinners />;
-    case "/blog/leftover-dinner-ideas":
-      return <Leftovers />;
     // "/" and "/ar" render the same component; the URL decides the language
     // (see LanguageProvider), and keeping one element here preserves the
     // form state when switching between them.

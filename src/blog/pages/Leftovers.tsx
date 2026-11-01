@@ -1,12 +1,9 @@
 import { ArticleShell } from "../ArticleShell";
-import { getArticle } from "../data";
 import { H2, P, Ul, Strong, InternalLink, Callout } from "../components";
-
-const article = getArticle("leftover-dinner-ideas")!;
 
 export function Leftovers() {
   return (
-    <ArticleShell article={article}>
+    <ArticleShell slug="leftover-dinner-ideas">
       <P>
         Leftovers get skipped for a reason that has nothing to do with taste: reheating the exact
         same plate twice in a row feels uninspired, even when the food itself is still good. The

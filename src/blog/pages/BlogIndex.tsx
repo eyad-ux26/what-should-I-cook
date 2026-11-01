@@ -1,27 +1,41 @@
 import { BlogLayout } from "../BlogLayout";
-import { ARTICLES, CATEGORIES } from "../data";
+import { BLOG_INDEX_SEO, CATEGORIES, blogBase, getArticles, homePath } from "../data";
+import { useLanguage } from "../../i18n";
+import { useBlogStrings } from "../strings";
 import { CATEGORY_ICONS, ArrowIcon } from "../icons";
 import { CategoryBadge, ArticleMetaRow, Eyebrow } from "../components";
 import { useSeo, useJsonLd, siteUrl } from "../seo";
 
-const TITLE = "Cooking Ideas & Dinner Inspiration | What Should I Cook?";
-const DESCRIPTION =
-  "Practical cooking ideas, simple dinner inspiration, and ways to make more from what you already have — from a quick decision framework to pantry and leftover meals.";
-
-const [featured, highlight, ...rest] = ARTICLES;
-
 export function BlogIndex() {
-  useSeo({ title: TITLE, description: DESCRIPTION, path: "/blog", type: "website" });
+  const { lang } = useLanguage();
+  const bs = useBlogStrings();
+  const base = blogBase(lang);
+  const { title, description } = BLOG_INDEX_SEO[lang];
+  const [featured, highlight, ...rest] = getArticles(lang);
+  const articles = [featured, highlight, ...rest];
+
+  useSeo({
+    title,
+    description,
+    path: base,
+    type: "website",
+    alternates: [
+      ["en", siteUrl("/blog")],
+      ["ar", siteUrl("/ar/blog")],
+      ["x-default", siteUrl("/blog")],
+    ],
+  });
   useJsonLd({
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "What Should I Cook — Cooking Inspiration",
-    description: DESCRIPTION,
-    url: siteUrl("/blog"),
-    blogPost: ARTICLES.map((a) => ({
+    name: lang === "ar" ? "ماذا أطبخ — إلهام للطبخ" : "What Should I Cook — Cooking Inspiration",
+    description,
+    inLanguage: lang,
+    url: siteUrl(base),
+    blogPost: articles.map((a) => ({
       "@type": "BlogPosting",
       headline: a.title,
-      url: siteUrl(`/blog/${a.slug}`),
+      url: siteUrl(`${base}/${a.slug}`),
       datePublished: a.datePublished,
     })),
   });
@@ -29,8 +43,8 @@ export function BlogIndex() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl("/") },
-      { "@type": "ListItem", position: 2, name: "Blog", item: siteUrl("/blog") },
+      { "@type": "ListItem", position: 1, name: bs.home, item: siteUrl(homePath(lang)) },
+      { "@type": "ListItem", position: 2, name: bs.blog, item: siteUrl(base) },
     ],
   });
 
@@ -38,44 +52,43 @@ export function BlogIndex() {
     <BlogLayout>
       <div className="mx-auto w-full max-w-5xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
         <div className="max-w-2xl">
-          <Eyebrow>Cooking Inspiration</Eyebrow>
+          <Eyebrow>{bs.eyebrow}</Eyebrow>
           <h1 className="mt-2 text-[34px] font-extrabold leading-[1.1] tracking-tight text-text sm:text-[44px]">
-            Good food starts with a good idea.
+            {bs.indexTitle}
           </h1>
           <p className="mt-4 text-[17px] leading-relaxed text-text-muted">
-            Practical cooking ideas, simple meal inspiration, and ways to make more from what you
-            already have.
+            {bs.indexIntro}
           </p>
         </div>
 
         {/* Featured article — the flagship piece, given a distinct hero treatment */}
         <a
-          href={`/blog/${featured.slug}`}
+          href={`${base}/${featured.slug}`}
           className="hero-band group relative mt-10 block overflow-hidden rounded-[28px] px-6 py-10 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:px-10 sm:py-14"
         >
           <div className="relative z-10 flex max-w-xl flex-col gap-4">
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white/90 backdrop-blur">
-              Featured Article
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white/90 rtl:tracking-normal backdrop-blur">
+              {bs.featured}
             </span>
             <h2 className="text-2xl font-extrabold leading-tight text-white sm:text-[32px]">
               {featured.title}
             </h2>
             <p className="text-[15px] leading-relaxed text-white/70 sm:text-base">{featured.dek}</p>
             <div className="flex items-center gap-3 text-xs font-medium text-white/60">
-              <span>{featured.readingMinutes} min read</span>
+              <span>{bs.minRead(featured.readingMinutes)}</span>
             </div>
             <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-sm font-bold text-ink transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">
-              Read article
+              {bs.readArticle}
               <ArrowIcon className="h-3.5 w-3.5" />
             </span>
           </div>
         </a>
 
-        <h2 className="mt-14 text-xl font-extrabold text-text sm:text-2xl">Latest Cooking Ideas</h2>
+        <h2 className="mt-14 text-xl font-extrabold text-text sm:text-2xl">{bs.latest}</h2>
 
         {/* Highlight card — a second, slightly larger card for visual variety */}
         <a
-          href={`/blog/${highlight.slug}`}
+          href={`${base}/${highlight.slug}`}
           className="group mt-5 flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:flex-row sm:items-center sm:gap-8 sm:p-8"
         >
           <span
@@ -94,7 +107,7 @@ export function BlogIndex() {
             <div className="mt-3 flex items-center gap-3">
               <ArticleMetaRow article={highlight} />
               <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent-hover">
-                Read article
+                {bs.readArticle}
                 <ArrowIcon className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
               </span>
             </div>
@@ -108,7 +121,7 @@ export function BlogIndex() {
             return (
               <a
                 key={a.slug}
-                href={`/blog/${a.slug}`}
+                href={`${base}/${a.slug}`}
                 className="group flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 <span

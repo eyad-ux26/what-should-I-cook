@@ -1,12 +1,9 @@
 import { ArticleShell } from "../ArticleShell";
-import { getArticle } from "../data";
 import { H2, H3, P, Strong, InternalLink, Callout, QuickDecisionBox, ArticleTable } from "../components";
-
-const article = getArticle("what-should-i-cook-for-dinner")!;
 
 export function DinnerDecision() {
   return (
-    <ArticleShell article={article}>
+    <ArticleShell slug="what-should-i-cook-for-dinner">
       <P>
         "What should I cook for dinner?" is rarely a question about not knowing any recipes. Most
         people who ask it could name a dozen meals without thinking hard. The real problem is

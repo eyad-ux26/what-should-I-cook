@@ -1,13 +1,14 @@
 import { useLanguage } from "../i18n";
+import { blogBase } from "../blog/data";
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const year = new Date().getFullYear();
 
   return (
     <footer className="relative z-10 mx-auto w-full max-w-xl px-4 pb-8 pt-2 sm:px-6">
       <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs font-medium text-text-muted">
-        <a href="/blog" className="transition-colors hover:text-text">
+        <a href={blogBase(lang)} className="transition-colors hover:text-text">
           {t.footerBlog}
         </a>
         <a href="/privacy" className="transition-colors hover:text-text">

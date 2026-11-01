@@ -8,6 +8,8 @@ interface SeoOptions {
   description: string;
   path: string;
   type?: "website" | "article";
+  /** Other-language versions of this page: [hreflang, absolute URL] pairs (include x-default). */
+  alternates?: [hreflang: string, href: string][];
 }
 
 const DEFAULT_TITLE = "What Should I Cook?";
@@ -58,8 +60,19 @@ function setCanonical(href: string | null): void {
  * lifetime of the mounted page, and puts the homepage defaults back on
  * unmount (the next routed page that calls this hook overrides them again).
  */
-export function useSeo({ title, description, path, type = "article" }: SeoOptions): void {
+export function useSeo({ title, description, path, type = "article", alternates }: SeoOptions): void {
+  const alternatesKey = alternates ? JSON.stringify(alternates) : "";
   useEffect(() => {
+    // Replace whatever alternates the prerendered <head> carried with this page's own.
+    document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+    for (const [hreflang, href] of alternatesKey ? (JSON.parse(alternatesKey) as [string, string][]) : []) {
+      const link = document.createElement("link");
+      link.setAttribute("rel", "alternate");
+      link.setAttribute("hreflang", hreflang);
+      link.setAttribute("href", href);
+      document.head.appendChild(link);
+    }
+
     const url = `${SITE_URL}${path}`;
     document.title = title;
     setCanonical(url);
@@ -73,11 +86,12 @@ export function useSeo({ title, description, path, type = "article" }: SeoOption
     setMeta("name", "twitter:description", description);
 
     return () => {
+      document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
       document.title = DEFAULT_TITLE;
       setCanonical(null);
       for (const [attr, key, content] of DEFAULT_META) setMeta(attr, key, content);
     };
-  }, [title, description, path, type]);
+  }, [title, description, path, type, alternatesKey]);
 }
 
 /**

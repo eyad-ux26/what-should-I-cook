@@ -1,12 +1,9 @@
 import { ArticleShell } from "../ArticleShell";
-import { getArticle } from "../data";
 import { H2, P, Ol, Strong, InternalLink, IdeaBlock, Callout } from "../components";
-
-const article = getArticle("quick-dinner-ideas")!;
 
 export function QuickDinners() {
   return (
-    <ArticleShell article={article}>
+    <ArticleShell slug="quick-dinner-ideas">
       <P>
         On a genuinely busy night, "easy" isn't specific enough — what matters is exactly how many
         minutes you have. These ideas are grouped by real time budgets, plus a handful of habits

@@ -424,14 +424,17 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-/** The homepage language is decided by the URL: "/" is English, "/ar" is Arabic. */
+/**
+ * The language of the homepage and the blog is decided by the URL: "/" and
+ * "/blog/..." are English, "/ar" and "/ar/blog/..." are Arabic.
+ */
 function langForPath(path: string): Lang | null {
-  if (path === "/ar") return "ar";
-  if (path === "/") return "en";
+  if (path === "/ar" || path.startsWith("/ar/")) return "ar";
+  if (path === "/" || path === "/blog" || path.startsWith("/blog/")) return "en";
   return null;
 }
 
-/** Other routes (legal pages, blog) fall back to the last homepage language shown. */
+/** Other routes (legal pages) fall back to the last homepage language shown. */
 function getStoredLang(): Lang {
   try {
     const stored = localStorage.getItem("lang");
