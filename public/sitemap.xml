@@ -235,6 +235,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://what-should-i-cook.com/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/about" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/about" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://what-should-i-cook.com/privacy</loc>
     <lastmod>2026-09-01</lastmod>
     <changefreq>yearly</changefreq>

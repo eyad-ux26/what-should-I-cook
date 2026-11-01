@@ -81,6 +81,7 @@ interface Strings {
   detailsError: string;
   languageToggle: string;
   footerBlog: string;
+  footerAbout: string;
   footerPrivacy: string;
   footerTerms: string;
   footerDisclaimer: string;
@@ -241,6 +242,7 @@ const en: Strings = {
   detailsError: "Couldn't load details. Try again.",
   languageToggle: "العربية",
   footerBlog: "Blog",
+  footerAbout: "About",
   footerPrivacy: "Privacy Policy",
   footerTerms: "Terms of Use",
   footerDisclaimer: "AI & Recipe Disclaimer",
@@ -407,6 +409,7 @@ const ar: Strings = {
   detailsError: "تعذّر تحميل التفاصيل. حاول مرة أخرى.",
   languageToggle: "English",
   footerBlog: "المدونة",
+  footerAbout: "من نحن",
   footerPrivacy: "سياسة الخصوصية",
   footerTerms: "شروط الاستخدام",
   footerDisclaimer: "إخلاء مسؤولية الوصفات والذكاء الاصطناعي",
@@ -426,11 +429,11 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 /**
  * The language of the homepage and the blog is decided by the URL: "/" and
- * "/blog/..." are English, "/ar" and "/ar/blog/..." are Arabic.
+ * "/about" and "/blog/..." are English, "/ar", "/ar/about" and "/ar/blog/..." are Arabic.
  */
 function langForPath(path: string): Lang | null {
   if (path === "/ar" || path.startsWith("/ar/")) return "ar";
-  if (path === "/" || path === "/blog" || path.startsWith("/blog/")) return "en";
+  if (path === "/" || path === "/about" || path === "/blog" || path.startsWith("/blog/")) return "en";
   return null;
 }
 

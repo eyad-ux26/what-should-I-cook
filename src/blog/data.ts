@@ -65,6 +65,8 @@ export function getRelated(slug: string, lang: Lang, count = 3): ArticleMeta[] {
   return Array.from({ length: Math.min(count, all.length - 1) }, (_, k) => all[(i + 1 + k) % all.length]);
 }
 
+export const ABOUT_SEO: Record<Lang, { title: string; description: string }> = raw.about;
+
 export const BLOG_INDEX_SEO: Record<Lang, { title: string; description: string }> = raw.index;
 
 /** Base path of the blog in a language: "/blog" or "/ar/blog". */

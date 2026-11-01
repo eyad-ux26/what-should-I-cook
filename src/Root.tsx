@@ -5,6 +5,7 @@ import { TermsOfUse } from "./pages/legal/TermsOfUse";
 import { Disclaimer } from "./pages/legal/Disclaimer";
 import { Contact } from "./pages/legal/Contact";
 import { BlogIndex } from "./blog/pages/BlogIndex";
+import { About } from "./blog/pages/About";
 import { ARTICLE_PAGES } from "./blog/pages";
 import { navigate, usePathname } from "./routing";
 
@@ -57,6 +58,9 @@ export function Root() {
   }
 
   switch (route) {
+    case "/about":
+    case "/ar/about":
+      return <About />;
     case "/privacy":
       return <PrivacyPolicy />;
     case "/terms":

@@ -11,6 +11,9 @@ export function Footer() {
         <a href={blogBase(lang)} className="transition-colors hover:text-text">
           {t.footerBlog}
         </a>
+        <a href={lang === "ar" ? "/ar/about" : "/about"} className="transition-colors hover:text-text">
+          {t.footerAbout}
+        </a>
         <a href="/privacy" className="transition-colors hover:text-text">
           {t.footerPrivacy}
         </a>

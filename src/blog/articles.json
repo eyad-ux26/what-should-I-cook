@@ -230,5 +230,15 @@
         "keyword": "استهلاك الخضار قبل أن تتلف"
       }
     }
-  ]
+  ],
+  "about": {
+    "en": {
+      "title": "About What Should I Cook | What Should I Cook",
+      "description": "What Should I Cook is a free tool and cooking blog that turns the ingredients you already have into recipe ideas. Learn how it works, who builds it, and how to get in touch."
+    },
+    "ar": {
+      "title": "من نحن | ماذا أطبخ",
+      "description": "«ماذا أطبخ» أداة مجانية ومدونة طبخ تحوّل المكونات التي لديك إلى أفكار وصفات. تعرّف على طريقة عمله ومن يقف وراءه وكيف تتواصل معنا."
+    }
+  }
 }

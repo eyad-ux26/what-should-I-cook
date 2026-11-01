@@ -45,7 +45,15 @@ const blogRoutes = [
   ),
 ];
 
-const ROUTES = [{ path: "/privacy" }, { path: "/terms" }, { path: "/disclaimer" }, { path: "/contact" }, ...blogRoutes];
+const aboutRoutes = ["en", "ar"].map((lang) => ({
+  path: lang === "ar" ? "/ar/about" : "/about",
+  title: blog.about[lang].title,
+  description: blog.about[lang].description,
+  lang,
+  alternates: alternatesFor("/about", "/ar/about"),
+}));
+
+const ROUTES = [{ path: "/privacy" }, { path: "/terms" }, { path: "/disclaimer" }, { path: "/contact" }, ...aboutRoutes, ...blogRoutes];
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
