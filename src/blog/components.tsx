@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useLanguage } from "../i18n";
 import { CATEGORIES, blogBase, getRelated, homePath, type ArticleMeta } from "./data";
 import { ArrowIcon, ClockIcon, CATEGORY_ICONS } from "./icons";
-import { useBlogStrings } from "./strings";
+import { BLOG_STRINGS, useBlogStrings } from "./strings";
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -52,8 +52,12 @@ export function CategoryBadge({ category }: { category: ArticleMeta["category"] 
 
 export function ArticleMetaRow({ article }: { article: ArticleMeta }) {
   const bs = useBlogStrings();
-  const date = new Date(article.datePublished + "T00:00:00");
-  const formatted = date.toLocaleDateString(bs.dateLocale, { month: "short", day: "numeric", year: "numeric" });
+  // Formatted by hand (no Intl) so the build-time render and the browser always agree.
+  const [year, month, day] = article.datePublished.split("-").map(Number);
+  const formatted =
+    bs.months === BLOG_STRINGS.en.months
+      ? `${bs.months[month - 1]} ${day}, ${year}`
+      : `${day} ${bs.months[month - 1]} ${year}`;
   return (
     <div className="flex items-center gap-1.5 text-xs font-medium text-text-muted">
       <ClockIcon className="h-3.5 w-3.5" />

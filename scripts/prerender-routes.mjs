@@ -9,7 +9,8 @@
 // Blog routes come from src/blog/articles.json; keep the static routes in sync
 // with src/Root.tsx.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const SITE = "https://what-should-i-cook.com";
 const DIST = "dist";
@@ -61,7 +62,12 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 // homepage-only tags below never leak into the other routes.
 const template = readFileSync(join(DIST, "index.html"), "utf8");
 
+// The app itself, built for the server (see the "build" script): render()
+// returns the HTML for one route, which goes inside <div id="root">.
+const { render } = await import(pathToFileURL(resolve("dist-ssr/entry-server.js")).href);
+
 function write(path, html) {
+  html = html.replace('<div id="root"></div>', `<div id="root" data-path="${path}">${render(path)}</div>`);
   const out = join(DIST, path === "/" ? "index.html" : `${path}.html`);
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, html);

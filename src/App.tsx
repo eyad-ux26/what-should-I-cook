@@ -311,7 +311,7 @@ function App() {
       </section>
 
       <div className="relative z-10 mx-auto -mt-20 flex w-full max-w-xl flex-col px-4 pb-10 sm:-mt-24 sm:px-6">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {stage === "input" && (
             <motion.div
               key="input"

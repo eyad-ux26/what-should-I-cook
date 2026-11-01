@@ -27,7 +27,7 @@ export function Footer() {
           {t.footerContact}
         </a>
       </nav>
-      <p className="mt-3 text-center text-[11px] leading-relaxed text-text-muted">
+      <p className="mt-3 text-center text-[11px] leading-relaxed text-text-muted" suppressHydrationWarning>
         {t.footerTagline}
         <br />
         &copy; {year} What Should I Cook

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { AllergyTag, CuisineTag, DietTag, Difficulty, TimeBudget } from "./types";
 import { usePathname } from "./routing";
 
@@ -450,7 +450,14 @@ function getStoredLang(): Lang {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const path = usePathname();
   const urlLang = langForPath(path);
-  const lang: Lang = urlLang ?? getStoredLang();
+  // Pages without a language in the URL (legal pages) start in English, which
+  // is what the prerendered HTML contains, then switch to the remembered
+  // language after mount so hydration always matches.
+  const [storedLang, setStoredLang] = useState<Lang>("en");
+  useEffect(() => {
+    setStoredLang(getStoredLang());
+  }, []);
+  const lang: Lang = urlLang ?? storedLang;
 
   useEffect(() => {
     document.documentElement.lang = lang;

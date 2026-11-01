@@ -21,7 +21,7 @@ interface BlogStrings {
   ctaBody: string;
   ctaButton: string;
   categories: Record<CategorySlug, string>;
-  dateLocale: string;
+  months: string[];
   siteName: string;
 }
 
@@ -53,7 +53,7 @@ const en: BlogStrings = {
     staples: "Ingredient Guides",
     vegetarian: "Vegetarian",
   },
-  dateLocale: "en-US",
+  months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   siteName: "What Should I Cook",
 };
 
@@ -85,7 +85,7 @@ const ar: BlogStrings = {
     staples: "أدلة المكونات",
     vegetarian: "نباتي",
   },
-  dateLocale: "ar-u-nu-latn",
+  months: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
   siteName: "ماذا أطبخ",
 };
 

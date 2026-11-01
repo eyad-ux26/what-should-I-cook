@@ -35,13 +35,25 @@ function getSnapshot(): string {
   return normalizePath(window.location.pathname);
 }
 
+// Set by the build-time renderer (see entry-server.tsx) before it renders a page.
+let serverPath = "/";
+
+export function setServerPath(path: string): void {
+  serverPath = normalizePath(path);
+}
+
+/** Server render: the page being prerendered. Browser (including hydration): the real URL, which is the same page. */
+function getServerSnapshot(): string {
+  return typeof window === "undefined" ? serverPath : getSnapshot();
+}
+
 export function navigate(url: string): void {
   window.history.pushState(null, "", url);
   notify();
 }
 
 export function usePathname(): string {
-  return useSyncExternalStore(subscribe, getSnapshot, () => "/");
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 /** The same page in the other language: "/blog/x" <-> "/ar/blog/x", "/" <-> "/ar". */
