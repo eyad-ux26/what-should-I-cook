@@ -1,11 +1,11 @@
 import { LegalLayout } from "./LegalLayout";
 import { P } from "./shared";
 
-const CONTACT_EMAIL = "info@what-should-i-cook.com";
+const CONTACT_EMAIL = "what.shi.cook@gmail.com";
 
 export function Contact() {
   return (
-    <LegalLayout title="Contact" lastUpdated="September 1, 2026">
+    <LegalLayout title="Contact" lastUpdated="November 2, 2026">
       <P>Have a question, suggestion, or problem with What Should I Cook? We'd love to hear from you.</P>
       <P>
         For general questions, feedback, bug reports, or privacy-related requests, please contact
