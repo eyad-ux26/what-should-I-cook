@@ -5,7 +5,7 @@ import { useSeo, useJsonLd, siteUrl } from "../seo";
 import { useLanguage } from "../../i18n";
 import { useBlogStrings } from "../strings";
 
-const CONTACT_EMAIL = "info@what-should-i-cook.com";
+const CONTACT_EMAIL = "what.shi.cook@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/eyad-mahmoud";
 const BEHANCE_URL = "https://www.behance.net/eyadesign";
 
@@ -28,7 +28,7 @@ const CONTENT = {
     blog: "The articles are practical guides to everyday cooking questions: deciding what to make, cooking from the pantry, using up leftovers and vegetables, and building easy meals around common ingredients. They are general cooking guidance, not medical or dietary advice.",
     blogLink: "Browse the blog",
     whoTitle: "Who's behind it",
-    who: "What Should I Cook is built and maintained by Eyad Mahmoud as an independent project.",
+    who: "Hi, I'm Eyad Mahmoud, a UI/UX designer. I design, build, and maintain What Should I Cook as an independent project, with the aim of making the everyday question of what to cook a little easier to answer.",
     linkedin: "LinkedIn",
     behance: "Behance portfolio",
     contactTitle: "Get in touch",
@@ -52,7 +52,7 @@ const CONTENT = {
     blog: "المقالات أدلة عملية لأسئلة الطبخ اليومية: كيف تقرر ماذا تصنع، والطبخ من المخزن، واستهلاك البقايا والخضار، وبناء وجبات سهلة حول مكونات شائعة. إنها إرشادات طبخ عامة، وليست نصيحة طبية أو غذائية.",
     blogLink: "تصفّح المدونة",
     whoTitle: "من يقف وراءه",
-    who: "«ماذا أطبخ» من تصميم وتطوير إياد محمود وبإدارته، كمشروع مستقل.",
+    who: "أنا إياد محمود، مصمم واجهات وتجربة مستخدم (UI/UX). أصمم «ماذا أطبخ» وأطوّره وأديره كمشروع مستقل، بهدف أن يصبح سؤال «ماذا أطبخ؟» اليومي أسهل قليلًا في الإجابة.",
     linkedin: "لينكدإن",
     behance: "معرض أعمال على بيهانس",
     contactTitle: "تواصل معنا",
