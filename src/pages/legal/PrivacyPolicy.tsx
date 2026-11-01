@@ -108,6 +108,12 @@ export function PrivacyPolicy() {
         Technical and security information may be temporarily processed or retained by our
         infrastructure providers as necessary to operate, secure, and maintain the Service.
       </P>
+      <P>
+        To protect the Service from abuse, we keep short-lived request counters associated with
+        your IP address, and aggregate usage statistics that contain no personal information. Our
+        server logs record technical details such as timing and request type, not the ingredients
+        or preferences you submit.
+      </P>
       <P>Google and other third-party providers may retain or process information according to their own policies and applicable requirements.</P>
 
       <H2>Your privacy rights</H2>

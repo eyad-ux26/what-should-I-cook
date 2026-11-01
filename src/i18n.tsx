@@ -202,7 +202,7 @@ const en: Strings = {
     },
     {
       q: "Is my ingredient list stored anywhere?",
-      a: "No. Requests aren't saved to a database — see our Privacy Policy for the full details on what technical information is processed.",
+      a: "We don't intentionally store your ingredient lists or recipe requests, and there are no accounts. Technical and security information, such as IP-based rate-limit counters and anonymous usage statistics, is processed to run and protect the service. See our Privacy Policy for details.",
     },
     {
       q: "Does it support languages other than English?",
@@ -359,7 +359,7 @@ const ar: Strings = {
     },
     {
       q: "هل يتم تخزين قائمة مكوناتي في أي مكان؟",
-      a: "لا. لا تُحفظ الطلبات في قاعدة بيانات — راجع سياسة الخصوصية لمعرفة التفاصيل الكاملة حول المعلومات التقنية التي تتم معالجتها.",
+      a: "لا نحفظ قوائم مكوناتك أو طلبات الوصفات عمدًا، ولا توجد حسابات. تتم معالجة معلومات تقنية وأمنية، مثل عدّادات الحدّ من الطلبات المرتبطة بعنوان IP وإحصاءات استخدام مجهولة، لتشغيل الخدمة وحمايتها. راجع سياسة الخصوصية للتفاصيل.",
     },
     {
       q: "هل يدعم التطبيق لغات أخرى غير الإنجليزية؟",
