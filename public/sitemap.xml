@@ -23,7 +23,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog" />
-    <lastmod>2026-11-01</lastmod>
+    <lastmod>2026-11-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -32,7 +32,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog" />
-    <lastmod>2026-11-01</lastmod>
+    <lastmod>2026-11-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -177,6 +177,60 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/easy-vegetarian-meals" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/easy-vegetarian-meals" />
     <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/meals-without-going-shopping</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/meals-without-going-shopping" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/meals-without-going-shopping" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/meals-without-going-shopping" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/meals-without-going-shopping</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/meals-without-going-shopping" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/meals-without-going-shopping" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/meals-without-going-shopping" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/build-a-pantry-for-easy-meals</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/build-a-pantry-for-easy-meals" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/build-a-pantry-for-easy-meals" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/build-a-pantry-for-easy-meals" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/build-a-pantry-for-easy-meals</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/build-a-pantry-for-easy-meals" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/build-a-pantry-for-easy-meals" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/build-a-pantry-for-easy-meals" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/blog/use-up-vegetables-before-they-spoil</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/use-up-vegetables-before-they-spoil" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/use-up-vegetables-before-they-spoil" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/use-up-vegetables-before-they-spoil" />
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://what-should-i-cook.com/ar/blog/use-up-vegetables-before-they-spoil</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://what-should-i-cook.com/blog/use-up-vegetables-before-they-spoil" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://what-should-i-cook.com/ar/blog/use-up-vegetables-before-they-spoil" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://what-should-i-cook.com/blog/use-up-vegetables-before-they-spoil" />
+    <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

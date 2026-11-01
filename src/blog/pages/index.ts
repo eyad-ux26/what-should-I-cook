@@ -8,6 +8,9 @@ import { Leftovers } from "./Leftovers";
 import { ChickenAndRice } from "./ChickenAndRice";
 import { CookWithEggs } from "./CookWithEggs";
 import { VegetarianMeals } from "./VegetarianMeals";
+import { MealsWithoutShopping } from "./MealsWithoutShopping";
+import { BuildAPantry } from "./BuildAPantry";
+import { UseUpVegetables } from "./UseUpVegetables";
 import { DinnerDecisionAr } from "./ar/DinnerDecisionAr";
 import { EasyDinnerIdeasAr } from "./ar/EasyDinnerIdeasAr";
 import { PantryMealsAr } from "./ar/PantryMealsAr";
@@ -16,6 +19,9 @@ import { LeftoversAr } from "./ar/LeftoversAr";
 import { ChickenAndRiceAr } from "./ar/ChickenAndRiceAr";
 import { CookWithEggsAr } from "./ar/CookWithEggsAr";
 import { VegetarianMealsAr } from "./ar/VegetarianMealsAr";
+import { MealsWithoutShoppingAr } from "./ar/MealsWithoutShoppingAr";
+import { BuildAPantryAr } from "./ar/BuildAPantryAr";
+import { UseUpVegetablesAr } from "./ar/UseUpVegetablesAr";
 
 /** Article slug -> the page component for each language. Slugs must match articles.json. */
 export const ARTICLE_PAGES: Record<string, Record<Lang, ComponentType>> = {
@@ -27,4 +33,7 @@ export const ARTICLE_PAGES: Record<string, Record<Lang, ComponentType>> = {
   "what-to-cook-with-chicken-and-rice": { en: ChickenAndRice, ar: ChickenAndRiceAr },
   "what-can-i-cook-with-eggs": { en: CookWithEggs, ar: CookWithEggsAr },
   "easy-vegetarian-meals": { en: VegetarianMeals, ar: VegetarianMealsAr },
+  "meals-without-going-shopping": { en: MealsWithoutShopping, ar: MealsWithoutShoppingAr },
+  "build-a-pantry-for-easy-meals": { en: BuildAPantry, ar: BuildAPantryAr },
+  "use-up-vegetables-before-they-spoil": { en: UseUpVegetables, ar: UseUpVegetablesAr },
 };

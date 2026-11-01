@@ -169,6 +169,66 @@
         "description": "وجبات نباتية سهلة مبنية من مكونات المخزن: الفول والعدس والبيض والمكرونة والأرز والطماطم المعلبة. معادلة بسيطة، وثماني أفكار لوجبات، ونصائح لجعل الوجبات بلا لحم مشبعة.",
         "keyword": "وجبات نباتية سهلة"
       }
+    },
+    {
+      "slug": "meals-without-going-shopping",
+      "category": "pantry",
+      "readingMinutes": 8,
+      "datePublished": "2026-11-02",
+      "en": {
+        "title": "Meals You Can Make Without Going Shopping",
+        "dek": "A simple method for turning what's already in your kitchen into a real meal — plus six templates and a swap guide for when you're missing one ingredient.",
+        "excerpt": "A method, six templates, and a swap guide for cooking without a shopping trip.",
+        "description": "How to cook a real meal without going shopping: a simple method, six meal templates built from pantry and fridge basics, and a swap guide for missing ingredients.",
+        "keyword": "meals without going shopping"
+      },
+      "ar": {
+        "title": "وجبات يمكنك تحضيرها دون الذهاب إلى التسوق",
+        "dek": "طريقة بسيطة لتحويل ما في مطبخك أصلًا إلى وجبة حقيقية — مع ستة قوالب ودليل بدائل لحين ينقصك مكوّن واحد.",
+        "excerpt": "طريقة وستة قوالب ودليل بدائل للطبخ دون رحلة تسوق.",
+        "description": "كيف تطبخ وجبة حقيقية دون الذهاب إلى التسوق: طريقة بسيطة، وستة قوالب وجبات مبنية من أساسيات المخزن والثلاجة، ودليل بدائل للمكونات الناقصة.",
+        "keyword": "وجبات دون تسوق"
+      }
+    },
+    {
+      "slug": "build-a-pantry-for-easy-meals",
+      "category": "pantry",
+      "readingMinutes": 9,
+      "datePublished": "2026-11-02",
+      "en": {
+        "title": "How to Build a Pantry That Makes Easy Meals Possible",
+        "dek": "A practical, budget-friendly list of what to keep on hand — grains, cans, flavor makers, freezer staples — and how to rotate it so it doesn't go to waste.",
+        "excerpt": "What to keep on hand so a real meal is always possible, built up gradually and on a budget.",
+        "description": "How to build a pantry for easy meals: a practical starter list of grains, canned goods, flavor makers and freezer staples, how to build it gradually, and how to rotate it.",
+        "keyword": "how to build a pantry"
+      },
+      "ar": {
+        "title": "كيف تبني مخزنًا يجعل الوجبات السهلة ممكنة",
+        "dek": "قائمة عملية وصديقة للميزانية لما يجب أن يتوفر لديك — حبوب ومعلبات ومكونات النكهة ومجمدات — وكيف تدوّرها حتى لا تتلف.",
+        "excerpt": "ما يجب أن يتوفر لديك كي تكون الوجبة الحقيقية ممكنة دائمًا، يُبنى تدريجيًا وبميزانية معقولة.",
+        "description": "كيف تبني مخزنًا للوجبات السهلة: قائمة بداية عملية من الحبوب والمعلبات ومكونات النكهة والمجمدات، وكيف تبنيها تدريجيًا وتدوّرها.",
+        "keyword": "كيف تبني مخزنًا"
+      }
+    },
+    {
+      "slug": "use-up-vegetables-before-they-spoil",
+      "category": "staples",
+      "readingMinutes": 8,
+      "datePublished": "2026-11-02",
+      "en": {
+        "title": "How to Use Up Vegetables Before They Spoil",
+        "dek": "Soups, stir-fries, frittatas, roasts, and pasta — five flexible meals that take almost any vegetable, plus simple storage habits that buy you extra days.",
+        "excerpt": "Five flexible meals that take almost any vegetable, plus storage habits that buy extra days.",
+        "description": "How to use up vegetables before they go bad: five flexible meal templates, simple storage habits, how to rescue wilted produce, and when to throw something out.",
+        "keyword": "use up vegetables before they spoil"
+      },
+      "ar": {
+        "title": "كيف تستهلك الخضار قبل أن تتلف",
+        "dek": "شوربات ومقلّيات وفريتاتا وشواء ومكرونة — خمس وجبات مرنة تتقبل أي خضار تقريبًا، مع عادات تخزين بسيطة تمنحك أيامًا إضافية.",
+        "excerpt": "خمس وجبات مرنة تتقبل أي خضار تقريبًا، مع عادات تخزين تمنحك أيامًا إضافية.",
+        "description": "كيف تستهلك الخضار قبل أن تفسد: خمسة قوالب وجبات مرنة، وعادات تخزين بسيطة، وكيف تنقذ الخضار الذابلة، ومتى ترميها.",
+        "keyword": "استهلاك الخضار قبل أن تتلف"
+      }
     }
   ]
 }

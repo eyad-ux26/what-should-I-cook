@@ -58,10 +58,11 @@ export function getArticle(slug: string, lang: Lang): ArticleMeta | undefined {
   return getArticles(lang).find((a) => a.slug === slug);
 }
 
+/** The next articles in order after this one (wrapping around), so every article gets linked from somewhere. */
 export function getRelated(slug: string, lang: Lang, count = 3): ArticleMeta[] {
-  return getArticles(lang)
-    .filter((a) => a.slug !== slug)
-    .slice(0, count);
+  const all = getArticles(lang);
+  const i = all.findIndex((a) => a.slug === slug);
+  return Array.from({ length: Math.min(count, all.length - 1) }, (_, k) => all[(i + 1 + k) % all.length]);
 }
 
 export const BLOG_INDEX_SEO: Record<Lang, { title: string; description: string }> = raw.index;
