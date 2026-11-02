@@ -41,6 +41,7 @@ const blogRoutes = [
       title: `${a[lang].title} | ${SITE_NAME[lang]}`,
       description: a[lang].description,
       lang,
+      image: a.image ? `${SITE}/blog/images/${a.slug}.webp` : undefined,
       alternates: alternatesFor(`/blog/${a.slug}`, `/ar/blog/${a.slug}`),
     })),
   ),
@@ -77,7 +78,7 @@ function write(path, html) {
 const alternateLinks = (alternates) =>
   alternates.map(([lang, href]) => `    <link rel="alternate" hreflang="${lang}" href="${href}" />`).join("\n");
 
-for (const { path, title, description, lang, alternates } of ROUTES) {
+for (const { path, title, description, lang, alternates, image } of ROUTES) {
   let html = template;
   if (title && description) {
     const url = `${SITE}${path}`;
@@ -90,6 +91,11 @@ for (const { path, title, description, lang, alternates } of ROUTES) {
       .replace(/(<meta name="twitter:title" content=")[^"]*"/, `$1${esc(title)}"`)
       .replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${esc(description)}"`)
       .replace("</head>", `    <link rel="canonical" href="${url}" />\n${alternates ? alternateLinks(alternates) + "\n" : ""}  </head>`);
+  }
+  if (image) {
+    html = html
+      .replace(/(<meta property="og:image" content=")[^"]*"/, `$1${image}"`)
+      .replace(/(<meta name="twitter:image" content=")[^"]*"/, `$1${image}"`);
   }
   if (lang === "ar") {
     html = html.replace(/<html lang="[^"]*"( dir="[^"]*")?>/, '<html lang="ar" dir="rtl">');

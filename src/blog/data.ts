@@ -25,6 +25,8 @@ interface LocalizedFields {
   excerpt: string;
   description: string;
   keyword: string;
+  /** Alt text for the header photo, when the article has one. */
+  imageAlt?: string;
 }
 
 /** One article in one language — the shape every blog component consumes. */
@@ -33,6 +35,8 @@ export interface ArticleMeta extends LocalizedFields {
   category: CategorySlug;
   readingMinutes: number;
   datePublished: string;
+  /** Header photo base path (e.g. "/blog/images/slug"); ".webp" is the 1200px version, "-600.webp" the card size. */
+  image?: string;
 }
 
 interface RawArticle {
@@ -40,6 +44,7 @@ interface RawArticle {
   category: CategorySlug;
   readingMinutes: number;
   datePublished: string;
+  image?: boolean;
   en: LocalizedFields;
   ar: LocalizedFields;
 }
@@ -51,7 +56,11 @@ const RAW_ARTICLES = raw.articles as RawArticle[];
 export const ARTICLE_SLUGS = RAW_ARTICLES.map((a) => a.slug);
 
 export function getArticles(lang: Lang): ArticleMeta[] {
-  return RAW_ARTICLES.map(({ en, ar, ...shared }) => ({ ...shared, ...(lang === "ar" ? ar : en) }));
+  return RAW_ARTICLES.map(({ en, ar, image, ...shared }) => ({
+    ...shared,
+    ...(lang === "ar" ? ar : en),
+    image: image ? `/blog/images/${shared.slug}` : undefined,
+  }));
 }
 
 export function getArticle(slug: string, lang: Lang): ArticleMeta | undefined {

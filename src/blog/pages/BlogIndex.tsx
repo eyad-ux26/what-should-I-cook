@@ -3,7 +3,7 @@ import { BLOG_INDEX_SEO, CATEGORIES, blogBase, getArticles, homePath } from "../
 import { useLanguage } from "../../i18n";
 import { useBlogStrings } from "../strings";
 import { CATEGORY_ICONS, ArrowIcon } from "../icons";
-import { CategoryBadge, ArticleMetaRow, Eyebrow } from "../components";
+import { CategoryBadge, ArticleMetaRow, ArticleThumb, Eyebrow } from "../components";
 import { useSeo, useJsonLd, siteUrl } from "../seo";
 
 export function BlogIndex() {
@@ -91,15 +91,19 @@ export function BlogIndex() {
           href={`${base}/${highlight.slug}`}
           className="group mt-5 flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:flex-row sm:items-center sm:gap-8 sm:p-8"
         >
+          {highlight.image ? (
+            <ArticleThumb article={highlight} className="rounded-xl sm:w-72 sm:shrink-0" />
+          ) : (
           <span
-            className="icon-badge flex h-14 w-14 shrink-0 items-center justify-center text-white"
-            style={{ background: CATEGORIES[highlight.category].gradient }}
-          >
-            {(() => {
-              const Icon = CATEGORY_ICONS[highlight.category];
-              return <Icon className="h-7 w-7" />;
-            })()}
-          </span>
+              className="icon-badge flex h-14 w-14 shrink-0 items-center justify-center text-white"
+              style={{ background: CATEGORIES[highlight.category].gradient }}
+            >
+              {(() => {
+                const Icon = CATEGORY_ICONS[highlight.category];
+                return <Icon className="h-7 w-7" />;
+              })()}
+            </span>
+          )}
           <div className="flex-1">
             <CategoryBadge category={highlight.category} />
             <h3 className="mt-2.5 text-xl font-extrabold leading-tight text-text">{highlight.title}</h3>
@@ -122,14 +126,20 @@ export function BlogIndex() {
               <a
                 key={a.slug}
                 href={`${base}/${a.slug}`}
-                className="group flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-surface p-5 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
+                {a.image ? (
+                  <div className="-mx-5 -mt-5">
+                    <ArticleThumb article={a} />
+                  </div>
+                ) : (
                 <span
-                  className="icon-badge flex h-10 w-10 items-center justify-center text-white"
-                  style={{ background: CATEGORIES[a.category].gradient }}
-                >
-                  <Icon className="h-[18px] w-[18px]" />
-                </span>
+                    className="icon-badge flex h-10 w-10 items-center justify-center text-white"
+                    style={{ background: CATEGORIES[a.category].gradient }}
+                  >
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
+                )}
                 <div>
                   <CategoryBadge category={a.category} />
                   <h3 className="mt-2.5 text-base font-bold leading-snug text-text">{a.title}</h3>

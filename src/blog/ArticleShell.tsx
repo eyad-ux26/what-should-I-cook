@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { BlogLayout } from "./BlogLayout";
 import { blogBase, getArticle, homePath } from "./data";
-import { CategoryBadge, ArticleMetaRow, CategoryBanner, GeneratorCta, KeepExploring } from "./components";
+import { CategoryBadge, ArticleMetaRow, ArticleHero, GeneratorCta, KeepExploring } from "./components";
 import { useSeo, useJsonLd, siteUrl, SITE_IMAGE } from "./seo";
 import { useLanguage } from "../i18n";
 import { useBlogStrings } from "./strings";
@@ -13,11 +13,13 @@ export function ArticleShell({ slug, children }: { slug: string; children: React
   const path = `${blogBase(lang)}/${article.slug}`;
   const title = `${article.title} | ${bs.siteName}`;
   const homeUrl = siteUrl(lang === "ar" ? "/ar" : "/");
+  const imageUrl = article.image ? siteUrl(`${article.image}.webp`) : SITE_IMAGE;
 
   useSeo({
     title,
     description: article.description,
     path,
+    image: imageUrl,
     alternates: [
       ["en", siteUrl(`/blog/${slug}`)],
       ["ar", siteUrl(`/ar/blog/${slug}`)],
@@ -35,7 +37,7 @@ export function ArticleShell({ slug, children }: { slug: string; children: React
     mainEntityOfPage: siteUrl(path),
     datePublished: article.datePublished,
     dateModified: article.datePublished,
-    image: SITE_IMAGE,
+    image: imageUrl,
     author: { "@type": "Organization", name: bs.siteName, url: homeUrl },
     publisher: {
       "@type": "Organization",
@@ -72,7 +74,7 @@ export function ArticleShell({ slug, children }: { slug: string; children: React
           <ArticleMetaRow article={article} />
         </div>
 
-        <CategoryBanner category={article.category} />
+        <ArticleHero article={article} />
 
         <div className="mt-9 flex flex-col gap-5">{children}</div>
 

@@ -20,15 +20,18 @@
         "dek": "A five-question framework for cutting through decision fatigue and actually landing on something to make tonight.",
         "excerpt": "A five-question framework for getting from “I have no idea” to a real plan for tonight.",
         "description": "Stuck on what to cook for dinner? A practical, five-question framework — based on what you have, your time, and what you're craving — to help you decide tonight.",
-        "keyword": "what should I cook for dinner"
+        "keyword": "what should I cook for dinner",
+        "imageAlt": "An empty white plate with a fork and knife, surrounded by eggs, tomatoes, an onion, a carrot, broccoli, lemons, cheese, herbs and a blank notepad."
       },
       "ar": {
         "title": "ماذا أطبخ على العشاء؟ طريقة بسيطة لتقرر",
         "dek": "إطار من خمسة أسئلة يخلّصك من إرهاق اتخاذ القرار ويوصلك إلى فكرة محددة تطبخها الليلة.",
         "excerpt": "إطار من خمسة أسئلة ينقلك من «لا أعرف» إلى خطة واضحة لليلة.",
         "description": "لا تعرف ماذا تطبخ على العشاء؟ إطار عملي من خمسة أسئلة — يعتمد على ما لديك ووقتك وما تشتهيه — يساعدك على اتخاذ القرار الليلة.",
-        "keyword": "ماذا أطبخ على العشاء"
-      }
+        "keyword": "ماذا أطبخ على العشاء",
+        "imageAlt": "طبق أبيض فارغ مع شوكة وسكين، تحيط به بيضات وطماطم وبصلة وجزرة وبروكلي وليمون وجبن وأعشاب ومفكرة فارغة."
+      },
+      "image": true
     },
     {
       "slug": "easy-dinner-ideas",
@@ -40,15 +43,18 @@
         "dek": "A situation-sorted collection of low-effort dinners — by pan, by pantry, and by how much time you actually have.",
         "excerpt": "Low-effort dinner ideas sorted by situation — one-pan, pantry-only, quick pasta, and more.",
         "description": "A practical collection of easy dinner ideas sorted by situation: 15-minute meals, one-pan dinners, pantry staples, easy pasta, rice, vegetarian, and chicken meals.",
-        "keyword": "easy dinner ideas"
+        "keyword": "easy dinner ideas",
+        "imageAlt": "A sheet pan of roasted sausages, baby potatoes, broccoli and cherry tomatoes next to a bowl of spaghetti with basil and a bottle of olive oil."
       },
       "ar": {
         "title": "أفكار عشاء سهلة عندما لا تعرف ماذا تطبخ",
         "dek": "مجموعة أفكار عشاء قليلة الجهد مرتبة حسب الموقف — حسب الإناء الواحد، وما في المخزن، والوقت المتاح فعلًا.",
         "excerpt": "أفكار عشاء قليلة الجهد مرتبة حسب الموقف — إناء واحد، مكونات المخزن فقط، مكرونة سريعة، وغيرها.",
         "description": "مجموعة عملية من أفكار العشاء السهلة مرتبة حسب الموقف: وجبات في 15 دقيقة، وعشاء بإناء واحد، ومكونات المخزن، ومكرونة وأرز ووجبات نباتية ودجاج.",
-        "keyword": "أفكار عشاء سهلة"
-      }
+        "keyword": "أفكار عشاء سهلة",
+        "imageAlt": "صينية سجق مشوي مع بطاطس صغيرة وبروكلي وطماطم كرزية، بجانب طبق سباجيتي بالريحان وزجاجة زيت زيتون."
+      },
+      "image": true
     },
     {
       "slug": "what-can-i-cook-with-what-i-have",
@@ -60,15 +66,18 @@
         "dek": "A practical framework — protein + carb + vegetable + sauce — plus meal directions for the ten ingredients most kitchens already have.",
         "excerpt": "A protein + carb + vegetable + sauce framework, built around ten ingredients most kitchens already have.",
         "description": "What can you cook with what's already in your kitchen? A practical framework built around eggs, rice, pasta, potatoes, chicken, beans, and other common staples.",
-        "keyword": "what can I cook with what I have"
+        "keyword": "what can I cook with what I have",
+        "imageAlt": "Pantry shelves with glass jars of rice, pasta, lentils and chickpeas, cans, oil and sauce bottles, onions, potatoes, eggs and a loaf of bread."
       },
       "ar": {
         "title": "ماذا أطبخ بما لديّ؟ دليل لوجبات المخزن والثلاجة",
         "dek": "إطار عملي — بروتين + نشويات + خضار + صلصة — مع اتجاهات للوجبات حول عشرة مكونات موجودة في معظم المطابخ.",
         "excerpt": "إطار بروتين + نشويات + خضار + صلصة، مبني على عشرة مكونات موجودة في معظم المطابخ.",
         "description": "ماذا يمكنك أن تطبخ بما هو موجود في مطبخك؟ إطار عملي مبني على البيض والأرز والمكرونة والبطاطس والدجاج والفول والبقوليات وغيرها من المكونات الشائعة.",
-        "keyword": "ماذا أطبخ بما لدي"
-      }
+        "keyword": "ماذا أطبخ بما لدي",
+        "imageAlt": "رفوف مخزن عليها برطمانات زجاجية من الأرز والمكرونة والعدس والحمص، ومعلبات، وزجاجات زيت وصلصة، وبصل وبطاطس وبيض ورغيف خبز."
+      },
+      "image": true
     },
     {
       "slug": "quick-dinner-ideas",
@@ -80,15 +89,18 @@
         "dek": "Dinners organized by exactly how much time you have — from a 10-minute scramble to a 30-minute sheet-pan meal — plus six habits that actually save time.",
         "excerpt": "Dinners organized by exactly how much time you have, plus six habits that genuinely save time.",
         "description": "Quick dinner ideas organized by time — 10 to 30 minutes — plus practical habits for cooking faster on busy weeknights.",
-        "keyword": "quick dinner ideas"
+        "keyword": "quick dinner ideas",
+        "imageAlt": "A cast-iron skillet of vegetable fried rice topped with a fried egg, with chopsticks, a dish of soy sauce and a kitchen timer."
       },
       "ar": {
         "title": "أفكار عشاء سريعة لأيام الأسبوع المزدحمة",
         "dek": "أفكار عشاء مرتبة حسب الوقت المتاح بالضبط — من بيض مخفوق في 10 دقائق إلى وجبة صينية في 30 دقيقة — مع ست عادات توفّر الوقت فعلًا.",
         "excerpt": "أفكار عشاء مرتبة حسب الوقت المتاح بالضبط، مع ست عادات توفّر الوقت فعلًا.",
         "description": "أفكار عشاء سريعة مرتبة حسب الوقت — من 10 إلى 30 دقيقة — مع عادات عملية للطبخ بسرعة أكبر في أيام الأسبوع المزدحمة.",
-        "keyword": "أفكار عشاء سريعة"
-      }
+        "keyword": "أفكار عشاء سريعة",
+        "imageAlt": "مقلاة حديد فيها أرز مقلي بالخضار وفوقه بيضة مقلية، مع عيدان أكل وطبق صغير من صلصة الصويا ومؤقت مطبخ."
+      },
+      "image": true
     },
     {
       "slug": "leftover-dinner-ideas",
@@ -100,15 +112,18 @@
         "dek": "Leftover chicken, rice, vegetables, and potatoes each have four or five different second lives — plus how to store and reheat them safely.",
         "excerpt": "Leftover chicken, rice, vegetables, and potatoes each have several different second lives.",
         "description": "Practical ideas for turning leftover chicken, rice, vegetables, and potatoes into a completely different dinner, plus safe storage and reheating guidance.",
-        "keyword": "leftover dinner ideas"
+        "keyword": "leftover dinner ideas",
+        "imageAlt": "Glass meal-prep containers of rice, sliced chicken, roasted potatoes, and broccoli with carrots, with a fork, a spoon and a lemon wedge."
       },
       "ar": {
         "title": "كيف تحوّل بقايا الطعام إلى عشاء جديد",
         "dek": "لكل من بقايا الدجاج والأرز والخضار والبطاطس أربع أو خمس حيوات ثانية مختلفة — مع طريقة تخزينها وإعادة تسخينها بأمان.",
         "excerpt": "لكل من بقايا الدجاج والأرز والخضار والبطاطس عدة حيوات ثانية مختلفة.",
         "description": "أفكار عملية لتحويل بقايا الدجاج والأرز والخضار والبطاطس إلى عشاء مختلف تمامًا، مع إرشادات للتخزين وإعادة التسخين بأمان.",
-        "keyword": "أفكار عشاء من بقايا الطعام"
-      }
+        "keyword": "أفكار عشاء من بقايا الطعام",
+        "imageAlt": "علب زجاجية لحفظ الطعام فيها أرز ودجاج مقطع وبطاطس مشوية وبروكلي مع جزر، مع شوكة وملعقة وشريحة ليمون."
+      },
+      "image": true
     },
     {
       "slug": "what-to-cook-with-chicken-and-rice",

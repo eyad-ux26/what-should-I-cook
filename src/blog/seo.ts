@@ -8,6 +8,8 @@ interface SeoOptions {
   description: string;
   path: string;
   type?: "website" | "article";
+  /** Absolute URL of the share image; defaults to the site-wide image. */
+  image?: string;
   /** Other-language versions of this page: [hreflang, absolute URL] pairs (include x-default). */
   alternates?: [hreflang: string, href: string][];
 }
@@ -27,6 +29,7 @@ const DEFAULT_META: [attr: "name" | "property", key: string, content: string][] 
   ["property", "og:title", DEFAULT_TITLE],
   ["property", "og:description", DEFAULT_DESCRIPTION],
   ["property", "og:image", SITE_IMAGE],
+  ["name", "twitter:image", SITE_IMAGE],
   ["name", "twitter:title", DEFAULT_TITLE],
   ["name", "twitter:description", DEFAULT_DESCRIPTION],
 ];
@@ -60,7 +63,7 @@ function setCanonical(href: string | null): void {
  * lifetime of the mounted page, and puts the homepage defaults back on
  * unmount (the next routed page that calls this hook overrides them again).
  */
-export function useSeo({ title, description, path, type = "article", alternates }: SeoOptions): void {
+export function useSeo({ title, description, path, type = "article", image = SITE_IMAGE, alternates }: SeoOptions): void {
   const alternatesKey = alternates ? JSON.stringify(alternates) : "";
   useEffect(() => {
     // Replace whatever alternates the prerendered <head> carried with this page's own.
@@ -81,7 +84,8 @@ export function useSeo({ title, description, path, type = "article", alternates 
     setMeta("property", "og:url", url);
     setMeta("property", "og:title", title);
     setMeta("property", "og:description", description);
-    setMeta("property", "og:image", SITE_IMAGE);
+    setMeta("property", "og:image", image);
+    setMeta("name", "twitter:image", image);
     setMeta("name", "twitter:title", title);
     setMeta("name", "twitter:description", description);
 
@@ -91,7 +95,7 @@ export function useSeo({ title, description, path, type = "article", alternates 
       setCanonical(null);
       for (const [attr, key, content] of DEFAULT_META) setMeta(attr, key, content);
     };
-  }, [title, description, path, type, alternatesKey]);
+  }, [title, description, path, type, image, alternatesKey]);
 }
 
 /**

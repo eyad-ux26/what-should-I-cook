@@ -35,6 +35,38 @@ export function CategoryBanner({ category }: { category: ArticleMeta["category"]
   );
 }
 
+/** The article's header photo, or the decorative category banner when it has none. */
+export function ArticleHero({ article }: { article: ArticleMeta }) {
+  if (!article.image) return <CategoryBanner category={article.category} />;
+  return (
+    <img
+      src={`${article.image}.webp`}
+      alt={article.imageAlt ?? ""}
+      width={1200}
+      height={630}
+      fetchPriority="high"
+      decoding="async"
+      className="mt-8 aspect-[1200/630] w-full rounded-3xl border border-border object-cover"
+    />
+  );
+}
+
+/** Card-size photo for listings; renders nothing when the article has no photo. */
+export function ArticleThumb({ article, className = "" }: { article: ArticleMeta; className?: string }) {
+  if (!article.image) return null;
+  return (
+    <img
+      src={`${article.image}-600.webp`}
+      alt=""
+      width={600}
+      height={315}
+      loading="lazy"
+      decoding="async"
+      className={`block aspect-[600/315] w-full object-cover ${className}`}
+    />
+  );
+}
+
 export function CategoryBadge({ category }: { category: ArticleMeta["category"] }) {
   const info = CATEGORIES[category];
   const Icon = CATEGORY_ICONS[category];
@@ -266,8 +298,13 @@ export function KeepExploring({ currentSlug }: { currentSlug: string }) {
             <a
               key={a.slug}
               href={`${blogBase(lang)}/${a.slug}`}
-              className="group flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group flex flex-col gap-2 overflow-hidden rounded-2xl border border-border bg-surface p-4 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
+              {a.image && (
+                <div className="-mx-4 -mt-4 mb-1">
+                  <ArticleThumb article={a} />
+                </div>
+              )}
               <span
                 className="h-1.5 w-8 rounded-full"
                 style={{ background: info.gradient }}
