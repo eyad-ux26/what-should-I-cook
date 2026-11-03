@@ -135,15 +135,18 @@
         "dek": "Seven different meals from the same two ingredients — skillet, bowl, soup, fried rice, and more — plus simple seasoning directions to keep them from tasting alike.",
         "excerpt": "Seven different meals from one classic pair, plus seasoning directions that keep them from tasting alike.",
         "description": "Not sure what to cook with chicken and rice? Seven easy meal ideas — one-pan, skillet, soup, fried rice, bowls — plus seasoning directions and basic food-safety tips.",
-        "keyword": "what to cook with chicken and rice"
+        "keyword": "what to cook with chicken and rice",
+        "imageAlt": "A plate of white rice topped with sliced golden chicken, parsley and a lemon wedge, with a fork and knife, a bowl of tomato sauce, a red chili, garlic, cucumber slices and cherry tomatoes."
       },
       "ar": {
         "title": "ماذا أطبخ بالدجاج والأرز؟ أفكار وجبات سهلة",
         "dek": "سبع وجبات مختلفة من المكونين نفسيهما — في مقلاة، وفي طبق، وشوربة، وأرز مقلي وغيرها — مع اتجاهات بسيطة للتتبيل حتى لا تتشابه في الطعم.",
         "excerpt": "سبع وجبات مختلفة من ثنائي كلاسيكي واحد، مع اتجاهات تتبيل تمنعها من أن تتشابه.",
         "description": "لا تعرف ماذا تطبخ بالدجاج والأرز؟ سبع أفكار لوجبات سهلة — بإناء واحد، ومقلاة، وشوربة، وأرز مقلي، وأطباق — مع اتجاهات للتتبيل ونصائح أساسية لسلامة الطعام.",
-        "keyword": "ماذا أطبخ بالدجاج والأرز"
-      }
+        "keyword": "ماذا أطبخ بالدجاج والأرز",
+        "imageAlt": "طبق من الأرز الأبيض فوقه شرائح دجاج ذهبية وبقدونس وشريحة ليمون، مع شوكة وسكين ووعاء صلصة طماطم وفلفل أحمر حار وثوم وشرائح خيار وطماطم كرزية."
+      },
+      "image": true
     },
     {
       "slug": "what-can-i-cook-with-eggs",
@@ -155,15 +158,18 @@
         "dek": "Eggs can anchor a full meal at almost any hour — from a ten-minute fried rice to a baked frittata — plus a few simple techniques that make them turn out better.",
         "excerpt": "Eggs can anchor a full meal at almost any hour, plus simple techniques that make them turn out better.",
         "description": "What can you cook with eggs? Easy meal ideas beyond scrambled — fried rice, frittata, shakshuka-style skillet, egg salad, and more — with simple cooking and food-safety tips.",
-        "keyword": "what can I cook with eggs"
+        "keyword": "what can I cook with eggs",
+        "imageAlt": "A cast-iron skillet of shakshuka with eggs in tomato sauce and herbs, next to an egg carton, toasted bread, a whisk, cherry tomatoes and a red chili."
       },
       "ar": {
         "title": "ماذا أطبخ بالبيض؟ وجبات سهلة تتجاوز البيض المخفوق",
         "dek": "يمكن للبيض أن يكون أساس وجبة كاملة في أي وقت تقريبًا — من أرز مقلي في عشر دقائق إلى فريتاتا مخبوزة — مع تقنيات بسيطة تجعله ينجح أكثر.",
         "excerpt": "يمكن للبيض أن يكون أساس وجبة كاملة في أي وقت، مع تقنيات بسيطة تجعله ينجح أكثر.",
         "description": "ماذا يمكنك أن تطبخ بالبيض؟ أفكار وجبات سهلة تتجاوز البيض المخفوق — أرز مقلي، وفريتاتا، ومقلاة على طريقة الشكشوكة، وسلطة بيض وغيرها — مع نصائح بسيطة للطبخ وسلامة الطعام.",
-        "keyword": "ماذا أطبخ بالبيض"
-      }
+        "keyword": "ماذا أطبخ بالبيض",
+        "imageAlt": "مقلاة حديد فيها شكشوكة من البيض في صلصة الطماطم مع الأعشاب، بجانب علبة بيض وخبز محمّص ومضرب بيض وطماطم كرزية وفلفل أحمر حار."
+      },
+      "image": true
     },
     {
       "slug": "easy-vegetarian-meals",
@@ -175,15 +181,18 @@
         "dek": "A practical way to build filling meatless meals from beans, lentils, eggs, pasta, rice, and canned tomatoes — plus how to make sure they're satisfying, not just salad.",
         "excerpt": "Filling meatless meals from beans, lentils, eggs, pasta, and rice — built mostly from the pantry.",
         "description": "Easy vegetarian meals built from pantry staples: beans, lentils, eggs, pasta, rice, and canned tomatoes. A simple formula, eight meal ideas, and tips for making meatless meals filling.",
-        "keyword": "easy vegetarian meals"
+        "keyword": "easy vegetarian meals",
+        "imageAlt": "A bowl of red lentil soup with lemon and herbs, small bowls of chickpeas and kidney beans, sliced bread, cherry tomatoes, salad leaves and a yellow pepper."
       },
       "ar": {
         "title": "وجبات نباتية سهلة من مكونات المخزن",
         "dek": "طريقة عملية لبناء وجبات شبعة بلا لحم من الفول والعدس والبيض والمكرونة والأرز والطماطم المعلبة — مع كيف تجعلها مشبعة وليست مجرد سلطة.",
         "excerpt": "وجبات مشبعة بلا لحم من الفول والعدس والبيض والمكرونة والأرز — مبنية في معظمها من المخزن.",
         "description": "وجبات نباتية سهلة مبنية من مكونات المخزن: الفول والعدس والبيض والمكرونة والأرز والطماطم المعلبة. معادلة بسيطة، وثماني أفكار لوجبات، ونصائح لجعل الوجبات بلا لحم مشبعة.",
-        "keyword": "وجبات نباتية سهلة"
-      }
+        "keyword": "وجبات نباتية سهلة",
+        "imageAlt": "طبق شوربة عدس أحمر مع ليمون وأعشاب، ووعاءان صغيران من الحمص والفاصوليا الحمراء، وشرائح خبز وطماطم كرزية وأوراق سلطة وفلفل أصفر."
+      },
+      "image": true
     },
     {
       "slug": "meals-without-going-shopping",
@@ -195,15 +204,18 @@
         "dek": "A simple method for turning what's already in your kitchen into a real meal — plus six templates and a swap guide for when you're missing one ingredient.",
         "excerpt": "A method, six templates, and a swap guide for cooking without a shopping trip.",
         "description": "How to cook a real meal without going shopping: a simple method, six meal templates built from pantry and fridge basics, and a swap guide for missing ingredients.",
-        "keyword": "meals without going shopping"
+        "keyword": "meals without going shopping",
+        "imageAlt": "A red pot of vegetable soup with a ladle on a tiled counter, with jars of lentils and pasta, cans, an onion, a carrot, a potato and garlic."
       },
       "ar": {
         "title": "وجبات يمكنك تحضيرها دون الذهاب إلى التسوق",
         "dek": "طريقة بسيطة لتحويل ما في مطبخك أصلًا إلى وجبة حقيقية — مع ستة قوالب ودليل بدائل لحين ينقصك مكوّن واحد.",
         "excerpt": "طريقة وستة قوالب ودليل بدائل للطبخ دون رحلة تسوق.",
         "description": "كيف تطبخ وجبة حقيقية دون الذهاب إلى التسوق: طريقة بسيطة، وستة قوالب وجبات مبنية من أساسيات المخزن والثلاجة، ودليل بدائل للمكونات الناقصة.",
-        "keyword": "وجبات دون تسوق"
-      }
+        "keyword": "وجبات دون تسوق",
+        "imageAlt": "قدر أحمر من شوربة الخضار مع مغرفة على سطح مطبخ مبلّط، مع برطمانات عدس ومكرونة ومعلبات وبصلة وجزرة وحبة بطاطس وثوم."
+      },
+      "image": true
     },
     {
       "slug": "build-a-pantry-for-easy-meals",
@@ -215,15 +227,18 @@
         "dek": "A practical, budget-friendly list of what to keep on hand — grains, cans, flavor makers, freezer staples — and how to rotate it so it doesn't go to waste.",
         "excerpt": "What to keep on hand so a real meal is always possible, built up gradually and on a budget.",
         "description": "How to build a pantry for easy meals: a practical starter list of grains, canned goods, flavor makers and freezer staples, how to build it gradually, and how to rotate it.",
-        "keyword": "how to build a pantry"
+        "keyword": "how to build a pantry",
+        "imageAlt": "Tidy pantry shelves with spice jars, cans, oil and sauce bottles, glass jars of rice, pasta, lentils, chickpeas, beans, corn and peas, and baskets of onions, potatoes and eggs."
       },
       "ar": {
         "title": "كيف تبني مخزنًا يجعل الوجبات السهلة ممكنة",
         "dek": "قائمة عملية وصديقة للميزانية لما يجب أن يتوفر لديك — حبوب ومعلبات ومكونات النكهة ومجمدات — وكيف تدوّرها حتى لا تتلف.",
         "excerpt": "ما يجب أن يتوفر لديك كي تكون الوجبة الحقيقية ممكنة دائمًا، يُبنى تدريجيًا وبميزانية معقولة.",
         "description": "كيف تبني مخزنًا للوجبات السهلة: قائمة بداية عملية من الحبوب والمعلبات ومكونات النكهة والمجمدات، وكيف تبنيها تدريجيًا وتدوّرها.",
-        "keyword": "كيف تبني مخزنًا"
-      }
+        "keyword": "كيف تبني مخزنًا",
+        "imageAlt": "رفوف مخزن مرتبة عليها برطمانات بهارات ومعلبات وزجاجات زيت وصلصة، وبرطمانات زجاجية من الأرز والمكرونة والعدس والحمص والفاصوليا والذرة والبازلاء، وسلال بصل وبطاطس وبيض."
+      },
+      "image": true
     },
     {
       "slug": "use-up-vegetables-before-they-spoil",
@@ -235,15 +250,18 @@
         "dek": "Soups, stir-fries, frittatas, roasts, and pasta — five flexible meals that take almost any vegetable, plus simple storage habits that buy you extra days.",
         "excerpt": "Five flexible meals that take almost any vegetable, plus storage habits that buy extra days.",
         "description": "How to use up vegetables before they go bad: five flexible meal templates, simple storage habits, how to rescue wilted produce, and when to throw something out.",
-        "keyword": "use up vegetables before they spoil"
+        "keyword": "use up vegetables before they spoil",
+        "imageAlt": "A wooden cutting board with chopped carrots, cucumber, peppers, broccoli and mushrooms and a chef's knife, surrounded by whole vegetables and salad leaves."
       },
       "ar": {
         "title": "كيف تستهلك الخضار قبل أن تتلف",
         "dek": "شوربات ومقلّيات وفريتاتا وشواء ومكرونة — خمس وجبات مرنة تتقبل أي خضار تقريبًا، مع عادات تخزين بسيطة تمنحك أيامًا إضافية.",
         "excerpt": "خمس وجبات مرنة تتقبل أي خضار تقريبًا، مع عادات تخزين تمنحك أيامًا إضافية.",
         "description": "كيف تستهلك الخضار قبل أن تفسد: خمسة قوالب وجبات مرنة، وعادات تخزين بسيطة، وكيف تنقذ الخضار الذابلة، ومتى ترميها.",
-        "keyword": "استهلاك الخضار قبل أن تتلف"
-      }
+        "keyword": "استهلاك الخضار قبل أن تتلف",
+        "imageAlt": "لوح تقطيع خشبي عليه جزر وخيار وفلفل وبروكلي وفطر مقطعة وسكين طاهٍ، تحيط به خضار كاملة وأوراق سلطة."
+      },
+      "image": true
     }
   ],
   "about": {

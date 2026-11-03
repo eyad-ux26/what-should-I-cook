@@ -64,8 +64,11 @@ export function BlogIndex() {
         {/* Featured article — the flagship piece, given a distinct hero treatment */}
         <a
           href={`${base}/${featured.slug}`}
-          className="hero-band group relative mt-10 block overflow-hidden rounded-[28px] px-6 py-10 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:px-10 sm:py-14"
+          className="hero-band group relative mt-10 block overflow-hidden rounded-[28px] px-6 py-10 transition-transform duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:px-10 sm:py-14 lg:grid lg:grid-cols-[1fr_minmax(0,420px)] lg:items-center lg:gap-10"
         >
+          {featured.image && (
+            <ArticleThumb article={featured} className="relative z-10 mb-7 rounded-2xl lg:order-2 lg:mb-0" />
+          )}
           <div className="relative z-10 flex max-w-xl flex-col gap-4">
             <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white/90 rtl:tracking-normal backdrop-blur">
               {bs.featured}
