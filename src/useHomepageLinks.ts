@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { HOME_SEO } from "./blog/data";
 
 const SITE_URL = "https://what-should-i-cook.com";
 
@@ -17,8 +18,19 @@ function upsertLink(selector: string, attrs: Record<string, string>): void {
   for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
 }
 
+/** Title + description (and their Open Graph / Twitter copies) for one homepage language. */
+function setTitleAndDescription({ title, description }: { title: string; description: string }): void {
+  document.title = title;
+  const set = (selector: string, value: string) => document.head.querySelector(selector)?.setAttribute("content", value);
+  set('meta[name="description"]', description);
+  set('meta[property="og:title"]', title);
+  set('meta[property="og:description"]', description);
+  set('meta[name="twitter:title"]', title);
+  set('meta[name="twitter:description"]', description);
+}
+
 /**
- * Keeps the canonical URL and en/ar/x-default alternates correct for the two
+ * Keeps the title, description, canonical URL and en/ar/x-default alternates correct for the two
  * homepage routes ("/" and "/ar") across client-side navigation. The first
  * page load already has these tags in its static HTML (see
  * scripts/prerender-routes.mjs); this updates the same elements in place
@@ -35,8 +47,10 @@ export function useHomepageLinks(path: string): void {
       upsertLink(`link[rel="alternate"][hreflang="${hreflang}"]`, { rel: "alternate", hreflang, href });
     }
     document.head.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
+    setTitleAndDescription(HOME_SEO[path === "/ar" ? "ar" : "en"]);
 
     return () => {
+      setTitleAndDescription(HOME_SEO.en);
       document.head.querySelector('link[rel="canonical"]')?.remove();
       document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
       document.head.querySelector('meta[property="og:url"]')?.setAttribute("content", `${SITE_URL}/`);

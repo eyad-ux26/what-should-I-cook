@@ -1,4 +1,14 @@
 {
+  "home": {
+    "en": {
+      "title": "What Should I Cook?",
+      "description": "List your ingredients, tell us your preferences, and get AI-generated recipe ideas built around what you already have."
+    },
+    "ar": {
+      "title": "ماذا أطبخ؟ أفكار وصفات من المكونات التي لديك",
+      "description": "اذكر المكونات التي لديك وتفضيلاتك، واحصل على أفكار وصفات بالذكاء الاصطناعي مبنية على ما تملكه بالفعل."
+    }
+  },
   "index": {
     "en": {
       "title": "Cooking Ideas & Meal Inspiration | What Should I Cook?",

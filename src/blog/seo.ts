@@ -98,23 +98,6 @@ export function useSeo({ title, description, path, type = "article", image = SIT
   }, [title, description, path, type, image, alternatesKey]);
 }
 
-/**
- * Injects a JSON-LD <script> for the lifetime of the mounted page. Only
- * ever describes what's actually visible on the page — no invented
- * ratings, authors, or images.
- */
-export function useJsonLd(data: object): void {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(data);
-    document.head.appendChild(script);
-    return () => {
-      script.remove();
-    };
-  }, [data]);
-}
-
 export function siteUrl(path: string): string {
   return `${SITE_URL}${path}`;
 }

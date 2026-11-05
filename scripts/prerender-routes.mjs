@@ -114,7 +114,14 @@ const HOME_ALTERNATES = [
   .join("\n");
 
 function homepage(canonical, { lang, dir }) {
+  const { title, description } = blog.home[lang];
   return template
+    .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*"/, `$1${esc(description)}"`)
+    .replace(/(<meta property="og:title" content=")[^"]*"/, `$1${esc(title)}"`)
+    .replace(/(<meta property="og:description" content=")[^"]*"/, `$1${esc(description)}"`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*"/, `$1${esc(title)}"`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${esc(description)}"`)
     .replace(/<html lang="[^"]*"( dir="[^"]*")?>/, `<html lang="${lang}" dir="${dir}">`)
     .replace(/(<meta property="og:url" content=")[^"]*"/, `$1${canonical}"`)
     .replace("</head>", `    <link rel="canonical" href="${canonical}" />\n${HOME_ALTERNATES}\n  </head>`);

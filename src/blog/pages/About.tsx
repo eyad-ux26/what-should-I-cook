@@ -1,7 +1,8 @@
+import { JsonLd } from "../JsonLd";
 import { BlogLayout } from "../BlogLayout";
 import { ABOUT_SEO, blogBase, homePath } from "../data";
 import { H2, P, Strong, InternalLink, Eyebrow } from "../components";
-import { useSeo, useJsonLd, siteUrl } from "../seo";
+import { useSeo, siteUrl } from "../seo";
 import { useLanguage } from "../../i18n";
 import { useBlogStrings } from "../strings";
 
@@ -78,25 +79,28 @@ export function About() {
       ["x-default", siteUrl("/about")],
     ],
   });
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    name: c.title,
-    description,
-    inLanguage: lang,
-    url: siteUrl(path),
-  });
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: bs.home, item: siteUrl(homePath(lang)) },
-      { "@type": "ListItem", position: 2, name: c.eyebrow, item: siteUrl(path) },
-    ],
-  });
+  const jsonLd: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: c.title,
+      description,
+      inLanguage: lang,
+      url: siteUrl(path),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: bs.home, item: siteUrl(homePath(lang)) },
+        { "@type": "ListItem", position: 2, name: c.eyebrow, item: siteUrl(path) },
+      ],
+    },
+  ];
 
   return (
     <BlogLayout breadcrumb={[{ label: bs.home, href: homePath(lang) }, { label: c.eyebrow }]}>
+      <JsonLd data={jsonLd} />
       <div className="mx-auto flex w-full max-w-[720px] flex-col gap-5 px-4 pb-20 pt-6 sm:px-6">
         <Eyebrow>{c.eyebrow}</Eyebrow>
         <h1 className="text-[30px] font-extrabold leading-[1.15] tracking-tight text-text sm:text-[40px] rtl:leading-[1.35] rtl:tracking-normal">

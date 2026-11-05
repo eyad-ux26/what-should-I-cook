@@ -1,8 +1,9 @@
+import { JsonLd } from "./JsonLd";
 import type { ReactNode } from "react";
 import { BlogLayout } from "./BlogLayout";
 import { blogBase, getArticle, homePath } from "./data";
 import { CategoryBadge, ArticleMetaRow, ArticleHero, GeneratorCta, KeepExploring } from "./components";
-import { useSeo, useJsonLd, siteUrl, SITE_IMAGE } from "./seo";
+import { useSeo, siteUrl, SITE_IMAGE } from "./seo";
 import { useLanguage } from "../i18n";
 import { useBlogStrings } from "./strings";
 
@@ -27,34 +28,35 @@ export function ArticleShell({ slug, children }: { slug: string; children: React
     ],
   });
 
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: article.title,
-    description: article.description,
-    inLanguage: lang,
-    url: siteUrl(path),
-    mainEntityOfPage: siteUrl(path),
-    datePublished: article.datePublished,
-    dateModified: article.datePublished,
-    image: imageUrl,
-    author: { "@type": "Organization", name: bs.siteName, url: homeUrl },
-    publisher: {
-      "@type": "Organization",
-      name: bs.siteName,
-      logo: { "@type": "ImageObject", url: `${siteUrl("/")}logo-256.png` },
+  const jsonLd: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: article.title,
+      description: article.description,
+      inLanguage: lang,
+      url: siteUrl(path),
+      mainEntityOfPage: siteUrl(path),
+      datePublished: article.datePublished,
+      dateModified: article.datePublished,
+      image: imageUrl,
+      author: { "@type": "Organization", name: bs.siteName, url: homeUrl },
+      publisher: {
+        "@type": "Organization",
+        name: bs.siteName,
+        logo: { "@type": "ImageObject", url: `${siteUrl("/")}logo-256.png` },
     },
-  });
-
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: bs.home, item: homeUrl },
-      { "@type": "ListItem", position: 2, name: bs.blog, item: siteUrl(blogBase(lang)) },
-      { "@type": "ListItem", position: 3, name: article.title, item: siteUrl(path) },
-    ],
-  });
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: bs.home, item: homeUrl },
+        { "@type": "ListItem", position: 2, name: bs.blog, item: siteUrl(blogBase(lang)) },
+        { "@type": "ListItem", position: 3, name: article.title, item: siteUrl(path) },
+      ],
+    },
+  ];
 
   return (
     <BlogLayout
@@ -64,6 +66,7 @@ export function ArticleShell({ slug, children }: { slug: string; children: React
         { label: article.title },
       ]}
     >
+      <JsonLd data={jsonLd} />
       <article className="mx-auto w-full max-w-[720px] px-4 pb-20 pt-6 sm:px-6">
         <CategoryBadge category={article.category} />
         <h1 className="mt-3 text-[30px] font-extrabold leading-[1.15] tracking-tight text-text sm:text-[40px] rtl:leading-[1.35] rtl:tracking-normal">

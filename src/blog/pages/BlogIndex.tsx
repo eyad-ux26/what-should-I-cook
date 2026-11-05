@@ -1,10 +1,11 @@
+import { JsonLd } from "../JsonLd";
 import { BlogLayout } from "../BlogLayout";
 import { BLOG_INDEX_SEO, CATEGORIES, blogBase, getArticles, homePath } from "../data";
 import { useLanguage } from "../../i18n";
 import { useBlogStrings } from "../strings";
 import { CATEGORY_ICONS, ArrowIcon } from "../icons";
 import { CategoryBadge, ArticleMetaRow, ArticleThumb, Eyebrow } from "../components";
-import { useSeo, useJsonLd, siteUrl } from "../seo";
+import { useSeo, siteUrl } from "../seo";
 
 export function BlogIndex() {
   const { lang } = useLanguage();
@@ -25,31 +26,34 @@ export function BlogIndex() {
       ["x-default", siteUrl("/blog")],
     ],
   });
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    name: lang === "ar" ? "ماذا أطبخ — إلهام للطبخ" : "What Should I Cook — Cooking Inspiration",
-    description,
-    inLanguage: lang,
-    url: siteUrl(base),
-    blogPost: articles.map((a) => ({
-      "@type": "BlogPosting",
-      headline: a.title,
-      url: siteUrl(`${base}/${a.slug}`),
-      datePublished: a.datePublished,
-    })),
-  });
-  useJsonLd({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: bs.home, item: siteUrl(homePath(lang)) },
-      { "@type": "ListItem", position: 2, name: bs.blog, item: siteUrl(base) },
-    ],
-  });
+  const jsonLd: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: lang === "ar" ? "ماذا أطبخ — إلهام للطبخ" : "What Should I Cook — Cooking Inspiration",
+      description,
+      inLanguage: lang,
+      url: siteUrl(base),
+      blogPost: articles.map((a) => ({
+        "@type": "BlogPosting",
+        headline: a.title,
+        url: siteUrl(`${base}/${a.slug}`),
+        datePublished: a.datePublished,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: bs.home, item: siteUrl(homePath(lang)) },
+        { "@type": "ListItem", position: 2, name: bs.blog, item: siteUrl(base) },
+      ],
+    },
+  ];
 
   return (
     <BlogLayout>
+      <JsonLd data={jsonLd} />
       <div className="mx-auto w-full max-w-5xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
         <div className="max-w-2xl">
           <Eyebrow>{bs.eyebrow}</Eyebrow>
