@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دراما 5 - ملخص شامل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --accent:#f59e0b; }
+  .theme-purple{ --main1:#5b21b6; --main2:#7c3aed; --main3:#c4b5fd; --bg:#f5f3ff; --dark:#4c1d95; }
+  .theme-teal{ --main1:#0f766e; --main2:#14b8a6; --main3:#5eead4; --bg:#f0fdfa; --dark:#134e4a; }
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Cairo','Segoe UI',Tahoma,Arial,sans-serif;
+    background:#f4f4f6;
+    color:#1f2937;
+    line-height:1.6;
+    margin:0;
+    padding:16px;
+    font-size:15px;
+  }
+  .container{max-width:1020px;margin:auto;}
+  .zone{background:var(--bg);border-radius:16px;padding:14px 16px 18px;margin-bottom:16px;}
+  h1.title{
+    background:linear-gradient(135deg,#5b21b6,#0f766e);
+    color:#fff;
+    text-align:center;
+    padding:20px 15px;
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  }
+  h1.title small{display:block;font-size:14px;font-weight:normal;margin-top:6px;opacity:.9;}
+  h2{
+    background:var(--main1);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:8px;
+    border-right:8px solid var(--accent);
+    margin-top:24px;
+    margin-bottom:10px;
+    font-size:18px;
+  }
+  h2:first-child{margin-top:0;}
+  h3{
+    color:var(--dark);
+    border-right:5px solid var(--main2);
+    padding-right:10px;
+    margin-top:14px;
+    margin-bottom:8px;
+    font-size:15.5px;
+  }
+  .def-box{background:#fff;border:2px dashed var(--main2);border-radius:10px;padding:9px 13px;margin:8px 0;}
+  .def-box b{color:var(--dark);}
+  .plain-box{background:#fff;border-right:5px solid var(--main1);border-radius:8px;padding:7px 12px;margin:2px 0 10px;font-size:13.7px;}
+  .plain-box b{color:var(--main1);}
+  .note-box{background:#fffbeb;border-right:5px solid var(--accent);border-radius:8px;padding:8px 13px;margin:8px 0;}
+  .link-box{background:#eef2ff;border-right:5px solid #6366f1;border-radius:8px;padding:8px 13px;margin:8px 0;}
+  .link-box b{color:#4338ca;}
+  ul{padding-right:18px;margin:6px 0;}
+  li{margin-bottom:4px;}
+  ol.badge-list{list-style:none;padding-right:0;counter-reset:item;margin:8px 0;}
+  ol.badge-list li{
+    counter-increment:item;background:#fff;border-radius:8px;padding:6px 10px;
+    margin-bottom:6px;position:relative;padding-right:38px;box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  }
+  ol.badge-list li::before{
+    content:counter(item);position:absolute;right:7px;top:6px;background:var(--main1);color:#fff;
+    width:21px;height:21px;border-radius:50%;text-align:center;line-height:21px;font-size:12px;
+  }
+  ol.badge-list.cols2{column-count:2;column-gap:14px;}
+  ol.badge-list.cols2 li{break-inside:avoid;}
+  table{width:100%;border-collapse:collapse;margin:10px 0;background:#fff;font-size:13.3px;}
+  table th{background:var(--main1);color:#fff;padding:7px;}
+  table td{padding:7px;border-bottom:1px solid #ddd;text-align:center;}
+  table tr:nth-child(even){background:var(--bg);}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  @media(max-width:600px){.cards,.defgrid,.mcq-grid,ol.badge-list.cols2{grid-template-columns:1fr!important;column-count:1!important;}}
+  .card{background:#fff;border-radius:10px;padding:10px 12px;border-top:5px solid var(--main2);box-shadow:0 1px 5px rgba(0,0,0,0.08);}
+  .card h4{margin:0 0 4px;color:var(--dark);font-size:14.5px;}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:10px 0;}
+  .flow .step{background:var(--main3);padding:8px 12px;border-radius:8px;font-size:13px;text-align:center;color:var(--dark);font-weight:bold;}
+  .flow .arrow{font-size:18px;color:var(--main1);}
+  .answer-box{background:#ecfdf5;border-right:5px solid #10b981;border-radius:8px;padding:8px 13px;margin:8px 0;}
+  .answer-box b{color:#059669;}
+  .quick-ref{background:linear-gradient(135deg,#fff,var(--bg));border-radius:12px;padding:12px;}
+  .mcq-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0;}
+  .mcq{background:#fff;border-radius:8px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12.8px;}
+  .mcq .q{font-weight:bold;color:var(--dark);margin-bottom:5px;}
+  .mcq .opts{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+  .mcq .opt{background:#f3f4f6;border-radius:5px;padding:4px 6px;}
+  .mcq .opt.correct{background:#d1fae5;color:#059669;font-weight:bold;border:1px solid #10b981;}
+  .pillbar{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+  .pill{background:var(--main3);color:var(--dark);padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:bold;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .toc{background:#fff;border-radius:12px;padding:10px 16px;margin-bottom:16px;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+  .toc a{display:inline-block;margin:3px 8px;color:#374151;text-decoration:none;font-size:13px;font-weight:bold;}
+  .toc a:hover{text-decoration:underline;}
+  .chapter-title{
+    background:linear-gradient(135deg,var(--main1),var(--main2));
+    color:#fff;
+    text-align:center;
+    padding:16px 15px;
+    border-radius:14px;
+    margin-top:6px;
+    margin-bottom:16px;
+    font-size:24px;
+    font-weight:800;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  /* ===================== PRINT PAGINATION (Chrome Print → Save as PDF) ===================== */
+  @media print{
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
+
+    body{ background:#fff; }
+
+    /* 1+3: keep headings from being stranded alone at the bottom of a page */
+    h1, h2, h3, h4{
+      break-after: avoid;
+      break-inside: avoid;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+      orphans: 3;
+      widows: 3;
+    }
+    h1.title{
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* 1+2: bind each heading to the block that immediately follows it, so the
+       heading and the start of its content can never be separated by a page break.
+       This targets the actual repeating pattern in this document: an h2/h3
+       immediately followed by its def-box / note-box / pillbar / cards / table / list. */
+    h1 + *, h2 + *, h3 + *, h4 + *{
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+
+    /* Small, self-contained content units: never split these internally.
+       These are the actual repeating "section" containers in the markup. */
+    .def-box, .plain-box, .note-box, .link-box, .answer-box,
+    .card, .mcq, .pillbar, .flow, .toc{
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* Table rows / cells: never split a single row across two pages */
+    tr, td, th{
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    /* But DO let long tables (e.g. the quick-reference tables) span multiple
+       pages naturally instead of forcing one huge blank gap before them */
+    table, .quick-ref{
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+
+    /* List items: keep each bullet/badge item intact, but allow long lists
+       (9+ items) to break across pages rather than leaving huge blank space */
+    ol.badge-list li{
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    ol.badge-list{
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+
+    /* Grid/flex groups of cards or MCQs: let the group flow across pages,
+       while the avoid-rule on .card/.mcq above keeps each individual item intact */
+    .cards, .mcq-grid, .defgrid{
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+
+    /* CSS multi-column lists reflow unpredictably across printed page breaks
+       in Chrome; force a single column only for print so items stay in order
+       and nothing gets visually duplicated/reordered between pages */
+    ol.badge-list.cols2{
+      column-count: 1;
+    }
+
+    /* Large theme/zone wrappers legitimately span many pages - let them
+       split naturally instead of trying (and failing) to keep them whole */
+    .theme-purple, .theme-teal, .zone, .container{
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+  }
+
+  /* ---- additions for cinema/drama subjects ---- */
+  .timeline{border-right:4px solid var(--main2);margin:12px 14px 12px 0;padding-right:16px;}
+  .tl-item{position:relative;background:#fff;border-radius:8px;padding:6px 11px;margin-bottom:7px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13.5px;}
+  .tl-item::before{content:"";position:absolute;right:-26px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px var(--main2);}
+  .tl-item .yr{display:inline-block;background:var(--main1);color:#fff;border-radius:6px;padding:0 8px;margin-left:8px;font-weight:800;font-size:12.5px;}
+  .en{direction:ltr;unicode-bidi:embed;display:inline-block;font-family:'Segoe UI',Arial,sans-serif;font-weight:600;}
+  .person{background:#fff;border-radius:10px;padding:9px 12px;border-right:6px solid var(--accent);box-shadow:0 1px 5px rgba(0,0,0,.08);}
+  .person h4{margin:0 0 3px;color:var(--dark);font-size:14.5px;}
+  .person .role{font-size:12.5px;color:#6b7280;margin-bottom:3px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .vs .a{background:#fff;border-top:5px solid var(--main1);border-radius:10px;padding:9px 12px;}
+  .vs .b{background:#fff;border-top:5px solid var(--accent);border-radius:10px;padding:9px 12px;}
+  .vs h4{margin:0 0 4px;}
+  table td.r{text-align:right;}
+  @media(max-width:600px){.vs{grid-template-columns:1fr;}}
+  @media print{ .tl-item,.person,.vs .a,.vs .b{break-inside:avoid;page-break-inside:avoid;} .vs{break-inside:auto;} }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1 class="title">🎭 دراما 5
+<br>ملخص شامل: الميلودراما والفودفيل والمسرح الملحمي
+<small>ملخص مبسط - مذكرة مقرر دراما 5 - د. أشرف راجح</small>
+</h1>
+
+<div class="toc">
+🗂️ <b>محتويات الملخص:</b>
+<a href="#s0">🧭 الخريطة العامة</a>
+<a href="#s1">😢 أولاً: الميلودراما</a>
+<a href="#s2">🤪 ثانياً: الفودفيل والفارس</a>
+<a href="#s3">🔥 ثالثاً: الحداثة ومسرح التمرد</a>
+<a href="#s4">📣 رابعاً: بريخت والمسرح الملحمي</a>
+<a href="#s5">✅ المراجعة السريعة والأسئلة</a>
+</div>
+
+<!-- ======================= الجزء الأول (بنفسجي) ======================= -->
+<div class="theme-purple">
+
+<div class="zone" id="s0">
+<h2 class="chapter-title">🧭 الخريطة العامة للمذكرة</h2>
+
+<div class="flow">
+<span class="step">😢 الميلودراما<br>(الوجه الجاد الباكي)</span><span class="arrow">+</span>
+<span class="step">🤪 الفودفيل / الفارس<br>(الوجه الضاحك)</span><span class="arrow">←</span>
+<span class="step">🎭 المسرح الشعبي</span>
+</div>
+<div class="flow">
+<span class="step">🔥 الدراما الحديثة<br>(مسرح التمرد)</span><span class="arrow">←</span>
+<span class="step">📣 بريخت والمسرح الملحمي<br>(الفرجة الواعية)</span>
+</div>
+
+<div class="note-box"><b>🧠 فكرة حفظ:</b> المذكرة بتتحرك من <b>الشعبي</b> (ميلودراما + فودفيل: بيشتغلوا على المشاعر والضحك) لـ <b>الواعي</b> (دراما حديثة + بريخت: بتشتغل على العقل والنقد). يعني من "اتفرج واتأثر" لـ "اتفرج وفكّر".</div>
+
+<h3>⏳ خط زمني سريع للأحداث والأسماء</h3>
+<div class="timeline">
+<div class="tl-item"><span class="yr">ق5 ق.م</span> أرستوفانيس والكوميديا القديمة (Old Comedy) عند الإغريق</div>
+<div class="tl-item"><span class="yr">ق4 ق.م</span> مينادر والكوميديا الحديثة (New Comedy) - ولد بعد وفاة أرستوفانيس بحوالي 40 سنة</div>
+<div class="tl-item"><span class="yr">ق16–17</span> كوميديا دي لارتي (Commedia dell'arte) وعصا الإضحاك (Slapstick) في إيطاليا</div>
+<div class="tl-item"><span class="yr">ق18</span> نشأة الميلودراما في فرنسا (وقت قيود الحكومة على المسارح الشعبية)</div>
+<div class="tl-item"><span class="yr">بعد الثورة الفرنسية</span> ظهور الفودفيل، وبداية الميلودراما "الناطقة"</div>
+<div class="tl-item"><span class="yr">أوائل ق19</span> أول استخدام نقدي لكلمة "ميلودراما" لوصف مسرحية «كولينا أو طفل الغموض» لبيكسركور</div>
+<div class="tl-item"><span class="yr">1848</span> الثورات الراديكالية.. وفشلها في النهاية</div>
+<div class="tl-item"><span class="yr">1859</span> داروين «أصل الأنواع» + ماركس «نقد الاقتصاد السياسي»</div>
+<div class="tl-item"><span class="yr">1863</span> رينان «حياة المسيح»</div>
+<div class="tl-item"><span class="yr">1864</span> إبسن يغادر النرويج ويبدأ كتابة مسرحياته العظيمة</div>
+<div class="tl-item"><span class="yr">1915</span> جدل صحفي ساخن في مصر حول الفودفيل</div>
+<div class="tl-item"><span class="yr">1919</span> ثورة 1919 - الجدل يكمل بصورة أشمل</div>
+<div class="tl-item"><span class="yr">1928–1942</span> فترة فيلم "المرأة الساقطة" (دراسة ليا جيكوبز)</div>
+<div class="tl-item"><span class="yr">1940</span> فيلم «ريبيكا» لهيتشكوك - أول أفلام "المرأة الشديدة التوتر" حسب ماري آن دون</div>
+<div class="tl-item"><span class="yr">1956</span> وفاة برتولد بريخت (1898–1956)</div>
+<div class="tl-item"><span class="yr">1962</span> كتاب «مسرح التمرد» لروبرت برشتين</div>
+<div class="tl-item"><span class="yr">1964</span> فيلم «الإنجيل كما رواه متى» لبازوليني - متأثر بكتاب رينان</div>
+</div>
+</div><!-- /zone s0 -->
+
+<!-- ================= الميلودراما ================= -->
+<div class="zone" id="s1">
+<h2 class="chapter-title">😢 أولاً: الميلودراما — نوع (Genre) وأسلوب (Style)</h2>
+
+<h2>📖 تعريف الميلودراما</h2>
+<div class="def-box">
+<b>لغةً:</b> ميلودراما = <span class="en">Melos</span> (ميلوس = لحن) + <span class="en">Drama</span> (دراما). يعني حرفياً "دراما بلحن".<br>
+<b>قاموس لاروس:</b> "ميلو" هي أغاني ودراما وحركة مسرحية، دراما مصحوبة بموسيقى أوركسترالية، بتقدم شخصيات شعبية، مليانة مواقف عنيفة وتحولات غير متوقعة، وأبطالها <b>أفراد مقهورون</b> في كلماتهم وحركاتهم.
+</div>
+<div class="plain-box"><b>🗣️ بالبلدي:</b> الميلودراما هي الحكاية اللي فيها مظلوم وظالم، ومواقف قوية، وموسيقى بتشد دموعك، وفي الآخر الخير بيكسب. وكلمة "ميلو" في الأصل جاية من "موسيقى + دراما".</div>
+
+<h3>🕰️ إزاي اتكوّنت الكلمة؟</h3>
+<ol class="badge-list">
+<li><b>نهايات القرن 18</b>: الميلودراما اتأسست كما في قائمة لاروس، وكان أسلوبها بيتراوح بين التفاهة العامية تارة وبين السموق المهيب تارة تانية.</li>
+<li><b>أصبحت منطقة وسطى</b> بين الغناء والأداء التمثيلي، واكتسبت خصائص أخرى مميزة.</li>
+<li><b>منتصف القرن 18 - جان جاك روسو</b>: وصف مسرحية «بيجماليون» بأنها "تقاطع الغناء والدرام، الموسيقى والفرجة" أو "مونولوج مختصر تسانده جمل موسيقية".</li>
+<li><b>القصد منها</b>: أداء تمثيلي إيمائي مؤثر، هدفها الوصول لمشاعر <b>الأسى</b> عند المشاهد لأقصى درجة، بالألحان المؤثرة والجمل الرنانة والشخصيات المقبولة والمواقف الحدية.</li>
+</ol>
+
+<h3>🧩 تعريف بيتر بروكس (Peter Brooks) - عناصر الميلودراما</h3>
+<div class="pillbar">
+<span class="pill">💥 استثارة المشاعر بقوة</span>
+<span class="pill">⚖️ مخطط قطبي ثنائي للقيم الأخلاقية (خير/شر)</span>
+<span class="pill">⚠️ حالات وجودية مهددة للأبطال لأقصى مدى</span>
+<span class="pill">🦹 شر صريح وواضح</span>
+<span class="pill">🛡️ خير مضطهد دايماً</span>
+<span class="pill">🏆 مكافأة الفضيلة في النهاية</span>
+<span class="pill">📣 تضخيم ومبالغة في التعبير</span>
+<span class="pill">🌑 حبكات داكنة وتشويق</span>
+<span class="pill">😄 أنفاس خاطفة من المرح</span>
+</div>
+
+<h2>🇫🇷 الميلودراما في فرنسا والقوانين</h2>
+<div class="flow">
+<span class="step">🚫 السلطات تحمي المسارح "الرسمية" (للطبقة الأرستقراطية)</span><span class="arrow">←</span>
+<span class="step">🔇 المسارح الشعبية ممنوعة من الغناء ثم الرقص ثم الحوار</span><span class="arrow">←</span>
+<span class="step">🎻 ميلودراما صامتة بموسيقى مؤثرة (قبل الثورة)</span><span class="arrow">←</span>
+<span class="step">🗣️ بعد الثورة: الحوار بقى أساسي وبقت ميلودراما ناطقة</span>
+</div>
+<div class="note-box">
+<b>تفاصيل المنع:</b> المنع من الغناء ثم الرقص (عدا فوق الحبل) حماية للأوبرا، والمنع من الحوار حماية لمكانة "الكوميدي فرانسيز" (المسرح اللي كان بيحظى بالرعاية الملكية). فالميلودراما فضلت سنين "محكوم عليها بالخرس" وبتستخدم الموسيقى المؤثرة عشان تغلف المشاهد الإيمائية الصامتة.
+</div>
+<div class="plain-box"><b>🗣️ بالبلدي:</b> المنع كان سبب إن الميلودراما اتولدت "كلها حركة وموسيقى"، ولما اتفك المنع بعد الثورة الفرنسية قدرت تتكلم وبقى الحوار أساسي. وبقت مسرح الطبقات الشعبية والبرجوازية الصاعدة.</div>
+
+<h2>⛪ الميلودراما بتاخد مكان الدين</h2>
+<div class="cards">
+<div class="card"><h4>🔎 وارن بكلاند (Warren Buckland)</h4>تاريخياً الميلودراما <b>حلّت محل الدين</b> في التفكير في المسائل والصراعات الأخلاقية. مركزها الصراع بين الخير والشر، لكن بدل التركيز على المقدس زي الدين، بتركز على المسائل الأخلاقية على <b>أساس شخصي ويومي</b>.</div>
+<div class="card"><h4>🔎 بيتر بروكس</h4>الميلودراما شكل ينتمي لعصر <b>ما بعد المقدس</b>: بتمثل القطبية والدراما القصوى، بتدور على "الدليل الواضح" والمشروع لإدارة الكم المفتوح من الخيارات في طريق الحياة.</div>
+</div>
+<div class="note-box"><b>❓ ليه الميلودراما ناجحة في مجتمعنا العربي لحد دلوقتي؟</b> د. محمد كامل القليوبي بيفسر: لأن الثقافة الشعبية عندنا بيغلب عليها <b>التدين الفطري والإيمان بالقدر والمشيئة الإلهية</b> اللي بتهيمن على حياة الناس. (وبتتعامل مع التدين كممارسة ثقافية "شعبية" مش حكم على العقيدة).</div>
+
+<h3>⚖️ العدالة الشعرية (Poetic Justice)</h3>
+<div class="def-box"><b>العدالة الشعرية:</b> إن الدراما تنتهي بانتصار الإرادة الإلهية، فالأخيار يلاقوا ثوابهم السعيد في النهاية (حتى لو الحياة الحقيقية مش دايماً كده)، والأشرار يلاقوا جزاءهم الرادع.</div>
+<div class="cards">
+<div class="card"><h4>😇 الأخيار</h4>الأزمات اللي مروا بيها كانت اختبارات القدر للصابرين، أو نتيجة مؤامرات الأشرار. وفي الآخر ثوابهم سعيد.</div>
+<div class="card"><h4>😈 الأشرار</h4>بيلاقوا جزاءهم: خواتيم شنيعة، حوادث، أمراض مهلكة، عاهات مثيرة للعجب، أو ميتات مخيفة. وبعض الحالات بتتوب وتعترف بذنبها لكن بعد ما تدفع ثمن اللي عملته.</div>
+</div>
+
+<h2>🧱 «الوجوه المفروضة» - ميشيل لوبران (Michel Lebrun)</h2>
+<div class="def-box"><b>الفكرة:</b> الميلودراما ليها عناصر إطارية شبه ثابتة، بتتكرر كقوالب أصلية للسرديات (<span class="en">Narratives archétypales</span>) حتى بعد ما بتتغير القصة.</div>
+
+<h3>1️⃣ الأربع صيغ دراماتورجية أساسية</h3>
+<ol class="badge-list cols2">
+<li>العفة والإغواء</li>
+<li>أن تحب وأن تُطارد المحبوب</li>
+<li>الوضع على صليب الأم (أو الأب)</li>
+<li>الصدفة المنحوسة / السعيدة</li>
+</ol>
+
+<h3>2️⃣ «الوجوه المفروضة» بالتفصيل (4 تصنيفات)</h3>
+<div class="cards">
+<div class="card"><h4>👤 شخصيات مفروضة</h4>① طفل (أو طفلة) ② بطلة ③ دور ثان كوميدي</div>
+<div class="card"><h4>📍 مواقف مفروضة</h4>① احتقار ② زنا (علاقة خارج الارتباط الشرعي) ③ انفصال (هجر) ④ مرض (حجز بالمستشفى)</div>
+<div class="card"><h4>🏛️ وسط (اجتماعي) مفروض</h4>① طبقة مالكة (أرستقراطية أو برجوازية عليا) ② طبقة مملوكة (برجوازية صغيرة أو أقل بروليتاريا) ③ وسط فني (بتنويعاته)</div>
+<div class="card"><h4>🎬 أعراف شكلية مفروضة</h4>① العودة للماضي (الفلاش باك) ② الطباق الموسيقي <span class="en">Contrepoint musical</span> (خط حدثي فرعي موازي للحبكة الرئيسية) ③ البناء الدائري (الأمور بتعود لسيرتها الطيبة في نهايات بتحمل الخير للأبطال)</div>
+</div>
+<div class="note-box"><b>🧠 فكرة حفظ:</b> لوبران = "ش م و ع" → <b>ش</b>خصيات - <b>م</b>واقف - <b>و</b>سط اجتماعي - <b>ع</b>رف شكلي. (٤ حاجات بتتفرض على أي ميلودراما).</div>
+
+<h2>👩 المرأة والميلودراما</h2>
+<div class="plain-box"><b>🗣️ بالبلدي:</b> الميلودراما غالباً "نوع نسائي" لأنها بتمثل مشاكل وهموم النساء في عالم بيسيطر عليه الرجل (مجتمع أبوي). (من تحليل بكلاند).</div>
+
+<h3>⭐ خصائص الميلودراما بحسب «بكلاند» / «شارحه»</h3>
+<ol class="badge-list">
+<li>كتير ما بتسيطر <b>امرأة على الحكاية</b>.</li>
+<li>بتُروى غالباً من <b>منظور الضحية</b> (فبتتحول شخصيتها النسائية لضحية).</li>
+<li>الصراع الأخلاقي هو الموضوع أو المحتوى الرئيسي، خاصة الصراعات اللي بتخوضها النساء في إطار <b>مجتمع أبوي</b>.</li>
+<li>بتستند للسرد الشامل المعرفة (الراوي العليم).</li>
+<li>حبكتها فيها <b>التواءات وانقلابات حادة غير متوقعة</b>.</li>
+<li>بتتألف من أحداث ولقاءات بتحصل <b>بالصدفة</b>.</li>
+<li>الأسرار بتسيطر على الحبكة.</li>
+<li>فيها <b>عُقد درامية</b> بتزود تعقيد الحبكة وتوّلد الصراعات الأخلاقية.</li>
+</ol>
+
+<div class="note-box"><b>⚠️ تنبيه:</b> مش معنى كده إن الميلودراما "نسائية" دايماً. بكلاند نفسه بيقول إن فيه <b>«ميلودراما ذكورية»</b>: حكايات الرجال فيها بيبقوا في موضع الضحية وبيخوضوا صراعات أخلاقية لأنهم مش قادرين يملوا الدور اللي رسمه لهم المجتمع الأبوي. وكمان فيه ميلودراما بتستند للسرد الذاتي (أنواع كتير) والتماهي مع البطلة/الضحية.</div>
+
+<h2>🗂️ أنواع الميلودراما (حسب شخصية البطلة)</h2>
+<div class="defgrid" style="display:grid;grid-template-columns:1fr;gap:10px;">
+
+<div class="person">
+<h4>1️⃣ ميلودراما المرأة الساقطة <span class="en">(Fallen Woman)</span></h4>
+<div class="role">الباحثة: ليا جيكوبز (Lea Jacobs) — «أجنحة الخطيئة: الرقابة وفيلم المرأة الساقطة 1928–1942»</div>
+البطلة ترتكب <b>جنوحاً جنسياً</b> زي الزنا بعد الزواج أو الجنس قبل الزواج. في النسخ التقليدية بتُنفى من المساحة المحلية اللي بتشغلها العائلة وتتعرض لتدهور طويل. والخطيئة هي <b>المحرك الأساسي للأحداث</b> (يتفق مع موقف "زنا" عند لوبران).
+</div>
+
+<div class="person">
+<h4>2️⃣ ميلودراما المرأة المجهولة <span class="en">(Unknown Woman)</span></h4>
+<div class="role">الناقد: ستانلي كافل (Stanley Cavell) — «مناقشة الدموع: ميلودراما هوليوود عن المرأة المجهولة»</div>
+الصفة اللي بتعرفها هي <b>«الإخفاق»</b>: إخفاق شخصية الرجل في التعرف على امرأة من الماضي كان بينهم حب قصير. وكمان إخفاق شخصية المرأة في البرهنة للرجل على وجودها (إن الرجل مش بيتعرف عليها). المرأة بتسيطر على المعلومات (سرديا) والرجل بيتميز بجهله، والصراع الأخلاقي بيتولد من السر وعدم قدرة الرجل على التعرف عليها. بكلاند بيسميها كمان <b>«ميلودراما المرأة المنسية»</b> لأن الذاكرة هي المشكلة (الحبيب اللي مش فاكر).
+<div class="note-box" style="margin-top:6px">❓ السؤال الأخلاقي: كيف يجب على المرأة المجهولة تعريف الرجل الذي أحبته فيما مضى بنفسها؟ وهل تكشف له السر وحدها؟</div>
+</div>
+
+<div class="person">
+<h4>3️⃣ ميلودراما المرأة الشديدة التوتر (الارتيابية) <span class="en">(Paranoid Woman)</span></h4>
+<div class="role">الباحثة: ماري آن دون (Mary Ann Doane) — «الرغبة في الرغبة: فيلم المرأة في الأربعينيات»</div>
+المرأة فاعلة وبتعاني من حالات ذهنية قاسية: <b>قلق وخوف بالغ</b>. بتحتوي على واحد أو أكتر من العناصر دي:
+<ul>
+<li>الفيلم مبني على خوف امرأة من إن <b>زوجها يخطط لقتلها</b>، وبيخيم شبح جريمة القتل على مؤسسة الزواج.</li>
+<li>الزوج عادة سبق له الزواج وتوفيت زوجته السابقة في ظروف غامضة.</li>
+<li>الأحداث بتحصل في موضع غامض في المنزل ما تقدرش المرأة توصله.</li>
+</ul>
+<b>الجذور:</b> الرواية القوطية - آن رادكليف (Ann Radcliffe، 1764–1823) ثم دافني دو موريه (Daphne Du Maurier، 1907–1989).<br>
+<b>أول مثال:</b> فيلم «ريبيكا» (Rebecca) 1940 لألفريد هيتشكوك، عن رواية دو موريه. وأول فيلم هيتشكوك هوليوودي اتعمل ونجح بهالة التشويق (thriller).
+<div class="note-box" style="margin-top:6px">❓ سؤال نقدي: هل «ريبيكا» ينتمي للتشويق (thriller) ولا للميلودراما؟ ونجاحه جاي جزئياً من الشخصية "الميلودرامية".</div>
+</div>
+</div>
+
+<div class="link-box"><b>🔗 اربط الفكرة:</b> الميلودراما الفضفاضة بتنسج عباءتها على وجه الدراما <b>"الجاد"</b> (دموع وصراع أخلاقي). في المقابل فيه وجه <b>"الباسم"</b> وهو الفودفيل/الفارس، اللي هنتناوله في الجزء الجاي.</div>
+
+<h3>🔠 مصطلحات الجزء ده (Glossary)</h3>
+<div class="cards">
+<div class="card"><h4><span class="en">Melodrama</span></h4>دراما بلحن (موسيقى + مواقف انفعالية وصراع خير وشر).</div>
+<div class="card"><h4><span class="en">Poetic Justice</span></h4>العدالة الشعرية: ثواب الخير وعقاب الشر في النهاية.</div>
+<div class="card"><h4><span class="en">Flashback</span></h4>العودة للماضي (من الأعراف الشكلية المفروضة).</div>
+<div class="card"><h4><span class="en">Contrepoint musical</span></h4>خط حدثي فرعي بيمشي موازي للحبكة الرئيسية.</div>
+<div class="card"><h4><span class="en">Narratives archétypales</span></h4>قوالب سردية أصلية بتتكرر.</div>
+<div class="card"><h4><span class="en">Thriller</span></h4>فيلم تشويق (جدل حول انتماء «ريبيكا» ليه ولا للميلودراما).</div>
+</div>
+
+</div><!-- /zone s1 -->
+
+<!-- ================= الفودفيل ================= -->
+<div class="zone" id="s2">
+<h2 class="chapter-title">🤪 ثانياً: الفودفيل والفارس — الصيغة (Mode) الكوميدية</h2>
+
+<h2>🧪 يعني إيه "صيغة" (Mode)؟</h2>
+<div class="def-box"><b>الصيغة (Mode):</b> الطريقة اللي بينظر بها الفنان لمادة عمله، فيصبغها بأسلوب معين (عام لحد ما، يغلفها). والفودفيل والفارس هما "العباءة الموازية" للميلودراما: عباءة بتحمل قيم <b>الترفيه والضحك</b>.</div>
+
+<table>
+<tr><th>المقارنة</th><th>الميلودراما (الوجه الجاد)</th><th>الفودفيل/الفارس (الوجه الباسم)</th></tr>
+<tr><td><b>القيمة الأساسية</b></td><td>الدموع والصراع الأخلاقي</td><td>الترفيه والضحك</td></tr>
+<tr><td><b>الجمهور</b></td><td>الطبقات الشعبية والبرجوازية الصاعدة</td><td>نفس الجمهور (البرجوازية الصغيرة)</td></tr>
+<tr><td><b>أصلها</b></td><td>موسيقى + دراما</td><td>كوميديا الفارس (الحشو) + الفودفيل (المرح والفرجة)</td></tr>
+</table>
+<div class="link-box"><b>🔗 رأي د. محمد مندور:</b> "الميلودراما والفارس كلاهما وجهان لشيء واحد هو <b>المسرح الشعبي</b>".</div>
+
+<h2>🌱 جذور الفارس (Farce)</h2>
+<div class="def-box"><b>الفارس:</b> مشتقة من الفرنسية <span class="en">Farce</span> وتعني <b>"حشو"</b>. كوميديا هزلية بتعتمد على "الحشو" بالمبالغة في الشخصية والحركة والقول والفعل.</div>
+
+<div class="cards">
+<div class="card"><h4>🏛️ الكوميديا القديمة <span class="en">Old Comedy</span></h4>عند الإغريق (ق5 ق.م) <b>أرستوفانيس</b>: مواقف هزلية رائعة وفواحش مبهجة وسخرية سياسية لاذعة. حبكتها بتنطلق من نزاع بين حزبين أو رأيين متعارضين.</div>
+<div class="card"><h4>🏛️ الكوميديا الحديثة <span class="en">New Comedy</span></h4><b>مينادر</b> (اتولد بعد وفاة أرستوفانيس بحوالي 40 عام): أسس كوميديا اجتماعية أكتر انضباطاً ورصانة في الأسلوب.</div>
+<div class="card"><h4>📚 الكوميديا المدرسية <span class="en">Comedia Erudita</span></h4>كوميديا أوائل عصر النهضة، انبثقت من تراث العصور الوسطى. (ت. ج. ا. نلسون: أسست وأرست تقاليد الكوميديا الأوروبية).</div>
+<div class="card"><h4>🎪 كوميديا دي لارتي <span class="en">Commedia Dell'arte</span></h4>المنشأ إيطالي (ق16–17): مواقف ارتجالية بتهرع نحو تفجير الضحكات بلا ضوابط. مصدر أساسي للكوميديا الهزلية.</div>
+</div>
+
+<div class="note-box"><b>🎯 نقطة مهمة (مفهوم الكوميديا):</b> كلمة "كوميديا" ليها معنيين: (1) <b>عمل بيستهدف الإضحاك</b> (المعنى الشائع)، (2) <b>مفهوم قديم</b> بيعبر عن موقف الحبكة اللي بتسعى لإحداث <b>توافق وتناغم ومصالحة ونهاية سعيدة</b>.</div>
+
+<h3>🤣 كوميديا لفظية vs كوميديا مقرعة (Slapstick)</h3>
+<div class="vs">
+<div class="a"><h4>🗣️ الكوميديا اللفظية (النكات)</h4>
+<ul>
+<li>النكات (<span class="en">Jokes</span>) والتعليقات الساخرة (<span class="en">wisecracks</span>) نادراً ما تندمج في الحبكة.</li>
+<li>بتحتاج <b>خاتمة محكمة</b> أو مؤثر ختامي <span class="en">Punch line</span> (إفيه).</li>
+<li>صعب بنائياً الاعتماد عليها كلياً، وبتقاطع السرد وتعطّل "التنامي السردي".</li>
+<li>هي أقرب لاستطراد أو علامة توقف لبرهة.</li>
+</ul></div>
+<div class="b"><h4>🤕 الكوميديا المقرعة (Slapstick / Physical Comedy)</h4>
+<ul>
+<li>كوميديا بدنية بتميل للعنف كمصدر للإضحاك.</li>
+<li>الاسم من <b>العصا</b>: لوحين خشبيين بيحدثوا صوت <b>فرقعة عالية</b> لما يُقرع بيها الشخص. الأداة دي بدأت في إيطاليا في ق16.</li>
+<li>العبء الأساسي للإضحاك بيعتمد على الحركة والبدن.</li>
+<li>(د. مدكور ثابت بيقترح ترجمتها "كوميديا التهريج"، والمقرعة أقرب لأصل الكلمة).</li>
+</ul></div>
+</div>
+<div class="plain-box"><b>🗣️ بالبلدي:</b> الإفيه اللفظي لوحده صعب يتركب في حكاية متماسكة، لأنه بيوقف الحكاية بتاعتك. عشان كده الفارس بيعتمد على الحركة والضرب والمقالب اللي بتمشي مع الحبكة بسهولة أكتر.</div>
+
+<h2>🎶 الفودفيل (Vaudeville)</h2>
+<div class="flow">
+<span class="step">🤪 الفارس لوحده ضعيف في حبكته اللفظية</span><span class="arrow">←</span>
+<span class="step">🎵 احتاج حليف أوسع: الفودفيل (مرح + غناء + فرجة)</span><span class="arrow">←</span>
+<span class="step">🤝 اتحدوا (جماع التحمت خصائصه) = "الفودفيل"</span>
+</div>
+<div class="def-box"><b>تعريف د. مدكور ثابت:</b> "ملهاة الترفيه والتسلية، وهي مزيج من <b>الرقص والغناء والحوار الفكاهي والحركات المضحكة</b>، محكمة التعقيد، تافهة الموضوع، هزلية الأسلوب".</div>
+<ul>
+<li>اتشكلت في أواخر القرن 18 في السنين التالية للثورة الفرنسية، وانتشرت في المسارح مباشرة، وبعدها في بداية القرن العشرين.</li>
+<li>أشبه بالمنوعات الراقصة والغنائية اللي بتظهر في الملاهي الليلية.</li>
+<li>الفودفيل (والميلودراما) <b>تجليات للمسرح "الشعبي"</b> بعد الثورة الفرنسية، اللي وصلت فيها البرجوازية الصغيرة (صغار الزراع والصناع والتجار والحرفيين) للفرجة على خشبة المسرح فنون تلائم ثقافتهم المحدودة ووعيهم البسيط.</li>
+</ul>
+
+<h2>🇪🇬 الفودفيل والجدل في مصر</h2>
+<div class="timeline">
+<div class="tl-item"><span class="yr">1915</span> معركة صحفية في مصر حول الفودفيل - بين هجوم ودفاع. كانت طلقة البداية مقال في الأهرام لكاتب اسمه "سهيل" (اسم مستعار).</div>
+<div class="tl-item"><span class="yr">العقد الثاني ق20</span> أهم 3 أجواء كوميدية: جوّ <b>عكاشة</b> ← جوّ <b>أبيض وحجازي</b> ← جوّ <b>الكوميدي العربي</b> (حسب سهيل).</div>
+<div class="tl-item"><span class="yr">بعد 1919</span> الجدل مستمر بصورة أشمل. د. القليوبي يقسّم تطور الفن: <b>الفن الشعبي</b> مقابل <b>الفن الرسمي</b> (مسرح البرجوازية الوسطى الصاعدة).</div>
+</div>
+
+<div class="cards">
+<div class="card"><h4>🎩 سهيل (ناقد الفودفيل)</h4>بيفرق بين <b>كوميديا الأنماط والسلوك</b> (اللي بتركز على قيمة أو هدف اجتماعي) وبين <b>كوميديا الفودفيل</b> (مجرد حوادث متسلسلة من المواقف التمثيلية المحرجة). وبيعتبر الفودفيل "لا يُقصد به سوى التفريح" مش درس عادات.</div>
+<div class="card"><h4>🛡️ أمين صدقي (مدافع)</h4>عرّب نصوص هوجمت وعرض مسرحية «من أجل إيميلي»، ودافع عن الفودفيل وقيمته، وقدّم الفودفيل كفن لـ "الغالبية والغالبية عوام" (للشعب).</div>
+<div class="card"><h4>🚫 اللي طالبوا بمنعه</h4>تحمسوا لمنعه لأسباب <b>أخلاقية</b> (زي المنع في فترات) أو <b>سياسية</b>. وفيه رأي ثاني (علي عزيز عيد) يثني على النوع <b>"النظيف"</b> مقابل "الخليع".</div>
+<div class="card"><h4>📰 فرح أنطون</h4>يشير لقدرة الجمهور على فرز الغث من السمين، ويطالب بعدم استخدام المنع والمصادرة (كوسيلة)، لكن يطلب من أرباب الفرق مراعاة الآداب العامة.</div>
+</div>
+
+<h3>🎭 مواصفات الكوميديا المرتجلة في المسرح المصري (د. علي الراعي)</h3>
+<ol class="badge-list">
+<li><b>قصة سهلة الجريان</b> مش بتحتفل بقواعد معينة، هدفها جذب انتباه المتفرج وتسليته. لو فرغت جعبة المؤلف من الحيل المسرحية ينهي عمله دون تردد.</li>
+<li><b>فنان الارتجال (النمر)</b>: الممثل يستخدم القدرة البدنية وخفة اليد وطلاقة اللسان ليقدم عرضاً باهراً يجمع بين فن التمثيل وفن الحاوي وفن التمثيل الصامت.</li>
+<li><b>جاليري من الشخصيات الغريبة</b> بلهجاتها غير المألوفة وأحوالها الخارجة وتصرفاتها اللافتة، لدرجة إن المتفرج يحس إنه في متحف للنماذج البشرية الشاذة.</li>
+<li><b>الألفاظ الصارخة والبذيئة</b> (الردح): فردياً أو ثنائياً أو جماعياً، وأحياناً يتحول السباب لقافية.</li>
+<li><b>الحركة المادية الصاخبة</b>: مرتبطة بتأثير الأفعال العنيفة في الميلودراما، وبالكوميديا المقرعة وفن الأراجوز.</li>
+<li><b>تصور شعبي لفكرة المسرح</b>: تقرب بين القصص المعروضة والمتفرج، فيها <b>كسر الإيهام</b> بمخاطبة المتفرجين و"ملاغاتهم".</li>
+<li><b>الرقص والغناء</b> كوسيلة لإقناع المشاهدين، زي: "احنا يا بيه بتوع كله.. بلا هملت بلا أوتلو.. نبلف أحسن متفرج.. بنرقص له ونتحنجل له".</li>
+</ol>
+<div class="note-box"><b>🧠 فكرة حفظ (7 مواصفات الراعي):</b> قصة سهلة - نمر - جاليري غرائب - ردح - حركة صاخبة - كسر إيهام - رقص وغناء.</div>
+
+<h3>🎬 الانتقال للسينما: نجيب الريحاني وبديع خيري</h3>
+<div class="link-box"><b>🔗 اربط الفكرة:</b> نجيب الريحاني وشريكه بديع خيري نقلوا الارتجال والمسرح الشعبي للسينما. الريحاني كان بيحمل عنصرين أساسيين: <b>(1) الكوميديا الشعبية</b> (إرث الارتجال والفصل المضحك) و<b>(2) الكوميديا الأوروبية</b> (عبر الفرنسية). وده كله + أثر ألف ليلة وليلة والأدب الشعبي. والنتيجة: استطاع في أوائل الثلاثينيات إنه يثبت في مجال <b>الكوميديا الانتقادية الممصرة عن أصول فرنسية</b>.</div>
+
+</div><!-- /zone s2 -->
+</div><!-- /theme-purple -->
+
+<!-- ======================= الجزء الثاني (تيل) ======================= -->
+<div class="theme-teal">
+
+<div class="zone" id="s3">
+<h2 class="chapter-title">🔥 ثالثاً: الحداثة والتمرد في المسرح</h2>
+
+<h2>🌍 خلفية ضرورية: إيه اللي اتغير في العالم؟</h2>
+<table>
+<tr><th>قبل الحداثة</th><th>بعد الحداثة الغربية</th></tr>
+<tr><td>الفلسفة الغيبية</td><td>الفلسفة الطبيعية</td></tr>
+<tr><td>الوحي</td><td>التجربة</td></tr>
+<tr><td>البصيرة</td><td>الإحصاءات (وبعدين الحاسوب)</td></tr>
+<tr><td>الشعر</td><td>النثر (كتاب «زمن بلا شعر» - بول هازار: «أزمة الضمير الأوروبي»)</td></tr>
+</table>
+
+<div class="timeline">
+<div class="tl-item"><span class="yr">1859</span> داروين: «أصل الأنواع» (أول نظرية علمية تجريبية عن النشأة والتطور) + ماركس: «نقد الاقتصاد السياسي».</div>
+<div class="tl-item"><span class="yr">1863</span> رينان: «حياة المسيح» - ينكر الميلاد الإلهي والمعجزات ويصوّر المسيح نبياً متمرداً.</div>
+<div class="tl-item"><span class="yr">1864</span> إبسن بيغادر النرويج لروما ويبدأ يكتب مسرحياته. المذهب العلمي الطبيعي (جاليليو - بيكون - ديكارت) كان انتصر.</div>
+<div class="tl-item"><span class="yr">1964</span> فيلم «الإنجيل كما رواه متى» لـ بازوليني - فيلم حداثي متأثر برينان.</div>
+</div>
+
+<div class="note-box"><b>🧠 الفكرة:</b> التقدم العلمي <b>ما قضاش</b> على التطرف (العرقي والديني)، وثورة 1848 فشلت في تحقيق "الحرية والإخاء والمساواة" (عبودية الأجور حلت محل عبودية الأرض). والإنسان الحديث بقى في <b>"سجن مفتوح"</b>: بيلاحق جواله ويحيا في جو مسموم. من الأرضية السوداء دي طلعت <b>الدراما المعاصرة</b>، كـ "موجة رومانسية تانية" بس من غير تفاؤل روسو.</div>
+
+<h3>✍️ مفكرين بيظهروا في التمهيد</h3>
+<div class="cards">
+<div class="person"><h4>جان جاك روسو</h4><div class="role">نقطة تحول في تاريخ الفكر</div>في «اعترافاته» و«عقده الاجتماعي» بيرفض فكرة المحاكاة وتقليد الواقع.</div>
+<div class="person"><h4>نيتشه</h4><div class="role">موجة الغضب الأسود</div>مطالباته الراديكالية بتحول شامل في حياة الإنسان الروحية والعقلية.</div>
+<div class="person"><h4>بيراندللو</h4><div class="role">كاتب دراما</div>"تقليد الإنسان لنموذج سابق بيؤدي لإنكار شخصيته".</div>
+<div class="person"><h4>كامي</h4><div class="role">فيلسوف/كاتب</div>"الأساليب الفردية علامة على أشد الثورات حدة".</div>
+</div>
+
+<h2>🏛️ روبرت برشتين (Robert Brustein) — «مسرح التمرد» 1962</h2>
+<div class="def-box"><b>كتابه:</b> <span class="en">The Theater of Revolt: Studies in Modern Drama from Ibsen to Genet</span> (1962). بيميز بين نوعين من الدراما:</div>
+
+<div class="vs">
+<div class="a"><h4>🤝 الدراما التقليدية = «مسرح التضامن»</h4>
+<ul>
+<li>مسرح الماضي: سوفوكليس - شكسبير - راسين.</li>
+<li>بيؤدي <b>أساطير تقليدية</b> أمام جماعة من المشاهدين المؤمنين متماسكة.</li>
+<li>يبدأ من الإيمان والورع الديني (إسخيلوس) ← الشك (سوفوكليس) ← الغضب (يوريبيدس) ← الفتور الروحي (مينادر).</li>
+</ul></div>
+<div class="b"><h4>🔥 الدراما المعاصرة = «مسرح التمرد»</h4>
+<ul>
+<li>بيؤدي <b>أساطير الغضب</b> أمام أعداد أقل من المشاهدين في جو من الفراغ والحيرة.</li>
+<li>الفنانين أكتر فردية، واتجاه متمرد عن إرثهم المسرحي (موقف "رومانسي" في جوهره).</li>
+<li>"مسرح الخواء": الإنسان مجرد "طراز اسمي" للخليقة، وتكثر الهياكل المجردة في المناظر.</li>
+</ul></div>
+</div>
+
+<div class="cards">
+<div class="card"><h4>🎓 رأي بريشتين في المسرح الثوري</h4>"هو معبد بلا كاهن بدون إله". كاهنه (الكاتب) بيؤدي طقوساً قبيحة، كأنه بمثابة <b>مبشر بيدعو للتنافر</b>. بدل أساطير التجمع بيقدم <b>أساطير التشتت</b>، وبدل صلاة التقبيل والتسليم بيقدم <b>صلاة الشكوى والاستنكار</b>.</div>
+<div class="card"><h4>⚠️ استشراف الكارثة</h4>الدراما المعاصرة كانت دايماً بتستشرف <b>انهيار وشيك</b>: دقّت ناقوس الخطر لوقوع الحروب، ونمو الاتجاهات الفاشية، وسحق الآلة للإنسان (في المسرح وفي السينما الألمانية قبل صعود النازية).</div>
+</div>
+
+<div class="note-box"><b>📉 فارق مهم:</b> الدراما المعاصرة <b>ما قطعتش</b> الصلة بالتقليدية فجأة، بل اختمرت تدريجياً. والتجربة الغربية بتقطع نفس طريق الإغريقية: <b>إيمان ← شك ← غضب ← فتور</b>. وبعد شكسبير بيلوح عصر الاضطراب (إبسن «الأشباح» - سترندبرج «الأب» - تشيخوف). والحل ما بيجيش بنهاية تعوّض زي "أوديب" (نفي الطاعون) ولا "هاملت" (سلام الدنمارك).</div>
+
+<div class="plain-box"><b>🗣️ بالبلدي:</b> زمان المسرح كان زي "صلاة جماعة": الكل مؤمن بنفس الحاجة. دلوقتي بقى زي "شكوى فردية": كل كاتب بيمسك في غضبه وحيرته، والمشاهد قليل ومش متماسك.</div>
+
+<h3>🔠 مصطلحات</h3>
+<div class="cards">
+<div class="card"><h4><span class="en">Theater of Solidarity</span></h4>مسرح التضامن (التقليدي).</div>
+<div class="card"><h4><span class="en">Theater of Revolt</span></h4>مسرح التمرد (المعاصر).</div>
+</div>
+
+</div><!-- /zone s3 -->
+
+<!-- ================= بريخت ================= -->
+<div class="zone" id="s4">
+<h2 class="chapter-title">📣 رابعاً: بريخت والمسرح الملحمي — التغريب</h2>
+
+<h2>👤 مين هو برتولد بريخت؟</h2>
+<div class="def-box"><b>برتولد بريخت (Bertolt Brecht):</b> كاتب ومخرج وشاعر ألماني (1898–1956). صاحب نظرية <b>المسرح الملحمي</b> (Epic Theatre)، اللي شطرت تاريخ الدراما لنصفين: النصف الأول (من الإغريق لحد أول القرن 20) والنصف التاني (الأعمال اللي اتأثرت بنظرية بريخت).</div>
+
+<h3>🧭 مين مهّد لبريخت؟</h3>
+<div class="cards">
+<div class="person"><h4>أدولف أبيّا + إدوارد جوردون كريج</h4><div class="role">مصممين وفنانين مسرح</div>مجربين رواد في أول القرن 20.</div>
+<div class="person"><h4>أنطونان آرتو + جاك كوبو</h4><div class="role">مسرحيين</div>مبدعين للتجارب الأولى.</div>
+<div class="person"><h4>فسيفولد مايرهولد</h4><div class="role">تلميذ ستانسلافسكي</div>رفض الواقعية السيكولوجية، واتجه للأسلوب الهيكلي، والمثل بيبقى أقرب للعرائس (ماريونيت)؛ وسينما أتاحت له الفرجة.</div>
+<div class="person"><h4>إرفن بيسكاتور</h4><div class="role">مخرج</div>اشتغل معه بريخت كمساعد مخرج.</div>
+</div>
+
+<h2>🚫 اللي بريخت رفضه: المسرح الأرسطي</h2>
+<div class="flow">
+<span class="step">🎭 أرسطو (كتاب "فن الشعر"): المشاهد يسقط في أسر الإيهام</span><span class="arrow">←</span>
+<span class="step">😢 يتورط عاطفياً ويتوحد مع الشخصية</span><span class="arrow">←</span>
+<span class="step">🧼 إثارة الشفقة والخوف ← التطهير (Catharsis)</span>
+</div>
+<div class="note-box"><b>🔑 رد بريخت:</b> المشاهد مش مفروض يغرق في الإيهام، بل لازم يكون على <b>درجة عالية من الوعي</b> وبيتفرج على "قضية" أمامه بكل فصولها وجوانبها، وفي الآخر يكوّن وجهة نظر تعبر عن موقفه الإنساني. ده معنى «المسرح الملحمي»: <b>مشهد → سرد → تفكير</b>.</div>
+
+<h2>📊 الجدول الشهير: المسرح الدرامي vs المسرح الملحمي</h2>
+<div class="note-box"><b>🧠 مفتاح الجدول:</b> الدرامي = <b>يشعّر</b> (إحساس / تجربة حية / مشهد يمهد للتالي) — الملحمي = <b>يفكّر</b> (عقل / رؤية للعالم / كل مشهد قائم بذاته).</div>
+
+<h3>👁️ ١) المشاهد والأثر</h3>
+<table>
+<tr><th>المسرح الدرامي (الأرسطي)</th><th>المسرح الملحمي (البريختي)</th></tr>
+<tr><td>تجرى الأحداث</td><td><b>تسرد</b> الأحداث</td></tr>
+<tr><td>المشاهد يشتبك في الأحداث</td><td>المشاهد يبقى <b>مجرد رقيب</b></td></tr>
+<tr><td>يستنفذ فاعلية المشاهد</td><td>يوقظ <b>فاعليته الذهنية</b></td></tr>
+<tr><td>يستثير في نفسه المشاعر</td><td>يجبره على <b>اتخاذ قرارات</b></td></tr>
+<tr><td>تجربة حية</td><td>رؤية للعالم</td></tr>
+<tr><td>المشاهد يشتبك في شيء ما</td><td>المتفرج في <b>مواجهة</b> شيء ما</td></tr>
+<tr><td>إيحاء</td><td>مناقشة</td></tr>
+<tr><td>المشاعر تظل كما هي</td><td>المشاعر تندفع إلى لحظة <b>الوعي</b></td></tr>
+<tr><td>المتفرج يشترك في قلب الأحداث ويعيشها</td><td>المتفرج يتطلع إلى الأحداث <b>ويدرسها</b></td></tr>
+<tr><td>شعور</td><td>عقل</td></tr>
+</table>
+
+<h3>🧩 ٢) البناء والحبكة</h3>
+<table>
+<tr><th>المسرح الدرامي</th><th>المسرح الملحمي</th></tr>
+<tr><td>اهتمام شغوف بحل العقدة</td><td>اهتمام شغوف بالتتابع</td></tr>
+<tr><td>كل مشهد يمهد للتالي</td><td>كل مشهد قائم بذاته</td></tr>
+<tr><td>نمو عضوي</td><td>تركيب (مونتاج)</td></tr>
+<tr><td>تتابع في خط مستقيم صاعد</td><td>تتابع في شكل أقواس ومنحنيات</td></tr>
+<tr><td>حتمية التطور</td><td>قفزات مفاجئة</td></tr>
+</table>
+
+<h3>🧍 ٣) الإنسان والفكر</h3>
+<table>
+<tr><th>المسرح الدرامي</th><th>المسرح الملحمي</th></tr>
+<tr><td>يفترض أن الإنسان معروف مقدماً</td><td>الإنسان موضوع بحث وتحقيق</td></tr>
+<tr><td>الإنسان غير قابل للتغير (شيء ثابت)</td><td>الإنسان متغير ومستمر في التغير (عملية تحول)</td></tr>
+<tr><td>الفكر هو الذي يحدد الكيان الاجتماعي</td><td><b>الكيان الاجتماعي هو الذي يحدد الفكر</b></td></tr>
+</table>
+
+<h3>🎵 ٤) الموسيقى</h3>
+<table>
+<tr><th>المسرح الدرامي</th><th>المسرح الملحمي</th></tr>
+<tr><td>الموسيقى تقوّي النص</td><td>الموسيقى <b>تفسر</b> النص</td></tr>
+<tr><td>الموسيقى توضح</td><td>الموسيقى <b>تتخذ موقفاً</b></td></tr>
+<tr><td>الموسيقى ترسم الموقف النفسي</td><td>الموسيقى تقدم السلوك وتعرضه</td></tr>
+</table>
+
+<div class="plain-box"><b>🗣️ بالبلدي:</b> بريخت عايز المتفرج يفضل "صاحي". مش يعيط ويتأثر ويخرج مرتاح، لكن يشوف القضية، يفكر فيها، ويطلع بقرار. حتى الموسيقى عنده بتعلق وتفضح مش بتدلع الإحساس.</div>
+
+<h2>🎯 التغريب (Verfremdungseffekt) وكسر الإيهام</h2>
+<div class="def-box"><b>التغريب (V-Effect):</b> الآلية اللي بيحقق بيها بريخت هدفه: إن المشاهد "يستغرب" المألوف، فيتساءل عنه بدل ما يتقبله. عشان يصدم المشاهد دايماً، ويوقظ ملكاته النقدية وروح التغيير بداخله. المفهوم ده اخترق <b>كل عناصر العمل</b>: النص، لغة العرض، التمثيل، الإضاءة، الديكور، الموسيقى، الأغاني، الملابس، الأقنعة.</div>
+
+<h3>🔧 الحجة الفلسفية</h3>
+<ul>
+<li>بريخت رفض فكرة إن الفن <b>"محاكاة للواقع"</b>، وإنما "عرض نقدي" للواقع سعياً لتغييره.</li>
+<li>رفض مقولة "الإنسان خالد بسماته": العالم في <b>صيرورة وتغير دائم</b> وده قانون الوجود.</li>
+<li>الفن عنده <b>"في خدمة المجتمع"</b> (عكس "الفن للفن"): أي عمل فني بيحمل موقفاً اجتماعياً واقتصادياً وسياسياً، حتى الفن "المحايد" بيكرّس القيم السائدة.</li>
+</ul>
+
+<h2>🧱 عناصر المسرح الملحمي (ستة عناصر)</h2>
+<div class="cards">
+<div class="card"><h4>1️⃣ الحبكة</h4>رفض بريخت <b>الحبكة الهرمية الأرسطية</b> (بداية-وسط-نهاية). الأحداث بتُسرد في خط متقطع: وحدات مستقلة بتتتالي <b>بتصادم</b> وفواصل (أغاني) بتقطع بينها. الانتقال بين المشاهد مش بدافع السببية.</div>
+<div class="card"><h4>2️⃣ الشخصية</h4>محددة بشدة لكن <b>قابلة للتغير</b>. أهميتها في الوضع الاجتماعي والطبقة اللي بتمثلها، مش في العمق النفسي (إلا حالات نادرة زي <b>أزداك</b> في «دائرة الطباشير القوقازية»). ما تتشكلش بالتوحد.</div>
+<div class="card"><h4>3️⃣ الحدث</h4>حدث تاريخي بحدود زمنية ومكانية، بيُسرد بصيغة الماضي (زي حكايات الجدات). بيمنع الإيهام بواقعية الحدث، وبيكسر استغراق المشاهد عاطفياً.</div>
+<div class="card"><h4>4️⃣ الإيقاع</h4>إيقاع خارجي (بنية الوحدات المتتابعة المفصولة بالأغاني) + إيقاع داخلي (لكل وحدة: حدث، حركة، حوار، شعر، فواصل غنائية وموسيقى).</div>
+<div class="card"><h4>5️⃣ اللغة</h4>الحوار (شعري في الأساس، محمّل بملامح الصراع الطبقي) + الأغاني. بريخت بيحطم الألفاظ الضخمة اللي بتكتسب هالة قدسية. الأغاني بتقدم أفكار، وبتيجي في آخر المشهد كتعليق صادق، مع دعوة للتبصر.</div>
+<div class="card"><h4>6️⃣ الأثر الفني / الجمالي</h4>وظيفة جمالية ("المسرح الموجه") بتختلف عن مفهوم أرسطو: المتعة عند بريخت <b>متعة الفهم والمحاورة</b> (متعة عقلية) مش متعة الاستهلاك.</div>
+</div>
+
+<h3>🎭 الممثل عند بريخت</h3>
+<div class="pillbar">
+<span class="pill">🚫 مش بيتوحد مع الشخصية</span>
+<span class="pill">🗣️ بيحكي (راوي) مش بيعيش</span>
+<span class="pill">👁️ عنده وجهة نظر: ملاحظة ← محاكاة ← نقد</span>
+<span class="pill">❌ يرفض "نظام النجم" (باقي الشخصيات تردد وتقوي دوره)</span>
+<span class="pill">⏳ ما يشعرش المشاهد إنه بيتكلم "الآن" ولأول وآخر مرة</span>
+</div>
+
+<h3>🧰 أدوات التغريب المسرحية (مأخوذة من تراث المسرح)</h3>
+<ol class="badge-list cols2">
+<li>الأقنعة والملابس والمكملات (من الإغريق والعصور الوسطى)</li>
+<li>الجوقة ودورها</li>
+<li>المظاهر الطقسية</li>
+<li>مسرح الدمى والأقنعة (اليابان والصين)</li>
+<li>مسرح خيال الظل (إندونيسيا)</li>
+<li>ملابس بألوان فاقعة وديكورات غير محددة</li>
+<li>شرائح ملونة ولقطات سينمائية تُعرض</li>
+<li>إضاءة مكشوفة (ظاهرة) ووحدات إضاءة مش مخفية</li>
+<li>الفرقة الموسيقية قريبة من المسرح</li>
+</ol>
+
+<div class="link-box"><b>🔗 اربط بالسينما:</b> تجربة بريخت مش علاقة "التصاق حميم" بين المسرح والسينما فقط؛ السينما نفسها كانت <b>سباقة</b> في تقديم الفنون الدرامية: «المونتاج» (تركيب مشاهد مستقلة) بيمثل بذور المسرح الملحمي. ومايرهولد كان من أول من استفاد من السينما الصامتة وتأثيراتها البصرية.</div>
+
+<h3>🏁 الخلاصة</h3>
+<div class="note-box">بريخت قدّم إنجازاً ضخماً للفن المسرحي والفكر الإنساني عامة. أعماله بتبقى متجددة وفيها طزاجة ومتعة. وحتى لو اختلف كتير حول مسرحه الموجه والتزامه العقائدي والسياسي، فإن حدة الاختلاف بتخف، وبتبقى الإمكانات اللي بيفتحها أمام الفنان "لكي يبدع ويعيد تشكيل العالم بشكل أفضل وأكثر إنسانية".</div>
+
+</div><!-- /zone s4 -->
+</div><!-- /theme-teal -->
+
+<!-- ======================= المراجعة (بنفسجي) ======================= -->
+<div class="theme-purple">
+<div class="zone" id="s5">
+<h2 class="chapter-title">✅ المراجعة السريعة والأسئلة</h2>
+
+<h2>⚡ جدول المراجعة السريعة</h2>
+<div class="quick-ref">
+<table>
+<tr><th>المفهوم</th><th>الفكرة المختصرة</th><th>الاسم المرتبط</th></tr>
+<tr><td><b>الميلودراما</b></td><td>موسيقى + دراما، صراع خير/شر، عدالة شعرية</td><td>بروكس - بكلاند</td></tr>
+<tr><td><b>الوجوه المفروضة</b></td><td>شخصيات - مواقف - وسط - أعراف شكلية</td><td>ميشيل لوبران</td></tr>
+<tr><td><b>المرأة الساقطة</b></td><td>جنوح جنسي ونفي من العائلة</td><td>ليا جيكوبز</td></tr>
+<tr><td><b>المرأة المجهولة</b></td><td>إخفاق في التعرف (المرأة المنسية)</td><td>ستانلي كافل</td></tr>
+<tr><td><b>المرأة الشديدة التوتر</b></td><td>خوف من قتل الزوج - «ريبيكا» 1940</td><td>ماري آن دون</td></tr>
+<tr><td><b>الفارس</b></td><td>"حشو" - مبالغة - كوميديا بدنية</td><td>كوميديا دي لارتي</td></tr>
+<tr><td><b>Slapstick</b></td><td>عصا من لوحين تحدث فرقعة</td><td>إيطاليا ق16</td></tr>
+<tr><td><b>الفودفيل</b></td><td>رقص + غناء + حوار فكاهي + حركات مضحكة</td><td>د. مدكور ثابت</td></tr>
+<tr><td><b>الميلودراما والفارس</b></td><td>وجهان لشيء واحد: المسرح الشعبي</td><td>د. محمد مندور</td></tr>
+<tr><td><b>مسرح التضامن / التمرد</b></td><td>تقليدي مؤمن / معاصر غاضب</td><td>روبرت برشتين</td></tr>
+<tr><td><b>المسرح الملحمي</b></td><td>سرد - وعي - مونتاج - تغريب</td><td>برتولد بريخت</td></tr>
+<tr><td><b>التغريب</b></td><td>Verfremdungseffekt - كسر الإيهام</td><td>بريخت</td></tr>
+</table>
+</div>
+
+<h2>📝 أسئلة مراجعة - اختيار من متعدد (محلول)</h2>
+<div class="note-box">⚠️ الأسئلة دي من إعداد الملخص بناءً على المذكرة (مش أسئلة رسمية من الدكتور) - هدفها تشوف قد إيه المعلومة ثبتت.</div>
+
+<div class="mcq-grid">
+<div class="mcq"><div class="q">1. كلمة "ميلودراما" مكونة من:</div><div class="opts">
+<div class="opt">أ) ميلو (حب) + دراما</div><div class="opt correct">ب) ميلوس (لحن) + دراما</div>
+<div class="opt">ج) ميلي (ضحك) + دراما</div><div class="opt">د) ميلو (نار) + دراما</div></div></div>
+
+<div class="mcq"><div class="q">2. حسب بكلاند، الميلودراما حلّت تاريخياً محل:</div><div class="opts">
+<div class="opt">أ) الكوميديا</div><div class="opt">ب) الفودفيل</div>
+<div class="opt correct">ج) الدين في تناول الصراعات الأخلاقية</div><div class="opt">د) الأوبرا</div></div></div>
+
+<div class="mcq"><div class="q">3. "العدالة الشعرية" تعني:</div><div class="opts">
+<div class="opt">أ) نهاية مأساوية للجميع</div><div class="opt correct">ب) ثواب الأخيار وجزاء الأشرار</div>
+<div class="opt">ج) استخدام الشعر في الحوار</div><div class="opt">د) انتصار الشر</div></div></div>
+
+<div class="mcq"><div class="q">4. «الوجوه المفروضة» للميلودراما صاحبها:</div><div class="opts">
+<div class="opt">أ) بيتر بروكس</div><div class="opt">ب) وارن بكلاند</div>
+<div class="opt correct">ج) ميشيل لوبران</div><div class="opt">د) ستانلي كافل</div></div></div>
+
+<div class="mcq"><div class="q">5. من أنواع الميلودراما التي يكون فيها الإخفاق في التعرف على المرأة:</div><div class="opts">
+<div class="opt">أ) المرأة الساقطة</div><div class="opt correct">ب) المرأة المجهولة</div>
+<div class="opt">ج) المرأة الشديدة التوتر</div><div class="opt">د) المرأة المنتصرة</div></div></div>
+
+<div class="mcq"><div class="q">6. أول فيلم مرأة شديدة التوتر (حسب ماري آن دون):</div><div class="opts">
+<div class="opt">أ) سايكو</div><div class="opt">ب) الطيور</div>
+<div class="opt correct">ج) ريبيكا 1940</div><div class="opt">د) ماري آن</div></div></div>
+
+<div class="mcq"><div class="q">7. كلمة Farce بالفرنسية معناها:</div><div class="opts">
+<div class="opt correct">أ) حشو</div><div class="opt">ب) فرقعة</div>
+<div class="opt">ج) سخرية</div><div class="opt">د) رقص</div></div></div>
+
+<div class="mcq"><div class="q">8. اسم Slapstick جاي من:</div><div class="opts">
+<div class="opt">أ) سيف خشبي</div><div class="opt">ب) قناع</div>
+<div class="opt correct">ج) عصا من لوحين خشبيين تحدث فرقعة</div><div class="opt">د) طبلة</div></div></div>
+
+<div class="mcq"><div class="q">9. «الميلودراما والفارس وجهان لشيء واحد هو المسرح الشعبي» قالها:</div><div class="opts">
+<div class="opt">أ) علي الراعي</div><div class="opt correct">ب) محمد مندور</div>
+<div class="opt">ج) فرح أنطون</div><div class="opt">د) القليوبي</div></div></div>
+
+<div class="mcq"><div class="q">10. من مواصفات الكوميديا المرتجلة في المسرح المصري (الراعي):</div><div class="opts">
+<div class="opt">أ) الحبكة الهرمية</div><div class="opt">ب) الشخصية النمطية الثابتة</div>
+<div class="opt correct">ج) كسر الإيهام ومخاطبة الجمهور</div><div class="opt">د) الصمت التام</div></div></div>
+
+<div class="mcq"><div class="q">11. كتاب «مسرح التمرد» لـ:</div><div class="opts">
+<div class="opt">أ) بريخت</div><div class="opt">ب) أرسطو</div>
+<div class="opt correct">ج) روبرت برشتين</div><div class="opt">د) إبسن</div></div></div>
+
+<div class="mcq"><div class="q">12. «مسرح التضامن» عند برشتين هو مسرح:</div><div class="opts">
+<div class="opt">أ) الدراما المعاصرة</div><div class="opt correct">ب) الدراما التقليدية (سوفوكليس - شكسبير - راسين)</div>
+<div class="opt">ج) الأراجوز</div><div class="opt">د) الفودفيل</div></div></div>
+
+<div class="mcq"><div class="q">13. في المسرح الملحمي المشاهد:</div><div class="opts">
+<div class="opt">أ) يتوحد مع الشخصية</div><div class="opt">ب) يتأثر عاطفياً فقط</div>
+<div class="opt correct">ج) رقيب تُوقظ فاعليته الذهنية</div><div class="opt">د) لا دور له</div></div></div>
+
+<div class="mcq"><div class="q">14. مصطلح Verfremdungseffekt معناه:</div><div class="opts">
+<div class="opt">أ) التطهير</div><div class="opt correct">ب) التغريب</div>
+<div class="opt">ج) المحاكاة</div><div class="opt">د) الإيهام</div></div></div>
+
+<div class="mcq"><div class="q">15. الموسيقى في المسرح الملحمي:</div><div class="opts">
+<div class="opt">أ) تقوّي النص</div><div class="opt">ب) ترسم الموقف النفسي</div>
+<div class="opt correct">ج) تفسر النص وتتخذ موقفاً</div><div class="opt">د) تُلغى</div></div></div>
+
+<div class="mcq"><div class="q">16. رفض بريخت من نظرية أرسطو:</div><div class="opts">
+<div class="opt correct">أ) الحبكة الهرمية والتطهير والتوحد</div><div class="opt">ب) الأغاني</div>
+<div class="opt">ج) الجمهور</div><div class="opt">د) الممثلين</div></div></div>
+</div>
+
+<div class="link-box"><b>🔗 اربط الفكرة الكبيرة:</b> المذكرة كلها بتقول: <b>الميلودراما والفودفيل</b> = فن شعبي بيخاطب العاطفة والتسلية، و<b>الدراما الحديثة وبريخت</b> = فن بيخاطب العقل والوعي. ومن غير فهم الاتنين مش هتفهم إزاي الدراما والسينما اتطورت من "اتفرج واتأثر" لـ "اتفرج وفكّر".</div>
+
+</div><!-- /zone s5 -->
+</div><!-- /theme-purple -->
+
+</div><!-- /container -->
+</body>
+</html>
